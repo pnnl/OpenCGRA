@@ -2,10 +2,10 @@
 ==========================================================================
 Alu.py
 ==========================================================================
-Simple generic ALU for CGRA tile.
+Simple generic Shifter for CGRA tile.
 
 Author : Cheng Tan
-  Date : November 27, 2019
+  Date : November 28, 2019
 
 """
 
@@ -13,7 +13,7 @@ from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from .opt_type import *
 
-class Alu( Component ):
+class Shifter( Component ):
 
   def construct( s, DataType ):
 
@@ -29,10 +29,10 @@ class Alu( Component ):
 
     @s.update
     def comb_logic():
-      if s.recv_opt.msg == OPT_ADD:
-        s.send_out.msg = s.recv_in0.msg + s.recv_in1.msg
-      elif s.recv_opt.msg == OPT_SUB:
-        s.send_out.msg = s.recv_in0.msg - s.recv_in1.msg
+      if s.recv_opt.msg == OPT_LLS:
+        s.send_out.msg = s.recv_in0.msg << s.recv_in1.msg
+      elif s.recv_opt.msg == OPT_LRS:
+        s.send_out.msg = s.recv_in0.msg >> s.recv_in1.msg
 
     @s.update
     def update_signal():
@@ -43,8 +43,8 @@ class Alu( Component ):
 
   def line_trace( s ):
     opt = '?'
-    if s.recv_opt.msg == OPT_ADD:
-      opt = '+'
-    elif s.recv_opt.msg == OPT_SUB:
-      opt = '-'
+    if s.recv_opt.msg == OPT_LLS:
+      opt = '<<'
+    elif s.recv_opt.msg == OPT_LRS:
+      opt = '>>'
     return f'{s.recv_in0.msg} {opt} {s.recv_in1.msg} = {s.send_out.msg}'
