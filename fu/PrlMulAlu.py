@@ -1,21 +1,24 @@
 """
 ==========================================================================
-MulAlu.py
+PrlMulAlu.py
 ==========================================================================
-Simple generic Mul followed by ALU for CGRA tile.
+Mul and ALU in parallel for CGRA tile.
+
 Author : Cheng Tan
   Date : November 28, 2019
+
 """
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from .opt_type   import *
-from .TwoSeqComb import TwoSeqComb
+from .TwoPrlComb import TwoPrlComb
 from .Mul        import Mul
 from .Alu        import Alu
 
-class MulAlu( TwoSeqComb ):
+class PrlMulAlu( TwoPrlComb ):
 
   def construct( s, DataType ):
 
-    super( MulAlu, s ).construct( DataType, Mul, Alu )
+    super( PrlMulAlu, s ).construct( DataType, Mul, Alu )
+

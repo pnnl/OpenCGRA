@@ -3,10 +3,8 @@
 Mul.py
 ==========================================================================
 Simple generic Muliplier for CGRA tile.
-
 Author : Cheng Tan
   Date : November 28, 2019
-
 """
 
 from pymtl3 import *

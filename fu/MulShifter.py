@@ -3,10 +3,8 @@
 MulAlu.py
 ==========================================================================
 Simple generic Mul followed by Shifter for CGRA tile.
-
 Author : Cheng Tan
   Date : November 28, 2019
-
 """
 
 from pymtl3 import *

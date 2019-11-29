@@ -1,8 +1,8 @@
 """
 ==========================================================================
-Alu_test.py
+TwoSeqComb_test.py
 ==========================================================================
-Test cases for simple generic two sequentially combined functional unit.
+Test cases for two sequentially combined functional unit.
 
 Author : Cheng Tan
   Date : November 27, 2019
@@ -13,12 +13,12 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Alu        import Alu
-from ..Shifter    import Shifter
-from ..Mul        import Mul
-from ..MulAlu     import MulAlu
-from ..MulShifter import MulShifter
-from ..opt_type   import *
+from ..Alu           import Alu
+from ..Shifter       import Shifter
+from ..Mul           import Mul
+from ..SeqMulAlu     import SeqMulAlu
+from ..SeqMulShifter import SeqMulShifter
+from ..opt_type      import *
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -77,7 +77,7 @@ def run_sim( test_harness, max_cycles=1000 ):
   test_harness.tick()
 
 def test_mul_alu():
-  FU = MulAlu
+  FU = SeqMulAlu
   DataType = Bits16
   src_in0  = [ DataType(1), DataType(2), DataType(4) ]
   src_in1  = [ DataType(2), DataType(3), DataType(3) ]
@@ -90,7 +90,7 @@ def test_mul_alu():
   run_sim( th )
 
 def test_mul_shifter():
-  FU = MulShifter
+  FU = SeqMulShifter
   DataType = Bits16
   src_in0  = [ DataType(1), DataType(2),  DataType(4) ]
   src_in1  = [ DataType(2), DataType(3),  DataType(3) ]

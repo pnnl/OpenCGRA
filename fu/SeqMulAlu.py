@@ -1,10 +1,12 @@
 """
 ==========================================================================
-MulAlu.py
+SeqMulAlu.py
 ==========================================================================
-Simple generic Mul followed by ALU for CGRA tile.
+Mul followed by ALU in sequential for CGRA tile.
+
 Author : Cheng Tan
   Date : November 28, 2019
+
 """
 
 from pymtl3 import *
@@ -14,8 +16,9 @@ from .TwoSeqComb import TwoSeqComb
 from .Mul        import Mul
 from .Alu        import Alu
 
-class MulAlu( TwoSeqComb ):
+class SeqMulAlu( TwoSeqComb ):
 
   def construct( s, DataType ):
 
-    super( MulAlu, s ).construct( DataType, Mul, Alu )
+    super( SeqMulAlu, s ).construct( DataType, Mul, Alu )
+
