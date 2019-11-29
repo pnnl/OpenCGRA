@@ -16,6 +16,7 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 from ..Alu        import Alu
 from ..Shifter    import Shifter
 from ..Mul        import Mul
+from ..Logic      import Logic
 from ..MulAlu     import MulAlu
 from ..MulShifter import MulShifter
 from ..opt_type   import *
@@ -99,6 +100,17 @@ def test_mul():
   src_in1  = [ DataType(2), DataType(3), DataType(3)  ]
   sink_out = [ DataType(2), DataType(6), DataType(12) ]
   src_opt  = [ DataType(OPT_MUL), DataType(OPT_MUL), DataType(OPT_MUL) ]
+  th = TestHarness( FU, DataType, src_in0, src_in1, src_opt, sink_out )
+  run_sim( th )
+
+def test_logic():
+  FU = Logic
+  DataType = Bits16
+  src_in0  = [ DataType(1), DataType(2), DataType(4), DataType(1)  ]
+  src_in1  = [ DataType(2), DataType(3), DataType(3), DataType(2)  ]
+  sink_out = [ DataType(3), DataType(2), DataType(0xfffb), DataType(3) ]
+  src_opt  = [ DataType(OPT_OR), DataType(OPT_AND), 
+               DataType(OPT_NOT), DataType(OPT_XOR) ]
   th = TestHarness( FU, DataType, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 

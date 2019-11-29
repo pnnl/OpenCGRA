@@ -18,10 +18,10 @@ OPT_SUB     = Bits16( 2 )
 OPT_LLS     = Bits16( 3 )
 OPT_LRS     = Bits16( 4 )
 OPT_MUL     = Bits16( 5 )
-OPT_MUL_ADD = Bits16( 6 )
-OPT_MUL_SUB = Bits16( 7 )
-OPT_MUL_LLS = Bits16( 8 )
-OPT_MUL_LRS = Bits16( 9 )
+OPT_OR      = Bits16( 6 )
+OPT_XOR     = Bits16( 7 )
+OPT_AND     = Bits16( 8 )
+OPT_NOT     = Bits16( 9 )
 
 OPT_SYMBOL_DICT = {
   OPT_NAH: "?",
@@ -29,5 +29,9 @@ OPT_SYMBOL_DICT = {
   OPT_SUB: "-",
   OPT_LLS: "<",
   OPT_LRS: ">",
-  OPT_MUL: "x"
+  OPT_MUL: "x",
+  OPT_OR : "|",
+  OPT_XOR: "^",
+  OPT_AND: "&",
+  OPT_NOT: "~"
 }
