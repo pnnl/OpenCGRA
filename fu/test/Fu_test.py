@@ -2,7 +2,7 @@
 ==========================================================================
 Alu_test.py
 ==========================================================================
-Test cases for simple generic ALU.
+Test cases for functional unit.
 
 Author : Cheng Tan
   Date : November 27, 2019
@@ -13,10 +13,12 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Alu      import Alu
-from ..Shifter  import Shifter
-from ..Mul      import Mul
-from ..opt_type import *
+from ..Alu        import Alu
+from ..Shifter    import Shifter
+from ..Mul        import Mul
+from ..MulAlu     import MulAlu
+from ..MulShifter import MulShifter
+from ..opt_type   import *
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -25,7 +27,8 @@ from ..opt_type import *
 class TestHarness( Component ):
 
   def construct( s, FunctionUnit, DataType,
-                 src0_msgs, src1_msgs, config_msgs, sink_msgs ):
+                 src0_msgs, src1_msgs,
+                 config_msgs, sink_msgs ):
 
     s.src_in0  = TestSrcRTL( DataType, src0_msgs   )
     s.src_in1  = TestSrcRTL( DataType, src1_msgs   )
@@ -92,10 +95,10 @@ def test_shifter():
 def test_mul():
   FU = Mul
   DataType = Bits16
-  src_in0  = [ DataType(1), DataType(2),  DataType(4) ]
-  src_in1  = [ DataType(2), DataType(3),  DataType(3) ]
+  src_in0  = [ DataType(1), DataType(2), DataType(4)  ]
+  src_in1  = [ DataType(2), DataType(3), DataType(3)  ]
   sink_out = [ DataType(2), DataType(6), DataType(12) ]
-  src_opt  = [ DataType(OPT_MUL), DataType(OPT_MUL),  DataType(OPT_MUL) ]
+  src_opt  = [ DataType(OPT_MUL), DataType(OPT_MUL), DataType(OPT_MUL) ]
   th = TestHarness( FU, DataType, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
