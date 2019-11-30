@@ -13,13 +13,12 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Alu            import Alu
-from ..Shifter        import Shifter
-from ..Mul            import Mul
-from ..Logic          import Logic
-from ..MulAlu         import MulAlu
-from ..MulShifter     import MulShifter
-from ...ifcs.opt_type import *
+from ..Alu                        import Alu
+from ..Shifter                    import Shifter
+from ..Mul                        import Mul
+from ..Logic                      import Logic
+from ..MemUnit                    import MemUnit
+from ...ifcs.opt_type             import *
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -114,3 +113,12 @@ def test_logic():
   th = TestHarness( FU, DataType, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
+def test_MemUnit():
+  FU = MemUnit
+  DataType = Bits16
+  src_in0  = [ DataType(1), DataType(3), DataType(3) ]
+  src_in1  = [ DataType(0), DataType(5), DataType(2) ]
+  sink_out = [ DataType(2), DataType(2), DataType(5) ]
+  src_opt  = [ DataType(OPT_LD), DataType(OPT_STR), DataType(OPT_LD) ]
+  th = TestHarness( FU, DataType, src_in0, src_in1, src_opt, sink_out )
+  run_sim( th )
