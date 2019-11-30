@@ -12,7 +12,7 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from .opt_type import *
+from ..ifcs.opt_type    import *
 
 class ThreeComb( Component ):
 
@@ -41,15 +41,14 @@ class ThreeComb( Component ):
     s.recv_in1.msg     //= s.Fu0.recv_in1.msg
     s.recv_in2.msg     //= s.Fu1.recv_in0.msg
     s.recv_in3.msg     //= s.Fu1.recv_in1.msg
+
+    s.Fu0.recv_opt.msg //= s.recv_opt0.msg
+    s.Fu1.recv_opt.msg //= s.recv_opt1.msg
+    s.Fu2.recv_opt.msg //= s.recv_opt2.msg
+
     s.Fu0.send_out.msg //= s.Fu2.recv_in0.msg
     s.Fu1.send_out.msg //= s.Fu2.recv_in1.msg
     s.Fu2.send_out.msg //= s.send_out.msg
-
-    @s.update
-    def comb_logic():
-      s.Fu0.recv_opt.msg = s.recv_opt0.msg
-      s.Fu1.recv_opt.msg = s.recv_opt1.msg
-      s.Fu2.recv_opt.msg = s.recv_opt2.msg
 
     @s.update
     def update_signal():

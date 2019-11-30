@@ -13,11 +13,11 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Alu        import Alu
-from ..Shifter    import Shifter
-from ..Mul        import Mul
-from ..PrlMulAlu  import PrlMulAlu
-from ..opt_type   import *
+from ..Alu            import Alu
+from ..Shifter        import Shifter
+from ..Mul            import Mul
+from ..PrlMulAlu      import PrlMulAlu
+from ...ifcs.opt_type import *
 
 #-------------------------------------------------------------------------
 # Test harness

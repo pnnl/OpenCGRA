@@ -9,10 +9,10 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from .opt_type   import *
-from .TwoSeqComb import TwoSeqComb
-from .Mul        import Mul
-from .Shifter    import Shifter
+from ..ifcs.opt_type    import *
+from .TwoSeqComb        import TwoSeqComb
+from .Mul               import Mul
+from .Shifter           import Shifter
 
 class MulShifter( TwoSeqComb ):
 

@@ -1,6 +1,6 @@
 """
 ==========================================================================
-Alu.py
+Logic.py
 ==========================================================================
 Functional Unit of logic compute for CGRA tile.
 
@@ -11,8 +11,8 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from .opt_type import *
-from .Fu       import Fu
+from ..ifcs.opt_type    import *
+from .Fu                import Fu
 
 class Logic( Fu ):
 

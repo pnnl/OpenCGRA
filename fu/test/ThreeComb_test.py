@@ -18,7 +18,7 @@ from ..Alu                import Alu
 from ..Shifter            import Shifter
 from ..Mul                import Mul
 from ..ThreeMulAluShifter import ThreeMulAluShifter
-from ..opt_type           import *
+from ...ifcs.opt_type     import *
 
 #-------------------------------------------------------------------------
 # Test harness

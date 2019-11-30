@@ -11,14 +11,11 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from .opt_type import *
+from ..ifcs.opt_type    import *
 
 class Fu( Component ):
 
   def construct( s, DataType ):
-
-    # Constant
-    OptType = Bits5
 
     # Interface
 
@@ -35,9 +32,4 @@ class Fu( Component ):
       s.send_out.en  = s.recv_in0.en and s.recv_in1.en and s.recv_opt.en
 
   def line_trace( s ):
-#    opt = '?'
-#    if s.recv_opt.msg == OPT_ADD:
-#      opt = '+'
-#    elif s.recv_opt.msg == OPT_SUB:
-#      opt = '-'
     return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg]} [{s.recv_in1.msg}] = [{s.send_out.msg}]'

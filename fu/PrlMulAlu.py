@@ -11,10 +11,10 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from .opt_type   import *
-from .TwoPrlComb import TwoPrlComb
-from .Mul        import Mul
-from .Alu        import Alu
+from ..ifcs.opt_type    import *
+from .TwoPrlComb        import TwoPrlComb
+from .Mul               import Mul
+from .Alu               import Alu
 
 class PrlMulAlu( TwoPrlComb ):
 
