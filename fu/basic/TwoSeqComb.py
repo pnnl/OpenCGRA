@@ -11,7 +11,7 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ..ifcs.opt_type    import *
+from ...ifcs.opt_type   import *
 
 class TwoSeqComb( Component ):
 

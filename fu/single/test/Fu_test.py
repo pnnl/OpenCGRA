@@ -18,7 +18,7 @@ from ..Shifter                    import Shifter
 from ..Mul                        import Mul
 from ..Logic                      import Logic
 from ..MemUnit                    import MemUnit
-from ...ifcs.opt_type             import *
+from ....ifcs.opt_type            import *
 
 #-------------------------------------------------------------------------
 # Test harness

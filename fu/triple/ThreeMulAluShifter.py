@@ -11,11 +11,11 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ..ifcs.opt_type    import *
-from .ThreeComb         import ThreeComb
-from .Mul               import Mul
-from .Alu               import Alu
-from .Shifter           import Shifter
+from ...ifcs.opt_type   import *
+from ..basic.ThreeComb  import ThreeComb
+from ..single.Mul       import Mul
+from ..single.Alu       import Alu
+from ..single.Shifter   import Shifter
 
 class ThreeMulAluShifter( ThreeComb ):
 
