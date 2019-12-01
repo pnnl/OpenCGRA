@@ -40,7 +40,7 @@ class TestHarness( Component ):
     connect( s.dut.send_out,   s.sink_out.recv  )
 
   def done( s ):
-    return s.src_in0.done() and s.src_in1.done()# and s.sink_out.done()
+    return s.src_in0.done() and s.src_in1.done() and s.sink_out.done()
 
   def line_trace( s ):
     return s.dut.line_trace()

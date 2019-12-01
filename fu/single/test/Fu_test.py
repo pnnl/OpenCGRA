@@ -17,7 +17,7 @@ from ..Alu                        import Alu
 from ..Shifter                    import Shifter
 from ..Mul                        import Mul
 from ..Logic                      import Logic
-from ..MemUnit                    import MemUnit
+from ..Mem                        import Mem
 from ....ifcs.opt_type            import *
 
 #-------------------------------------------------------------------------
@@ -113,8 +113,8 @@ def test_logic():
   th = TestHarness( FU, DataType, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
-def test_MemUnit():
-  FU = MemUnit
+def test_Mem():
+  FU = Mem
   DataType = Bits16
   src_in0  = [ DataType(1), DataType(3), DataType(3) ]
   src_in1  = [ DataType(0), DataType(5), DataType(2) ]

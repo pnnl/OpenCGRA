@@ -34,16 +34,23 @@ class Phi( Component ):
       s.recv_pred1.rdy = s.send_out.rdy
       s.recv_opt.rdy   = s.send_out.rdy
       s.send_out.en    = s.recv_in0.en   and s.recv_in1.en   and\
-                         s.recv_pred0.en and s.recv_pred1.en and\
-                         s.recv_opt.en
+                         s.recv_pred0.en and s.recv_pred1.en
 
     @s.update
     def comb_logic():
       assert( not (s.recv_pred0.msg==Bits1(1) and s.recv_pred1.msg==Bits1(1)) )
       if s.recv_pred0.msg == Bits1( 1 ):
         s.send_out.msg = s.recv_in0.msg
-      elif s.recv_pred0.msg == Bits1( 1 ):
+      elif s.recv_pred1.msg == Bits1( 1 ):
         s.send_out.msg = s.recv_in1.msg
 
   def line_trace( s ):
-    return f'[{s.recv_in0.msg}({s.recv_pred0.msg})] ? [{s.recv_in1.msg}({s.recv_pred1.msg})] = [{s.send_out.msg}]'
+    symbol0 = "?"
+    symbol1 = "?"
+    if s.recv_pred0.msg == Bits1(1):
+      symbol0 = "*"
+      symbol1 = " "
+    elif s.recv_pred1.msg == Bits1(1):
+      symbol0 = " "
+      symbol1 = "*"
+    return f'[{s.recv_in0.msg} {symbol0}] [{s.recv_in1.msg} {symbol1}] = [{s.send_out.msg}]'
