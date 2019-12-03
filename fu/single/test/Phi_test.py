@@ -1,8 +1,8 @@
 """
 ==========================================================================
-Alu_test.py
+Phi_test.py
 ==========================================================================
-Test cases for functional unit.
+Test cases for functional unit Phi.
 
 Author : Cheng Tan
   Date : November 27, 2019
@@ -68,7 +68,7 @@ def run_sim( test_harness, max_cycles=1000 ):
   test_harness.tick()
   test_harness.tick()
 
-def test_Mem():
+def test_Phi():
   FU = Phi
   DataType  = Bits16
   src_in0   = [ DataType(1), DataType(3), DataType(3) ]
