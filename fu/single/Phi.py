@@ -19,38 +19,32 @@ class Phi( Component ):
 
     # Interface
 
-    s.recv_in0   = RecvIfcRTL( DataType )
-    s.recv_in1   = RecvIfcRTL( DataType )
-    s.recv_pred0 = RecvIfcRTL( Bits1    )
-    s.recv_pred1 = RecvIfcRTL( Bits1    )
-    s.recv_opt   = RecvIfcRTL( DataType )
-    s.send_out   = SendIfcRTL( DataType )
+    s.recv_in0 = RecvIfcRTL( DataType   )
+    s.recv_in1 = RecvIfcRTL( DataType   )
+    s.send_out = SendIfcRTL( DataType   )
 
     @s.update
     def update_signal():
-      s.recv_in0.rdy   = s.send_out.rdy
-      s.recv_in1.rdy   = s.send_out.rdy
-      s.recv_pred0.rdy = s.send_out.rdy
-      s.recv_pred1.rdy = s.send_out.rdy
-      s.recv_opt.rdy   = s.send_out.rdy
-      s.send_out.en    = s.recv_in0.en   and s.recv_in1.en   and\
-                         s.recv_pred0.en and s.recv_pred1.en
+      s.recv_in0.rdy = s.send_out.rdy
+      s.recv_in1.rdy = s.send_out.rdy
+      s.send_out.en  = s.recv_in0.en and s.recv_in1.en
 
     @s.update
     def comb_logic():
-      assert( not (s.recv_pred0.msg==Bits1(1) and s.recv_pred1.msg==Bits1(1)) )
-      if s.recv_pred0.msg == Bits1( 1 ):
+      assert( not (s.recv_in0.msg.predicate==Bits1(1) and\
+                   s.recv_in1.msg.predicate==Bits1(1)) )
+      if s.recv_in0.msg.predicate == Bits1( 1 ):
         s.send_out.msg = s.recv_in0.msg
-      elif s.recv_pred1.msg == Bits1( 1 ):
+      elif s.recv_in1.msg.predicate == Bits1( 1 ):
         s.send_out.msg = s.recv_in1.msg
 
   def line_trace( s ):
-    symbol0 = "?"
-    symbol1 = "?"
-    if s.recv_pred0.msg == Bits1(1):
+    symbol0 = "#"
+    symbol1 = "#"
+    if s.recv_in0.msg.predicate == Bits1(1):
       symbol0 = "*"
       symbol1 = " "
-    elif s.recv_pred1.msg == Bits1(1):
+    elif s.recv_in1.msg.predicate == Bits1(1):
       symbol0 = " "
       symbol1 = "*"
     return f'[{s.recv_in0.msg} {symbol0}] [{s.recv_in1.msg} {symbol1}] = [{s.send_out.msg}]'

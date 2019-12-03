@@ -15,6 +15,7 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
 from ..Phi                        import Phi
 from ....lib.opt_type             import *
+from ....lib.messages             import *
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -23,20 +24,16 @@ from ....lib.opt_type             import *
 class TestHarness( Component ):
 
   def construct( s, FunctionUnit, DataType, src0_msgs, src1_msgs,
-                 src0_pred, src1_pred, sink_msgs ):
+                 sink_msgs ):
 
     s.src_in0   = TestSrcRTL( DataType, src0_msgs   )
     s.src_in1   = TestSrcRTL( DataType, src1_msgs   )
-    s.src_pred0 = TestSrcRTL( Bits1,    src0_pred   )
-    s.src_pred1 = TestSrcRTL( Bits1,    src1_pred   )
     s.sink_out  = TestSinkCL( DataType, sink_msgs   )
 
     s.dut = FunctionUnit( DataType )
 
     connect( s.src_in0.send,   s.dut.recv_in0   )
     connect( s.src_in1.send,   s.dut.recv_in1   )
-    connect( s.src_pred0.send, s.dut.recv_pred0 )
-    connect( s.src_pred1.send, s.dut.recv_pred1 )
     connect( s.dut.send_out,   s.sink_out.recv  )
 
   def done( s ):
@@ -70,12 +67,9 @@ def run_sim( test_harness, max_cycles=1000 ):
 
 def test_Phi():
   FU = Phi
-  DataType  = Bits16
-  src_in0   = [ DataType(1), DataType(3), DataType(3) ]
-  src_in1   = [ DataType(0), DataType(5), DataType(2) ]
-  src_pred0 = [ Bits1(0),    Bits1(1),    Bits1(0)    ]
-  src_pred1 = [ Bits1(0),    Bits1(0),    Bits1(1)    ]
-  sink_out  = [ DataType(0), DataType(3), DataType(2) ]
-  th = TestHarness( FU, DataType, src_in0, src_in1,
-                    src_pred0, src_pred1, sink_out )
+  DataType  = mk_data( 16, 1 )
+  src_in0   = [ DataType(1, 0), DataType(3, 1), DataType(3, 0) ]
+  src_in1   = [ DataType(0, 0), DataType(5, 0), DataType(2, 1) ]
+  sink_out  = [ DataType(0, 0), DataType(3, 1), DataType(2, 1) ]
+  th = TestHarness( FU, DataType, src_in0, src_in1, sink_out )
   run_sim( th )
