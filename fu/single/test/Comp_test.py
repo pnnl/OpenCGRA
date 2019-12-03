@@ -1,6 +1,6 @@
 """
 ==========================================================================
-Phi_test.py
+Comp_test.py
 ==========================================================================
 Test cases for functional unit Phi.
 
@@ -13,7 +13,7 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Phi                        import Phi
+from ..Comp                       import Comp
 from ....lib.opt_type             import *
 
 #-------------------------------------------------------------------------
@@ -22,30 +22,29 @@ from ....lib.opt_type             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, src0_msgs, src1_msgs,
-                 src0_pred, src1_pred, sink_msgs ):
+  def construct( s, FunctionUnit, DataType, src_data, src_ref,
+                 src_opt, sink_msgs ):
 
-    s.src_in0   = TestSrcRTL( DataType, src0_msgs   )
-    s.src_in1   = TestSrcRTL( DataType, src1_msgs   )
-    s.src_pred0 = TestSrcRTL( Bits1,    src0_pred   )
-    s.src_pred1 = TestSrcRTL( Bits1,    src1_pred   )
-    s.sink_out  = TestSinkCL( DataType, sink_msgs   )
+    s.src_data = TestSrcRTL( DataType, src_data  )
+    s.src_ref  = TestSrcRTL( DataType, src_ref   )
+    s.src_opt  = TestSrcRTL( DataType, src_opt   )
+    s.sink_out = TestSinkCL( Bits1,    sink_msgs )
 
     s.dut = FunctionUnit( DataType )
 
-    connect( s.src_in0.send,   s.dut.recv_in0   )
-    connect( s.src_in1.send,   s.dut.recv_in1   )
-    connect( s.src_pred0.send, s.dut.recv_pred0 )
-    connect( s.src_pred1.send, s.dut.recv_pred1 )
-    connect( s.dut.send_out,   s.sink_out.recv  )
+    connect( s.src_data.send, s.dut.recv_data )
+    connect( s.src_ref.send,  s.dut.recv_ref  )
+    connect( s.src_opt.send,  s.dut.recv_opt  )
+    connect( s.dut.send_pred, s.sink_out.recv )
 
   def done( s ):
-    return s.src_in0.done() and s.src_in1.done() and s.sink_out.done()
+    return s.src_data.done() and s.src_ref.done() and\
+           s.src_opt.done()  and s.sink_out.done()
 
   def line_trace( s ):
     return s.dut.line_trace()
 
-def run_sim( test_harness, max_cycles=1000 ):
+def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
   test_harness.apply( SimulationPass )
   test_harness.sim_reset()
@@ -68,14 +67,12 @@ def run_sim( test_harness, max_cycles=1000 ):
   test_harness.tick()
   test_harness.tick()
 
-def test_Phi():
-  FU = Phi
+def test_Comp():
+  FU = Comp
   DataType  = Bits16
-  src_in0   = [ DataType(1), DataType(3), DataType(3) ]
-  src_in1   = [ DataType(0), DataType(5), DataType(2) ]
-  src_pred0 = [ Bits1(0),    Bits1(1),    Bits1(0)    ]
-  src_pred1 = [ Bits1(0),    Bits1(0),    Bits1(1)    ]
-  sink_out  = [ DataType(0), DataType(3), DataType(2) ]
-  th = TestHarness( FU, DataType, src_in0, src_in1,
-                    src_pred0, src_pred1, sink_out )
+  src_data  = [ DataType(9),      DataType(3),      DataType(3)      ]
+  src_ref   = [ DataType(9),      DataType(5),      DataType(2)      ]
+  src_opt   = [ DataType(OPT_EQ), DataType(OPT_LE), DataType(OPT_EQ) ]
+  sink_out  = [ Bits1(1),          Bits1(1),         Bits1(0)         ]
+  th = TestHarness( FU, DataType, src_data, src_ref, src_opt, sink_out )
   run_sim( th )

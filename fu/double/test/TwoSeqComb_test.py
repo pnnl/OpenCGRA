@@ -15,7 +15,7 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
 from ..SeqMulAlu       import SeqMulAlu
 from ..SeqMulShifter   import SeqMulShifter
-from ....ifcs.opt_type import *
+from ....lib.opt_type  import *
 
 #-------------------------------------------------------------------------
 # Test harness

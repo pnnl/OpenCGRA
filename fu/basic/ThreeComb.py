@@ -12,7 +12,7 @@ Author : Cheng Tan
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ...ifcs.opt_type   import *
+from ...lib.opt_type    import *
 
 class ThreeComb( Component ):
 

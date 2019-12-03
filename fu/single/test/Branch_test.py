@@ -13,8 +13,8 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Branch                     import Branch 
-from ....ifcs.opt_type            import *
+from ..Branch                     import Branch
+from ....lib.opt_type             import *
 
 #-------------------------------------------------------------------------
 # Test harness
