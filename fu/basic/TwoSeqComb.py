@@ -15,7 +15,7 @@ from ...lib.opt_type    import *
 
 class TwoSeqComb( Component ):
 
-  def construct( s, DataType, Fu0, Fu1 ):
+  def construct( s, DataType, ConfigType, Fu0, Fu1 ):
 
     # Constant
     OptType = Bits5
@@ -24,13 +24,13 @@ class TwoSeqComb( Component ):
     s.recv_in0  = RecvIfcRTL( DataType )
     s.recv_in1  = RecvIfcRTL( DataType )
     s.recv_in2  = RecvIfcRTL( DataType )
-    s.recv_opt0 = RecvIfcRTL( DataType )
-    s.recv_opt1 = RecvIfcRTL( DataType )
+    s.recv_opt0 = RecvIfcRTL( ConfigType )
+    s.recv_opt1 = RecvIfcRTL( ConfigType )
     s.send_out  = SendIfcRTL( DataType )
 
     # Components
-    s.Fu0 = Fu0( DataType )
-    s.Fu1 = Fu1( DataType )
+    s.Fu0 = Fu0( DataType, ConfigType )
+    s.Fu1 = Fu1( DataType, ConfigType )
 
     # Connections
     s.recv_in0.msg     //= s.Fu0.recv_in0.msg
@@ -54,4 +54,4 @@ class TwoSeqComb( Component ):
                         s.recv_opt0.en and s.recv_opt1.en
 
   def line_trace( s ):
-    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt0.msg]} [{s.recv_in1.msg}] {OPT_SYMBOL_DICT[s.recv_opt1.msg]} [{s.recv_in2.msg}] = [{s.send_out.msg}]'
+    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt0.msg.config]} [{s.recv_in1.msg}] {OPT_SYMBOL_DICT[s.recv_opt1.msg.config]} [{s.recv_in2.msg}] = [{s.send_out.msg}]'

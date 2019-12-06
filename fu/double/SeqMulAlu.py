@@ -18,7 +18,7 @@ from ..single.Alu       import Alu
 
 class SeqMulAlu( TwoSeqComb ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( SeqMulAlu, s ).construct( DataType, Mul, Alu )
+    super( SeqMulAlu, s ).construct( DataType, ConfigType, Mul, Alu )
 

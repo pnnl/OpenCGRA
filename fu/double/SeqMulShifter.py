@@ -18,7 +18,7 @@ from ..single.Shifter   import Shifter
 
 class SeqMulShifter( TwoSeqComb ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( SeqMulShifter, s ).construct( DataType, Mul, Shifter )
+    super( SeqMulShifter, s ).construct( DataType, ConfigType, Mul, Shifter )
 

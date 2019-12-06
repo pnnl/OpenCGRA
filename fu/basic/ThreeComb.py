@@ -16,25 +16,25 @@ from ...lib.opt_type    import *
 
 class ThreeComb( Component ):
 
-  def construct( s, DataType, Fu0, Fu1, Fu2 ):
+  def construct( s, DataType, ConfigType, Fu0, Fu1, Fu2 ):
 
     # Constant
     OptType = Bits5
 
     # Interface
-    s.recv_in0  = RecvIfcRTL( DataType )
-    s.recv_in1  = RecvIfcRTL( DataType )
-    s.recv_in2  = RecvIfcRTL( DataType )
-    s.recv_in3  = RecvIfcRTL( DataType )
-    s.recv_opt0 = RecvIfcRTL( DataType )
-    s.recv_opt1 = RecvIfcRTL( DataType )
-    s.recv_opt2 = RecvIfcRTL( DataType )
-    s.send_out  = SendIfcRTL( DataType )
+    s.recv_in0  = RecvIfcRTL( DataType   )
+    s.recv_in1  = RecvIfcRTL( DataType   )
+    s.recv_in2  = RecvIfcRTL( DataType   )
+    s.recv_in3  = RecvIfcRTL( DataType   )
+    s.recv_opt0 = RecvIfcRTL( ConfigType )
+    s.recv_opt1 = RecvIfcRTL( ConfigType )
+    s.recv_opt2 = RecvIfcRTL( ConfigType )
+    s.send_out  = SendIfcRTL( DataType   )
 
     # Components
-    s.Fu0 = Fu0( DataType )
-    s.Fu1 = Fu1( DataType )
-    s.Fu2 = Fu2( DataType )
+    s.Fu0 = Fu0( DataType, ConfigType )
+    s.Fu1 = Fu1( DataType, ConfigType )
+    s.Fu2 = Fu2( DataType, ConfigType )
 
     # Connections
     s.recv_in0.msg     //= s.Fu0.recv_in0.msg
@@ -65,4 +65,4 @@ class ThreeComb( Component ):
                         s.recv_opt2.en
 
   def line_trace( s ):
-    return f'([{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt0.msg]} [{s.recv_in1.msg}]) {OPT_SYMBOL_DICT[s.recv_opt2.msg]} ([{s.recv_in2.msg}] {OPT_SYMBOL_DICT[s.recv_opt1.msg]} [{s.recv_in3.msg}]) = [{s.send_out.msg}]'
+    return f'([{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt0.msg.config]} [{s.recv_in1.msg}]) {OPT_SYMBOL_DICT[s.recv_opt2.msg.config]} ([{s.recv_in2.msg}] {OPT_SYMBOL_DICT[s.recv_opt1.msg.config]} [{s.recv_in3.msg}]) = [{s.send_out.msg}]'

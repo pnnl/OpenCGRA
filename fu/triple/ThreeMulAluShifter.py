@@ -19,7 +19,7 @@ from ..single.Shifter   import Shifter
 
 class ThreeMulAluShifter( ThreeComb ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( ThreeMulAluShifter, s ).construct( DataType, Mul, Alu, Shifter )
+    super( ThreeMulAluShifter, s ).construct( DataType, ConfigType, Mul, Alu, Shifter )
 

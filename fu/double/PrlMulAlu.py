@@ -18,7 +18,7 @@ from ..single.Alu       import Alu
 
 class PrlMulAlu( TwoPrlComb ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( PrlMulAlu, s ).construct( DataType, Mul, Alu )
+    super( PrlMulAlu, s ).construct( DataType, ConfigType, Mul, Alu )
 
