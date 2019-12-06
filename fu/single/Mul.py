@@ -2,7 +2,8 @@
 ==========================================================================
 Mul.py
 ==========================================================================
-Simple generic Muliplier for CGRA tile.
+Muliplier for CGRA tile.
+
 Author : Cheng Tan
   Date : November 28, 2019
 """
@@ -14,12 +15,14 @@ from ..basic.Fu         import Fu
 
 class Mul( Fu ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( Mul, s ).construct( DataType )
+    super( Mul, s ).construct( DataType, ConfigType )
 
     @s.update
     def comb_logic():
-      if s.recv_opt.msg == OPT_MUL:
-        s.send_out.msg = s.recv_in0.msg * s.recv_in1.msg
+      s.send_out.msg.predicate = s.recv_in0.msg.predicate and\
+                                 s.recv_in1.msg.predicate
+      if s.recv_opt.msg.config == OPT_MUL:
+        s.send_out.msg.payload = s.recv_in0.msg.payload * s.recv_in1.msg.payload
 

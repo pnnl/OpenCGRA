@@ -15,14 +15,14 @@ from ...lib.opt_type    import *
 
 class Comp( Component ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
     # Interface
 
-    s.recv_data = RecvIfcRTL( DataType )
-    s.recv_ref  = RecvIfcRTL( DataType )
-    s.recv_opt  = RecvIfcRTL( DataType )
-    s.send_pred = SendIfcRTL( Bits1    )
+    s.recv_data = RecvIfcRTL( DataType   )
+    s.recv_ref  = RecvIfcRTL( DataType   )
+    s.recv_opt  = RecvIfcRTL( ConfigType )
+    s.send_pred = SendIfcRTL( Bits1      )
 
     @s.update
     def update_signal():
@@ -33,17 +33,17 @@ class Comp( Component ):
 
     @s.update
     def comb_logic():
-      if s.recv_opt.msg == OPT_EQ:
-        if s.recv_data.msg == s.recv_ref.msg:
+      if s.recv_opt.msg.config == OPT_EQ:
+        if s.recv_data.msg.payload == s.recv_ref.msg.payload:
           s.send_pred.msg = Bits1( 1 )
         else:
           s.send_pred.msg = Bits1( 0 )
-      elif s.recv_opt.msg == OPT_LE:
-        if s.recv_data.msg < s.recv_ref.msg:
+      elif s.recv_opt.msg.config == OPT_LE:
+        if s.recv_data.msg.payload < s.recv_ref.msg.payload:
           s.send_pred.msg = Bits1( 1 )
         else:
           s.send_pred.msg = Bits1( 0 )
 
   def line_trace( s ):
-    return f'[{s.recv_data.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg]} [{s.recv_ref.msg}] = {s.send_pred.msg}'
+    return f'[{s.recv_data.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.config]} [{s.recv_ref.msg}] = {s.send_pred.msg}'
 

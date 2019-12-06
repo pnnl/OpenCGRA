@@ -2,7 +2,7 @@
 ==========================================================================
 Alu.py
 ==========================================================================
-Simple generic ALU for CGRA tile.
+ALU for CGRA tile.
 
 Author : Cheng Tan
   Date : November 27, 2019
@@ -16,14 +16,15 @@ from ..basic.Fu         import Fu
 
 class Alu( Fu ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( Alu, s ).construct( DataType )
+    super( Alu, s ).construct( DataType, ConfigType )
 
     @s.update
     def comb_logic():
-      if s.recv_opt.msg == OPT_ADD:
-        s.send_out.msg = s.recv_in0.msg + s.recv_in1.msg
-      elif s.recv_opt.msg == OPT_SUB:
-        s.send_out.msg = s.recv_in0.msg - s.recv_in1.msg
+      s.send_out.msg.predicate = s.recv_in0.msg.predicate and s.recv_in1.msg.predicate
+      if s.recv_opt.msg.config == OPT_ADD:
+        s.send_out.msg.payload = s.recv_in0.msg.payload + s.recv_in1.msg.payload
+      elif s.recv_opt.msg.config == OPT_SUB:
+        s.send_out.msg.payload = s.recv_in0.msg.payload - s.recv_in1.msg.payload
 

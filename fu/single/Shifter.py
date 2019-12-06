@@ -16,14 +16,16 @@ from ..basic.Fu         import Fu
 
 class Shifter( Fu ):
 
-  def construct( s, DataType ):
+  def construct( s, DataType, ConfigType ):
 
-    super( Shifter, s ).construct( DataType )
+    super( Shifter, s ).construct( DataType, ConfigType )
 
     @s.update
     def comb_logic():
-      if s.recv_opt.msg == OPT_LLS:
-        s.send_out.msg = s.recv_in0.msg << s.recv_in1.msg
-      elif s.recv_opt.msg == OPT_LRS:
-        s.send_out.msg = s.recv_in0.msg >> s.recv_in1.msg
+      s.send_out.msg.predicate = s.recv_in0.msg.predicate and\
+                                 s.recv_in1.msg.predicate
+      if s.recv_opt.msg.config == OPT_LLS:
+        s.send_out.msg.payload = s.recv_in0.msg.payload << s.recv_in1.msg.payload
+      elif s.recv_opt.msg.config == OPT_LRS:
+        s.send_out.msg.payload = s.recv_in0.msg.payload >> s.recv_in1.msg.payload
 
