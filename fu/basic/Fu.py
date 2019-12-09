@@ -6,7 +6,6 @@ Simple generic functional unit for CGRA tile.
 
 Author : Cheng Tan
   Date : November 27, 2019
-
 """
 
 from pymtl3 import *
