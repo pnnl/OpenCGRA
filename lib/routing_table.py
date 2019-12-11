@@ -28,7 +28,7 @@ def mk_routing_table( num_inports = 5, num_outports = 5, prefix="routing_table" 
     for i in range( num_outports ):
       if i != 0:
         out_str += '|'
-      out_str += str(s.outport[i])
+      out_str += str(int(s.outport[i]))
     return f"{out_str}"
 
   field_dict = {}

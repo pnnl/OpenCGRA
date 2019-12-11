@@ -36,6 +36,7 @@ class Channel( Component ):
       s.register.deq.en  = s.send.en
 
   def line_trace( s ):
-    trace = '>' + s.register.line_trace() + '>'
-    return f"{s.recv.msg}({trace}){s.send.msg}"
+#    trace = '>' + s.register.line_trace() + '>'
+#    return f"{s.recv.msg}({trace}){s.send.msg}"
+    return f"[{s.recv.msg}]>[{s.send.msg}]"
 

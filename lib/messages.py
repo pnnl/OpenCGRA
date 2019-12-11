@@ -24,7 +24,7 @@ def mk_data( payload_nbits=16, predicate_nbits=1, prefix="CGRAData" ):
   new_name = f"{prefix}_{payload_nbits}_{predicate_nbits}"
 
   def str_func( s ):
-    return f"{s.payload}:{s.predicate}"
+    return f"{int(s.payload)}.{s.predicate}"
 
   return mk_bitstruct( new_name, {
       'payload'  : PayloadType,
