@@ -41,7 +41,7 @@ class TestHarness( Component ):
 
     for i in range( num_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
-      connect( s.dut.send_out[i],  s.sink_out[i].recv )
+      connect( s.dut.send_data[i],  s.sink_out[i].recv )
     connect( s.src_routing.send,     s.dut.recv_routing )
 
   def done( s ):

@@ -26,32 +26,36 @@ from ...lib.routing_table         import *
 class TestHarness( Component ):
 
   def construct( s, DUT, FunctionUnit, DataType, ConfigType,
-                 RoutingTableType, num_inports, num_outports,
-                 src_data, src_routing, sink_out ):
+                 RoutingTableType, num_tile_inports, num_tile_outports,
+                 src_data, src_opt, src_routing, sink_out ):
 
-    s.num_inports  = num_inports
-    s.num_outports = num_outports
+    s.num_tile_inports  = num_tile_inports
+    s.num_tile_outports = num_tile_outports
 
+    s.src_opt      = TestSrcRTL( ConfigType, src_opt )
     s.src_routing  = TestSrcRTL( RoutingTableType, src_routing )
     s.src_data     = [ TestSrcRTL( DataType, src_data[i]  )
-                     for i in range( num_inports  ) ]
+                     for i in range( num_tile_inports  ) ]
     s.sink_out     = [ TestSinkCL( DataType, sink_out[i] )
-                     for i in range( num_outports ) ]
+                     for i in range( num_tile_outports ) ]
 
     s.dut = DUT( FunctionUnit, DataType, ConfigType, RoutingTableType )
 
-    for i in range( num_inports ):
+    connect( s.src_opt.send,     s.dut.recv_opt     )
+    connect( s.src_routing.send, s.dut.recv_routing )
+
+    for i in range( num_tile_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
-      connect( s.dut.send_out[i],  s.sink_out[i].recv )
-    connect( s.src_routing.send,     s.dut.recv_routing )
+    for i in range( num_tile_outports ):
+      connect( s.dut.send_data[i],  s.sink_out[i].recv )
 
   def done( s ):
     done = True
-    for i in range( s.num_inports  ):
-      if not s.src_data[i].done():
-        done = False
-        break
-    for i in range( s.num_outports ):
+#    for i in range( s.num_inports  ):
+#      if not s.src_data[i].done():
+#        done = False
+#        break
+    for i in range( s.num_tile_outports ):
       if not s.sink_out[i].done():
         done = False
         break
@@ -84,28 +88,31 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
 
 def test_cgra():
-  num_inports  = 5
-  num_outports = 5
+  num_tile_inports  = 4
+  num_tile_outports = 4
+  num_xbar_inports  = 6
+  num_xbar_outports = 8
   DUT = Tile
   FunctionUnit = Alu
   DataType     = mk_data( 16, 1 )
   ConfigType   = mk_config( 16 )
-  RoutingTable = mk_routing_table( num_inports, num_outports )
-  src_routing  = [ RoutingTable( [4, 3, 2, 1, 0] ),
-                   RoutingTable( [1, 0, 2, 3, 1] ),
-                   RoutingTable( [4, 3, 2, 1, 0] ) ]
+  RoutingTable = mk_routing_table( num_xbar_inports, num_xbar_outports )
+  src_opt      = [ ConfigType( OPT_ADD ),
+                   ConfigType( OPT_SUB ),
+                   ConfigType( OPT_NAH ) ]
+  src_routing  = [ RoutingTable( [3, 2, 1, 0, 3, 2, 1, 0] ),
+                   RoutingTable( [2, 2, 2, 4, 3, 0, 0, 0] ),
+                   RoutingTable( [4, 4, 1, 1, 0, 0, 0, 0] ) ]
   src_data     = [ [DataType(1, 1), DataType( 1, 1)],
                    [DataType(2, 1), DataType( 2, 1)],
                    [DataType(3, 1), DataType( 3, 1)],
-                   [DataType(4, 1), DataType( 4, 1)],
-                   [DataType(5, 1), DataType( 5, 1)] ]
-  sink_out     = [ [DataType(5, 1), DataType( 2, 1)],
-                   [DataType(4, 1), DataType( 1, 1)],
-                   [DataType(3, 1), DataType( 3, 1)],
-                   [DataType(2, 1), DataType( 4, 1)],
-                   [DataType(1, 1), DataType( 2, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, DataType, ConfigType, 
-                    RoutingTable, num_outports, num_inports,
-                    src_data, src_routing, sink_out )
+                   [DataType(4, 1), DataType( 4, 1)] ]
+  sink_out     = [ [DataType(4, 1), DataType( 3, 1), DataType( 3, 1)],
+                   [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
+                   [DataType(2, 1), DataType( 3, 1)],
+                   [DataType(1, 1), DataType( 7, 1)] ]
+  th = TestHarness( DUT, FunctionUnit, DataType, ConfigType,
+                    RoutingTable, num_tile_inports, num_tile_outports,
+                    src_data, src_opt, src_routing, sink_out )
   run_sim( th )
 

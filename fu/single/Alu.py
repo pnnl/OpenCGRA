@@ -27,4 +27,5 @@ class Alu( Fu ):
         s.send_out0.msg.payload = s.recv_in0.msg.payload + s.recv_in1.msg.payload
       elif s.recv_opt.msg.config == OPT_SUB:
         s.send_out0.msg.payload = s.recv_in0.msg.payload - s.recv_in1.msg.payload
+      s.send_out1.msg = s.send_out0.msg
 
