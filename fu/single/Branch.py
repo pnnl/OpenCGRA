@@ -26,10 +26,10 @@ class Branch( Component ):
 
     @s.update
     def update_signal():
-      s.recv_data.rdy     = s.send_if.rdy   and s.send_else.rdy 
-      s.recv_comp.rdy     = s.send_if.rdy   and s.send_else.rdy
-      s.send_if.en        = s.recv_data.en  and s.recv_comp.en
-      s.send_else.en      = s.recv_data.en  and s.recv_comp.en
+      s.recv_data.rdy = s.send_if.rdy  and s.send_else.rdy 
+      s.recv_comp.rdy = s.send_if.rdy  and s.send_else.rdy
+      s.send_if.en    = s.recv_data.en and s.recv_comp.en
+      s.send_else.en  = s.recv_data.en and s.recv_comp.en
 
     @s.update
     def comb_logic():

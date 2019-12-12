@@ -53,7 +53,7 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=1000 ):
   test_harness.elaborate()
-  test_harness.apply( SimulationPass )
+  test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
   # Run simulation

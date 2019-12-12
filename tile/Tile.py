@@ -1,6 +1,6 @@
 """
 =========================================================================
-CGRA.py
+Tile.py
 =========================================================================
 
 Author : Cheng Tan
@@ -12,9 +12,9 @@ from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ..noc.Crossbar     import Crossbar
 from ..noc.Channel      import Channel
 
-class CGRA( Component ):
+class Tile( Component ):
 
-  def construct( s, DataType, RoutingTableType ):
+  def construct( s, Fu, DataType, ConfigType, RoutingTableType ):
 
     # Interfaces
 
@@ -25,14 +25,15 @@ class CGRA( Component ):
     s.send_out  = [ SendIfcRTL( DataType ) for _ in range ( num_outports ) ]
 
     # Components
+    # s.element  = Fu( DataType, ConfigType )
     s.crossbar = Crossbar( DataType, RoutingTableType, num_inports, num_outports )
     s.channel  = [ Channel ( DataType ) for _ in range( num_inports ) ]
 
     # Connections
     for i in range( num_inports ):
-      s.recv_data[i] //= s.channel[i].recv
-      s.channel[i].send //= s.crossbar.recv_data[i]
-      s.crossbar.send_out[i] //= s.send_out[i]
+      s.recv_data[i]    //= s.crossbar.recv_data[i]
+      s.crossbar.send_out[i] //= s.channel[i].recv
+      s.channel[i].send //= s.send_out[i]
     s.recv_routing //= s.crossbar.recv_routing
 
   # Line trace

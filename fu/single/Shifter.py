@@ -22,10 +22,10 @@ class Shifter( Fu ):
 
     @s.update
     def comb_logic():
-      s.send_out.msg.predicate = s.recv_in0.msg.predicate and\
+      s.send_out0.msg.predicate = s.recv_in0.msg.predicate and\
                                  s.recv_in1.msg.predicate
       if s.recv_opt.msg.config == OPT_LLS:
-        s.send_out.msg.payload = s.recv_in0.msg.payload << s.recv_in1.msg.payload
+        s.send_out0.msg.payload = s.recv_in0.msg.payload << s.recv_in1.msg.payload
       elif s.recv_opt.msg.config == OPT_LRS:
-        s.send_out.msg.payload = s.recv_in0.msg.payload >> s.recv_in1.msg.payload
+        s.send_out0.msg.payload = s.recv_in0.msg.payload >> s.recv_in1.msg.payload
 

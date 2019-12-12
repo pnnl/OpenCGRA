@@ -1,8 +1,8 @@
 """
 ==========================================================================
-CGRA_test.py
+Tile_test.py
 ==========================================================================
-Test cases for CGRA.
+Test cases for Tile.
 
 Author : Cheng Tan
   Date : Dec 11, 2019
@@ -13,7 +13,8 @@ from pymtl3 import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..CGRA                       import CGRA
+from ..Tile                       import Tile
+from ...fu.single.Alu             import Alu
 from ...lib.opt_type              import *
 from ...lib.messages              import *
 from ...lib.routing_table         import *
@@ -24,8 +25,8 @@ from ...lib.routing_table         import *
 
 class TestHarness( Component ):
 
-  def construct( s, DUT, DataType, RoutingTableType,
-                 num_inports, num_outports,
+  def construct( s, DUT, FunctionUnit, DataType, ConfigType,
+                 RoutingTableType, num_inports, num_outports,
                  src_data, src_routing, sink_out ):
 
     s.num_inports  = num_inports
@@ -37,7 +38,7 @@ class TestHarness( Component ):
     s.sink_out     = [ TestSinkCL( DataType, sink_out[i] )
                      for i in range( num_outports ) ]
 
-    s.dut = DUT( DataType, RoutingTableType )
+    s.dut = DUT( FunctionUnit, DataType, ConfigType, RoutingTableType )
 
     for i in range( num_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
@@ -61,7 +62,7 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
-  test_harness.apply( SimulationPass )
+  test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
   # Run simulation
@@ -85,10 +86,12 @@ def run_sim( test_harness, max_cycles=100 ):
 def test_cgra():
   num_inports  = 5
   num_outports = 5
-  DUT = CGRA
+  DUT = Tile
+  FunctionUnit = Alu
   DataType     = mk_data( 16, 1 )
+  ConfigType   = mk_config( 16 )
   RoutingTable = mk_routing_table( num_inports, num_outports )
-  src_routing  = [ RoutingTable( [0, 1, 2, 3, 4] ),
+  src_routing  = [ RoutingTable( [4, 3, 2, 1, 0] ),
                    RoutingTable( [1, 0, 2, 3, 1] ),
                    RoutingTable( [4, 3, 2, 1, 0] ) ]
   src_data     = [ [DataType(1, 1), DataType( 1, 1)],
@@ -96,12 +99,13 @@ def test_cgra():
                    [DataType(3, 1), DataType( 3, 1)],
                    [DataType(4, 1), DataType( 4, 1)],
                    [DataType(5, 1), DataType( 5, 1)] ]
-  sink_out     = [ [DataType(2, 1), DataType( 5, 1)],
-                   [DataType(1, 1), DataType( 4, 1)],
+  sink_out     = [ [DataType(5, 1), DataType( 2, 1)],
+                   [DataType(4, 1), DataType( 1, 1)],
                    [DataType(3, 1), DataType( 3, 1)],
-                   [DataType(4, 1), DataType( 2, 1)],
-                   [DataType(2, 1), DataType( 1, 1)] ]
-  th = TestHarness( DUT, DataType, RoutingTable, num_outports, num_inports,
+                   [DataType(2, 1), DataType( 4, 1)],
+                   [DataType(1, 1), DataType( 2, 1)] ]
+  th = TestHarness( DUT, FunctionUnit, DataType, ConfigType, 
+                    RoutingTable, num_outports, num_inports,
                     src_data, src_routing, sink_out )
   run_sim( th )
 

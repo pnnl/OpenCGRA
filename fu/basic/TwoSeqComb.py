@@ -40,8 +40,8 @@ class TwoSeqComb( Component ):
     s.Fu0.recv_opt.msg //= s.recv_opt0.msg
     s.Fu1.recv_opt.msg //= s.recv_opt1.msg
 
-    s.Fu0.send_out.msg //= s.Fu1.recv_in0.msg
-    s.Fu1.send_out.msg //= s.send_out.msg
+    s.Fu0.send_out0.msg //= s.Fu1.recv_in0.msg
+    s.Fu1.send_out0.msg //= s.send_out.msg
 
     @s.update
     def update_signal():

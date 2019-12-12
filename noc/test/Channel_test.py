@@ -45,7 +45,7 @@ def run_sim( test_harness, max_cycles=100 ):
 
   # Create a simulator
 
-  test_harness.apply( DynamicSim )
+  test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
 

@@ -37,10 +37,10 @@ class TestHarness( Component ):
 
     s.dut = FunctionUnit( DataType, ConfigType )
 
-    connect( s.src_in0.send, s.dut.recv_in0  )
-    connect( s.src_in1.send, s.dut.recv_in1  )
-    connect( s.src_opt.send, s.dut.recv_opt  )
-    connect( s.dut.send_out, s.sink_out.recv )
+    connect( s.src_in0.send,  s.dut.recv_in0  )
+    connect( s.src_in1.send,  s.dut.recv_in1  )
+    connect( s.src_opt.send,  s.dut.recv_opt  )
+    connect( s.dut.send_out0, s.sink_out.recv )
 
   def done( s ):
     return s.src_in0.done() and s.src_in1.done() and\
@@ -51,7 +51,7 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
-  test_harness.apply( SimulationPass )
+  test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
   # Run simulation
