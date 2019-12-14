@@ -13,7 +13,7 @@ from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
 
-class TwoPrlComb( Component ):
+class TwoPrlCombo( Component ):
 
   def construct( s, DataType, ConfigType, Fu0, Fu1 ):
 

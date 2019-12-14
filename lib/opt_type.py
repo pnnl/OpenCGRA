@@ -26,6 +26,8 @@ OPT_LD      = Bits16( 10 )
 OPT_STR     = Bits16( 11 )
 OPT_EQ      = Bits16( 12 )
 OPT_LE      = Bits16( 13 )
+OPT_BRH     = Bits16( 14 )
+OPT_PHI     = Bits16( 15 )
 
 OPT_SYMBOL_DICT = {
   OPT_NAH: " #",
@@ -41,5 +43,7 @@ OPT_SYMBOL_DICT = {
   OPT_LD : "ld",
   OPT_STR: "st",
   OPT_EQ : "?=",
-  OPT_LE : "?<"
+  OPT_LE : "?<",
+  OPT_BRH: "br",
+  OPT_PHI: "ph"
 }

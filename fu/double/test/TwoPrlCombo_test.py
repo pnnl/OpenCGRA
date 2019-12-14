@@ -1,8 +1,8 @@
 """
 ==========================================================================
-TwoPrlComb_test.py
+TwoPrlCombo_test.py
 ==========================================================================
-Test cases for two parallelly combined functional unit.
+Test cases for two parallelly integrated functional unit.
 
 Author : Cheng Tan
   Date : November 29, 2019

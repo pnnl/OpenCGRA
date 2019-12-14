@@ -72,10 +72,10 @@ def test_Branch():
   FU = Branch
   DataType   = mk_data( 16, 1 )
   ConfigType = mk_config( 16 )
-  src_data   = [ DataType(1, 1), DataType(3, 1), DataType(13, 1) ]
-  src_comp   = [ Bits1(0),       Bits1(1),       Bits1(0)        ]
-  sink_if    = [ DataType(1, 0), DataType(3, 1), DataType(13, 0) ]
-  sink_else  = [ DataType(1, 1), DataType(3, 0), DataType(13, 1) ]
+  src_data   = [ DataType(1, 1), DataType(3, 1), DataType(9, 1) ]
+  src_comp   = [ Bits1(0),       Bits1(1),       Bits1(0)       ]
+  sink_if    = [ DataType(1, 0), DataType(3, 1), DataType(9, 0) ]
+  sink_else  = [ DataType(1, 1), DataType(3, 0), DataType(9, 1) ]
   th = TestHarness( FU, DataType, ConfigType, src_data, src_comp,
                     sink_if, sink_else )
 

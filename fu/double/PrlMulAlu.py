@@ -10,13 +10,13 @@ Author : Cheng Tan
 """
 
 from pymtl3 import *
-from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ...lib.opt_type    import *
-from ..basic.TwoPrlComb import TwoPrlComb
-from ..single.Mul       import Mul
-from ..single.Alu       import Alu
+from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
+from ...lib.opt_type     import *
+from ..basic.TwoPrlCombo import TwoPrlCombo
+from ..single.Mul        import Mul
+from ..single.Alu        import Alu
 
-class PrlMulAlu( TwoPrlComb ):
+class PrlMulAlu( TwoPrlCombo ):
 
   def construct( s, DataType, ConfigType ):
 

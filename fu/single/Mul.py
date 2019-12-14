@@ -25,4 +25,5 @@ class Mul( Fu ):
                                  s.recv_in1.msg.predicate
       if s.recv_opt.msg.config == OPT_MUL:
         s.send_out0.msg.payload = s.recv_in0.msg.payload * s.recv_in1.msg.payload
+      s.send_out1.msg = s.send_out0.msg
 

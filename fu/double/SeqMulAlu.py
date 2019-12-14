@@ -10,13 +10,13 @@ Author : Cheng Tan
 """
 
 from pymtl3 import *
-from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ...lib.opt_type    import *
-from ..basic.TwoSeqComb import TwoSeqComb
-from ..single.Mul       import Mul
-from ..single.Alu       import Alu
+from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
+from ...lib.opt_type     import *
+from ..basic.TwoSeqCombo import TwoSeqCombo
+from ..single.Mul        import Mul
+from ..single.Alu        import Alu
 
-class SeqMulAlu( TwoSeqComb ):
+class SeqMulAlu( TwoSeqCombo ):
 
   def construct( s, DataType, ConfigType ):
 

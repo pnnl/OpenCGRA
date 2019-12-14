@@ -1,8 +1,8 @@
 """
 ==========================================================================
-TwoSeqComb_test.py
+TwoSeqCombo_test.py
 ==========================================================================
-Test cases for two sequentially combined functional unit.
+Test cases for two sequentially integrated functional unit.
 
 Author : Cheng Tan
   Date : November 27, 2019
