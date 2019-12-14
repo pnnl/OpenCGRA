@@ -12,12 +12,12 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
-from ..basic.ThreeComb  import ThreeComb
+from ..basic.ThreeCombo import ThreeCombo
 from ..single.Mul       import Mul
 from ..single.Alu       import Alu
 from ..single.Shifter   import Shifter
 
-class ThreeMulAluShifter( ThreeComb ):
+class ThreeMulAluShifter( ThreeCombo ):
 
   def construct( s, DataType, ConfigType ):
 

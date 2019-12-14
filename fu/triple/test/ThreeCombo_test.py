@@ -1,6 +1,6 @@
 """
 ==========================================================================
-ThreeComb_test.py
+ThreeCombo_test.py
 ==========================================================================
 Test cases for two parallelly combined functional unit followed by single
 functional unit.
@@ -47,7 +47,7 @@ class TestHarness( Component ):
     connect( s.src_opt0.send, s.dut.recv_opt0 )
     connect( s.src_opt1.send, s.dut.recv_opt1 )
     connect( s.src_opt2.send, s.dut.recv_opt2 )
-    connect( s.dut.send_out,  s.sink_out.recv )
+    connect( s.dut.send_out0, s.sink_out.recv )
 
   def done( s ):
     return s.src_in0.done()  and s.src_in1.done()  and\
