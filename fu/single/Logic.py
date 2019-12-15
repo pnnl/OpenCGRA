@@ -24,12 +24,12 @@ class Logic( Fu ):
     def comb_logic():
       s.send_out0.msg.predicate = s.recv_in0.msg.predicate and\
                                  s.recv_in1.msg.predicate
-      if s.recv_opt.msg.config == OPT_OR:
+      if s.recv_opt.msg.ctrl == OPT_OR:
         s.send_out0.msg.payload = s.recv_in0.msg.payload | s.recv_in1.msg.payload
-      elif s.recv_opt.msg.config == OPT_AND:
+      elif s.recv_opt.msg.ctrl == OPT_AND:
         s.send_out0.msg.payload = s.recv_in0.msg.payload & s.recv_in1.msg.payload
-      elif s.recv_opt.msg.config == OPT_NOT:
+      elif s.recv_opt.msg.ctrl == OPT_NOT:
         s.send_out0.msg.payload = ~ s.recv_in0.msg.payload
-      elif s.recv_opt.msg.config == OPT_XOR:
+      elif s.recv_opt.msg.ctrl == OPT_XOR:
         s.send_out0.msg.payload = s.recv_in0.msg.payload ^ s.recv_in1.msg.payload
 

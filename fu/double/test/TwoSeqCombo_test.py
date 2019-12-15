@@ -24,29 +24,27 @@ from ....lib.messages  import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
+  def construct( s, FunctionUnit, DataType, CtrlType,
                  src0_msgs, src1_msgs, src2_msgs,
-                 config_msgs0, config_msgs1, sink_msgs ):
+                 ctrl_msgs, sink_msgs ):
 
-    s.src_in0  = TestSrcRTL( DataType, src0_msgs      )
-    s.src_in1  = TestSrcRTL( DataType, src1_msgs      )
-    s.src_in2  = TestSrcRTL( DataType, src2_msgs      )
-    s.src_opt0 = TestSrcRTL( ConfigType, config_msgs0 )
-    s.src_opt1 = TestSrcRTL( ConfigType, config_msgs1 )
-    s.sink_out = TestSinkCL( DataType, sink_msgs      )
+    s.src_in0  = TestSrcRTL( DataType, src0_msgs )
+    s.src_in1  = TestSrcRTL( DataType, src1_msgs )
+    s.src_in2  = TestSrcRTL( DataType, src2_msgs )
+    s.src_opt  = TestSrcRTL( CtrlType, ctrl_msgs )
+    s.sink_out = TestSinkCL( DataType, sink_msgs )
 
-    s.dut = FunctionUnit( DataType, ConfigType )
+    s.dut = FunctionUnit( DataType, CtrlType )
 
     connect( s.src_in0.send,  s.dut.recv_in0  )
     connect( s.src_in1.send,  s.dut.recv_in1  )
     connect( s.src_in2.send,  s.dut.recv_in2  )
-    connect( s.src_opt0.send, s.dut.recv_opt0 )
-    connect( s.src_opt1.send, s.dut.recv_opt1 )
+    connect( s.src_opt.send,  s.dut.recv_opt  )
     connect( s.dut.send_out0, s.sink_out.recv )
 
   def done( s ):
-    return s.src_in0.done()  and s.src_in1.done()  and s.src_in2.done() and\
-           s.src_opt0.done() and s.src_opt1.done() and s.sink_out.done()
+    return s.src_in0.done() and s.src_in1.done()  and s.src_in2.done() and\
+           s.src_opt.done() and s.sink_out.done()
 
   def line_trace( s ):
     return s.dut.line_trace()
@@ -76,29 +74,31 @@ def run_sim( test_harness, max_cycles=1000 ):
 
 def test_mul_alu():
   FU = SeqMulAlu
-  DataType   = mk_data( 16, 1 )
-  ConfigType = mk_config( 16 )
-  src_in0    = [ DataType(1, 1), DataType(2, 1), DataType(4, 1) ]
-  src_in1    = [ DataType(2, 1), DataType(3, 1), DataType(3, 1) ]
-  src_in2    = [ DataType(1, 1), DataType(3, 1), DataType(3, 1) ]
-  sink_out   = [ DataType(3, 1), DataType(9, 1), DataType(9, 1) ]
-  src_opt0   = [ ConfigType(OPT_MUL), ConfigType(OPT_MUL), ConfigType(OPT_MUL) ]
-  src_opt1   = [ ConfigType(OPT_ADD), ConfigType(OPT_ADD), ConfigType(OPT_SUB) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_in2,
-                    src_opt0, src_opt1, sink_out )
+  DataType = mk_data( 16, 1 )
+  CtrlType = mk_ctrl()
+  src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(4, 1) ]
+  src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(3, 1) ]
+  src_in2  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1) ]
+  sink_out = [ DataType(3, 1), DataType(9, 1), DataType(9, 1) ]
+  src_opt  = [ CtrlType( OPT_MUL_ADD),
+               CtrlType( OPT_MUL_ADD),
+               CtrlType( OPT_MUL_SUB) ]
+  th = TestHarness( FU, DataType, CtrlType, src_in0, src_in1, src_in2,
+                    src_opt, sink_out )
   run_sim( th )
 
 def test_mul_shifter():
   FU = SeqMulShifter
-  DataType   = mk_data( 16, 1 )
-  ConfigType = mk_config( 16 )
+  DataType = mk_data( 16, 1 )
+  CtrlType = mk_ctrl()
   src_in0  = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1),  DataType(3, 1) ]
   src_in2  = [ DataType(1, 1), DataType(2, 1),  DataType(1, 1) ]
   sink_out = [ DataType(4, 1), DataType(24, 1), DataType(6, 1) ]
-  src_opt0 = [ ConfigType(OPT_MUL), ConfigType(OPT_MUL), ConfigType(OPT_MUL) ]
-  src_opt1 = [ ConfigType(OPT_LLS), ConfigType(OPT_LLS), ConfigType(OPT_LRS) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_in2,
-                    src_opt0, src_opt1, sink_out )
+  src_opt  = [ CtrlType( OPT_MUL_LLS),
+               CtrlType( OPT_MUL_LLS),
+               CtrlType( OPT_MUL_LRS) ]
+  th = TestHarness( FU, DataType, CtrlType, src_in0, src_in1, src_in2,
+                    src_opt, sink_out )
   run_sim( th )
 

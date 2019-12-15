@@ -23,21 +23,24 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, src0_msgs, src1_msgs,
-                 sink_msgs ):
+  def construct( s, FunctionUnit, DataType, CtrlType,
+                 src0_msgs, src1_msgs, src_opt, sink_msgs ):
 
-    s.src_in0   = TestSrcRTL( DataType, src0_msgs   )
-    s.src_in1   = TestSrcRTL( DataType, src1_msgs   )
-    s.sink_out  = TestSinkCL( DataType, sink_msgs   )
+    s.src_in0   = TestSrcRTL( DataType, src0_msgs )
+    s.src_in1   = TestSrcRTL( DataType, src1_msgs )
+    s.src_opt   = TestSrcRTL( CtrlType, src_opt   )
+    s.sink_out  = TestSinkCL( DataType, sink_msgs )
 
-    s.dut = FunctionUnit( DataType )
+    s.dut = FunctionUnit( DataType, CtrlType )
 
-    connect( s.src_in0.send,   s.dut.recv_in0   )
-    connect( s.src_in1.send,   s.dut.recv_in1   )
-    connect( s.dut.send_out,   s.sink_out.recv  )
+    connect( s.src_in0.send,  s.dut.recv_in0  )
+    connect( s.src_in1.send,  s.dut.recv_in1  )
+    connect( s.src_opt.send,  s.dut.recv_opt  )
+    connect( s.dut.send_out0, s.sink_out.recv )
 
   def done( s ):
-    return s.src_in0.done() and s.src_in1.done() and s.sink_out.done()
+    return s.src_in0.done() and s.src_in1.done() and\
+           s.src_opt.done() and s.sink_out.done()
 
   def line_trace( s ):
     return s.dut.line_trace()
@@ -67,9 +70,13 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_Phi():
   FU = Phi
-  DataType  = mk_data( 16, 1 )
-  src_in0   = [ DataType(1, 0), DataType(3, 1), DataType(3, 0) ]
-  src_in1   = [ DataType(0, 0), DataType(5, 0), DataType(2, 1) ]
-  sink_out  = [ DataType(0, 0), DataType(3, 1), DataType(2, 1) ]
-  th = TestHarness( FU, DataType, src_in0, src_in1, sink_out )
+  DataType = mk_data( 16, 1 )
+  CtrlType = mk_ctrl()
+  src_in0  = [ DataType(1, 0), DataType(3, 1), DataType(3, 0) ]
+  src_in1  = [ DataType(0, 0), DataType(5, 0), DataType(2, 1) ]
+  src_opt  = [ CtrlType( OPT_PHI ),
+               CtrlType( OPT_PHI ),
+               CtrlType( OPT_PHI ) ]
+  sink_out = [ DataType(0, 0), DataType(3, 1), DataType(2, 1) ]
+  th = TestHarness( FU, DataType, CtrlType, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )

@@ -23,23 +23,25 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
-                 src_data, src_comp, sink_if, sink_else ):
+  def construct( s, FunctionUnit, DataType, CtrlType,
+                 src_data, src_comp, src_opt, sink_if, sink_else ):
 
-    s.src_data       = TestSrcRTL( DataType, src_data  )
-    s.src_comp       = TestSrcRTL( Bits1,    src_comp  )
-    s.sink_if        = TestSinkCL( DataType, sink_if   )
-    s.sink_else      = TestSinkCL( DataType, sink_else )
+    s.src_data  = TestSrcRTL( DataType, src_data  )
+    s.src_comp  = TestSrcRTL( DataType, src_comp  )
+    s.src_opt   = TestSrcRTL( CtrlType, src_opt   )
+    s.sink_if   = TestSinkCL( DataType, sink_if   )
+    s.sink_else = TestSinkCL( DataType, sink_else )
 
-    s.dut = FunctionUnit( DataType, ConfigType )
+    s.dut = FunctionUnit( DataType, CtrlType )
 
-    connect( s.src_data.send,      s.dut.recv_data       )
-    connect( s.src_comp.send,      s.dut.recv_comp       )
-    connect( s.dut.send_if,        s.sink_if.recv        )
-    connect( s.dut.send_else,      s.sink_else.recv      )
+    connect( s.src_data.send, s.dut.recv_in0   )
+    connect( s.src_comp.send, s.dut.recv_in1   )
+    connect( s.src_opt.send,  s.dut.recv_opt   )
+    connect( s.dut.send_out0, s.sink_if.recv   )
+    connect( s.dut.send_out1, s.sink_else.recv )
 
   def done( s ):
-    return s.src_data.done() and s.src_comp.done()  and\
+    return s.src_data.done() and s.src_comp.done()  and s.src_opt.done() and\
            s.sink_if.done()  and s.sink_else.done() 
 
   def line_trace( s ):
@@ -70,13 +72,16 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_Branch():
   FU = Branch
-  DataType   = mk_data( 16, 1 )
-  ConfigType = mk_config( 16 )
-  src_data   = [ DataType(1, 1), DataType(3, 1), DataType(9, 1) ]
-  src_comp   = [ Bits1(0),       Bits1(1),       Bits1(0)       ]
-  sink_if    = [ DataType(1, 0), DataType(3, 1), DataType(9, 0) ]
-  sink_else  = [ DataType(1, 1), DataType(3, 0), DataType(9, 1) ]
-  th = TestHarness( FU, DataType, ConfigType, src_data, src_comp,
+  DataType  = mk_data( 16, 1 )
+  CtrlType  = mk_ctrl()
+  src_data  = [ DataType(7, 1), DataType(3, 1), DataType(9, 1) ]
+  src_comp  = [ DataType(0, 1), DataType(1, 1), DataType(0, 1) ]
+  src_opt   = [ CtrlType( OPT_BRH ),
+                CtrlType( OPT_BRH ),
+                CtrlType( OPT_BRH ) ]
+  sink_if   = [ DataType(7, 1), DataType(3, 0), DataType(9, 1) ]
+  sink_else = [ DataType(7, 0), DataType(3, 1), DataType(9, 0) ]
+  th = TestHarness( FU, DataType, CtrlType, src_data, src_comp, src_opt,
                     sink_if, sink_else )
 
   run_sim( th )

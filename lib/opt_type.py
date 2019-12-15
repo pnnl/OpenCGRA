@@ -12,38 +12,53 @@
 
 from pymtl3 import *
 
-OPT_NAH     = Bits16( 0  )
-OPT_ADD     = Bits16( 1  )
-OPT_SUB     = Bits16( 2  )
-OPT_LLS     = Bits16( 3  )
-OPT_LRS     = Bits16( 4  )
-OPT_MUL     = Bits16( 5  )
-OPT_OR      = Bits16( 6  )
-OPT_XOR     = Bits16( 7  )
-OPT_AND     = Bits16( 8  )
-OPT_NOT     = Bits16( 9  )
-OPT_LD      = Bits16( 10 )
-OPT_STR     = Bits16( 11 )
-OPT_EQ      = Bits16( 12 )
-OPT_LE      = Bits16( 13 )
-OPT_BRH     = Bits16( 14 )
-OPT_PHI     = Bits16( 15 )
+OPT_NAH = Bits5( 0  )
+OPT_ADD = Bits5( 1  )
+OPT_SUB = Bits5( 2  )
+OPT_LLS = Bits5( 3  )
+OPT_LRS = Bits5( 4  )
+OPT_MUL = Bits5( 5  )
+OPT_OR  = Bits5( 6  )
+OPT_XOR = Bits5( 7  )
+OPT_AND = Bits5( 8  )
+OPT_NOT = Bits5( 9  )
+OPT_LD  = Bits5( 10 )
+OPT_STR = Bits5( 11 )
+OPT_EQ  = Bits5( 12 )
+OPT_LE  = Bits5( 13 )
+OPT_BRH = Bits5( 14 )
+OPT_PHI = Bits5( 15 )
+OPT_MUL_ADD = Bits5( 16 )
+OPT_MUL_SUB = Bits5( 17 )
+OPT_MUL_LLS = Bits5( 18 )
+OPT_MUL_LRS = Bits5( 19 )
+OPT_MUL_ADD_LLS = Bits16( 16 )
+OPT_MUL_SUB_LLS = Bits16( 17 )
+OPT_MUL_SUB_LRS = Bits16( 18 )
 
 OPT_SYMBOL_DICT = {
-  OPT_NAH: " #",
-  OPT_ADD: " +",
-  OPT_SUB: " -",
-  OPT_LLS: "<<",
-  OPT_LRS: ">>",
-  OPT_MUL: " x",
-  OPT_OR : " |",
-  OPT_XOR: " ^",
-  OPT_AND: " &",
-  OPT_NOT: " ~",
-  OPT_LD : "ld",
-  OPT_STR: "st",
-  OPT_EQ : "?=",
-  OPT_LE : "?<",
-  OPT_BRH: "br",
-  OPT_PHI: "ph"
+  OPT_NAH : " #",
+  OPT_ADD : " +",
+  OPT_SUB : " -",
+  OPT_LLS : "<<",
+  OPT_LRS : ">>",
+  OPT_MUL : " x",
+  OPT_OR  : " |",
+  OPT_XOR : " ^",
+  OPT_AND : " &",
+  OPT_NOT : " ~",
+  OPT_LD  : "ld",
+  OPT_STR : "st",
+  OPT_EQ  : "?=",
+  OPT_LE  : "?<",
+  OPT_BRH : "br",
+  OPT_PHI : "ph",
+  OPT_MUL_ADD : "x +",
+  OPT_MUL_SUB : "x -",
+  OPT_MUL_LLS : "x <<",
+  OPT_MUL_LRS : "x >>",
+  OPT_MUL_ADD_LLS : "x + <<",
+  OPT_MUL_SUB_LLS : "x + <<",
+  OPT_MUL_SUB_LRS : "x - >>"
+
 }

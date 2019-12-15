@@ -14,7 +14,7 @@ from ..noc.Channel      import Channel
 
 class Tile( Component ):
 
-  def construct( s, Fu, DataType, ConfigType, RoutingTableType ):
+  def construct( s, Fu, DataType, CtrlType, RoutingTableType ):
 
     # Constant
 
@@ -26,14 +26,14 @@ class Tile( Component ):
 
     # Interfaces
 
-    s.recv_opt     = RecvIfcRTL( ConfigType )
+    s.recv_opt     = RecvIfcRTL( CtrlType )
     s.recv_routing = RecvIfcRTL( RoutingTableType )
     s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
     s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
 
     # Components
 
-    s.element  = Fu( DataType, ConfigType )
+    s.element  = Fu( DataType, CtrlType )
     s.crossbar = Crossbar( DataType, RoutingTableType,
                            num_xbar_inports, num_xbar_outports )
     s.channel  = [ Channel ( DataType ) for _ in range( num_xbar_outports ) ]

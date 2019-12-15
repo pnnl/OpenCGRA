@@ -12,38 +12,27 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
+from ..basic.Fu         import Fu
 
-class Comp( Component ):
+class Comp( Fu ):
 
   def construct( s, DataType, ConfigType ):
 
-    # Interface
-
-    s.recv_data = RecvIfcRTL( DataType   )
-    s.recv_ref  = RecvIfcRTL( DataType   )
-    s.recv_opt  = RecvIfcRTL( ConfigType )
-    s.send_pred = SendIfcRTL( Bits1      )
-
-    @s.update
-    def update_signal():
-      s.recv_data.rdy = s.send_pred.rdy
-      s.recv_ref.rdy  = s.send_pred.rdy
-      s.recv_opt.rdy  = s.send_pred.rdy
-      s.send_pred.en  = s.recv_data.en and s.recv_ref.en
+    super( Comp, s ).construct( DataType, ConfigType )
+    # data:      s.recv_in0
+    # reference: s.recv_in1
 
     @s.update
     def comb_logic():
-      if s.recv_opt.msg.config == OPT_EQ:
-        if s.recv_data.msg.payload == s.recv_ref.msg.payload:
-          s.send_pred.msg = Bits1( 1 )
+      predicate = s.recv_in0.msg.predicate & s.recv_in1.msg.predicate
+      if s.recv_opt.msg.ctrl == OPT_EQ:
+        if s.recv_in0.msg.payload == s.recv_in1.msg.payload:
+          s.send_out0.msg = DataType( 1, predicate )
         else:
-          s.send_pred.msg = Bits1( 0 )
-      elif s.recv_opt.msg.config == OPT_LE:
-        if s.recv_data.msg.payload < s.recv_ref.msg.payload:
-          s.send_pred.msg = Bits1( 1 )
+          s.send_out0.msg = DataType( 0, predicate )
+      elif s.recv_opt.msg.ctrl == OPT_LE:
+        if s.recv_in0.msg.payload < s.recv_in1.msg.payload:
+          s.send_out0.msg = DataType( 1, predicate )
         else:
-          s.send_pred.msg = Bits1( 0 )
-
-  def line_trace( s ):
-    return f'[{s.recv_data.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.config]} [{s.recv_ref.msg}] = {s.send_pred.msg}'
+          s.send_out0.msg = DataType( 0, predicate )
 

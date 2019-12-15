@@ -24,7 +24,7 @@ def mk_data( payload_nbits=16, predicate_nbits=1, prefix="CGRAData" ):
   new_name = f"{prefix}_{payload_nbits}_{predicate_nbits}"
 
   def str_func( s ):
-    return f"{int(s.payload)}.{s.predicate}"
+    return f"{s.payload}.{s.predicate}"
 
   return mk_bitstruct( new_name, {
       'payload'  : PayloadType,
@@ -37,17 +37,18 @@ def mk_data( payload_nbits=16, predicate_nbits=1, prefix="CGRAData" ):
 # Generic config message
 #=========================================================================
 
-def mk_config( config_nbits=16, prefix="CGRAConfig" ):
+def mk_ctrl( prefix="CGRAConfig" ):
 
-  ConfigType   = mk_bits( config_nbits   )
+  ctrl_nbits = 5
+  CtrlType = mk_bits( ctrl_nbits )
 
-  new_name = f"{prefix}_{config_nbits}"
+  new_name = f"{prefix}_{ctrl_nbits}"
 
   def str_func( s ):
-    return f"{s.config}"
+    return f"{s.ctrl}"
 
   return mk_bitstruct( new_name, {
-      'config'  : ConfigType,
+      'ctrl'   : CtrlType
     },
     namespace = { '__str__': str_func }
   )

@@ -23,20 +23,20 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
+  def construct( s, FunctionUnit, DataType, CtrlType,
                  src_data, src_ref, src_opt, sink_msgs ):
 
     s.src_data = TestSrcRTL( DataType, src_data  )
     s.src_ref  = TestSrcRTL( DataType, src_ref   )
-    s.src_opt  = TestSrcRTL( ConfigType, src_opt )
-    s.sink_out = TestSinkCL( Bits1,    sink_msgs )
+    s.src_opt  = TestSrcRTL( CtrlType, src_opt   )
+    s.sink_out = TestSinkCL( DataType, sink_msgs )
 
-    s.dut = FunctionUnit( DataType, ConfigType )
+    s.dut = FunctionUnit( DataType, CtrlType )
 
-    connect( s.src_data.send, s.dut.recv_data )
-    connect( s.src_ref.send,  s.dut.recv_ref  )
+    connect( s.src_data.send, s.dut.recv_in0  )
+    connect( s.src_ref.send,  s.dut.recv_in1  )
     connect( s.src_opt.send,  s.dut.recv_opt  )
-    connect( s.dut.send_pred, s.sink_out.recv )
+    connect( s.dut.send_out0, s.sink_out.recv )
 
   def done( s ):
     return s.src_data.done() and s.src_ref.done() and\
@@ -70,11 +70,14 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_Comp():
   FU = Comp
-  DataType  = mk_data( 16, 1 )
-  ConfigType  = mk_config( 16 )
-  src_data  = [ DataType(9, 1),     DataType(3, 1),     DataType(3, 1)     ]
-  src_ref   = [ DataType(9, 1),     DataType(5, 1),     DataType(2, 1)     ]
-  src_opt   = [ ConfigType(OPT_EQ), ConfigType(OPT_LE), ConfigType(OPT_EQ) ]
-  sink_out  = [ Bits1(1),           Bits1(1),           Bits1(0)           ]
-  th = TestHarness( FU, DataType, ConfigType, src_data, src_ref, src_opt, sink_out )
+  DataType   = mk_data( 16, 1 )
+  CtrlType = mk_ctrl()
+  src_data   = [ DataType(9, 1), DataType(3, 1), DataType(3, 1) ]
+  src_ref    = [ DataType(9, 1), DataType(5, 1), DataType(2, 1) ]
+  src_opt    = [ CtrlType( OPT_EQ ),
+                 CtrlType( OPT_LE ),
+                 CtrlType( OPT_EQ ) ]
+  sink_out   = [ DataType(1, 1), DataType(1, 1), DataType(0, 1) ]
+  th = TestHarness( FU, DataType, CtrlType, src_data, src_ref,
+                    src_opt, sink_out )
   run_sim( th )

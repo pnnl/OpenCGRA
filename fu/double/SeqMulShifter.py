@@ -18,7 +18,17 @@ from ..single.Shifter    import Shifter
 
 class SeqMulShifter( TwoSeqCombo ):
 
-  def construct( s, DataType, ConfigType ):
+  def construct( s, DataType, CtrlType ):
 
-    super( SeqMulShifter, s ).construct( DataType, ConfigType, Mul, Shifter )
+    super( SeqMulShifter, s ).construct( DataType, CtrlType, Mul, Shifter )
 
+
+    @s.update
+    def update_opt():
+      if s.recv_opt.msg.ctrl == OPT_MUL_LLS:
+        s.Fu0.recv_opt.msg = CtrlType( OPT_MUL )
+        s.Fu1.recv_opt.msg = CtrlType( OPT_LLS )
+      elif s.recv_opt.msg.ctrl == OPT_MUL_LRS:
+        s.Fu0.recv_opt.msg = CtrlType( OPT_MUL )
+        s.Fu1.recv_opt.msg = CtrlType( OPT_LRS )
+      # TODO: need to handle the other cases

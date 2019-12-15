@@ -23,36 +23,32 @@ from ....lib.messages  import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
+  def construct( s, FunctionUnit, DataType, CtrlType,
                  src0_msgs, src1_msgs, src2_msgs, src3_msgs,
-                 config_msgs0, config_msgs1,
-                 sink_msgs0, sink_msgs1 ):
+                 ctrl_msgs, sink_msgs0, sink_msgs1 ):
 
-    s.src_in0   = TestSrcRTL( DataType, src0_msgs    )
-    s.src_in1   = TestSrcRTL( DataType, src1_msgs    )
-    s.src_in2   = TestSrcRTL( DataType, src2_msgs    )
-    s.src_in3   = TestSrcRTL( DataType, src3_msgs    )
-    s.src_opt0  = TestSrcRTL( ConfigType, config_msgs0 )
-    s.src_opt1  = TestSrcRTL( ConfigType, config_msgs1 )
-    s.sink_out0 = TestSinkCL( DataType, sink_msgs0   )
-    s.sink_out1 = TestSinkCL( DataType, sink_msgs1   )
+    s.src_in0   = TestSrcRTL( DataType, src0_msgs  )
+    s.src_in1   = TestSrcRTL( DataType, src1_msgs  )
+    s.src_in2   = TestSrcRTL( DataType, src2_msgs  )
+    s.src_in3   = TestSrcRTL( DataType, src3_msgs  )
+    s.src_opt   = TestSrcRTL( CtrlType, ctrl_msgs  )
+    s.sink_out0 = TestSinkCL( DataType, sink_msgs0 )
+    s.sink_out1 = TestSinkCL( DataType, sink_msgs1 )
 
-    s.dut = FunctionUnit( DataType, ConfigType )
+    s.dut = FunctionUnit( DataType, CtrlType )
 
-    connect( s.src_in0.send,  s.dut.recv_in0  )
-    connect( s.src_in1.send,  s.dut.recv_in1  )
-    connect( s.src_in2.send,  s.dut.recv_in2  )
-    connect( s.src_in3.send,  s.dut.recv_in3  )
-    connect( s.src_opt0.send, s.dut.recv_opt0 )
-    connect( s.src_opt1.send, s.dut.recv_opt1 )
+    connect( s.src_in0.send,  s.dut.recv_in0   )
+    connect( s.src_in1.send,  s.dut.recv_in1   )
+    connect( s.src_in2.send,  s.dut.recv_in2   )
+    connect( s.src_in3.send,  s.dut.recv_in3   )
+    connect( s.src_opt.send,  s.dut.recv_opt   )
     connect( s.dut.send_out0, s.sink_out0.recv )
     connect( s.dut.send_out1, s.sink_out1.recv )
 
   def done( s ):
-    return s.src_in0.done()   and s.src_in1.done()  and\
-           s.src_in2.done()   and s.src_in3.done()  and\
-           s.src_opt0.done()  and s.src_opt1.done() and\
-           s.sink_out0.done() and s.sink_out1.done()
+    return s.src_in0.done() and s.src_in1.done()   and\
+           s.src_in2.done() and s.src_in3.done()   and\
+           s.src_opt.done() and s.sink_out0.done() and s.sink_out1.done()
 
   def line_trace( s ):
     return s.dut.line_trace()
@@ -82,17 +78,18 @@ def run_sim( test_harness, max_cycles=1000 ):
 
 def test_mul_alu():
   FU = PrlMulAlu
-  DataType   = mk_data( 16, 1 )
-  ConfigType = mk_config( 16 )
-  src_in0    = [ DataType(1, 1), DataType(2, 1), DataType(4, 1)  ]
-  src_in1    = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]
-  src_in2    = [ DataType(1, 1), DataType(3, 1), DataType(3, 1)  ]
-  src_in3    = [ DataType(1, 1), DataType(3, 1), DataType(3, 1)  ]
-  sink_out0  = [ DataType(2, 1), DataType(6, 1), DataType(12, 1) ]
-  sink_out1  = [ DataType(2, 1), DataType(6, 1), DataType(0, 1)  ]
-  src_opt0   = [ ConfigType(OPT_MUL), ConfigType(OPT_MUL), ConfigType(OPT_MUL) ]
-  src_opt1   = [ ConfigType(OPT_ADD), ConfigType(OPT_ADD), ConfigType(OPT_SUB) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_in2, src_in3,
-                    src_opt0, src_opt1, sink_out0, sink_out1 )
+  DataType  = mk_data( 16, 1 )
+  CtrlType  = mk_ctrl()
+  src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(4, 1)  ]
+  src_in1   = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]
+  src_in2   = [ DataType(1, 1), DataType(3, 1), DataType(3, 1)  ]
+  src_in3   = [ DataType(1, 1), DataType(3, 1), DataType(3, 1)  ]
+  sink_out0 = [ DataType(2, 1), DataType(6, 1), DataType(12, 1) ]
+  sink_out1 = [ DataType(2, 1), DataType(6, 1), DataType(0, 1)  ]
+  src_opt   = [ CtrlType( OPT_MUL_ADD ),
+                 CtrlType( OPT_MUL_ADD ),
+                 CtrlType( OPT_MUL_SUB ) ]
+  th = TestHarness( FU, DataType, CtrlType, src_in0, src_in1, src_in2, src_in3,
+                    src_opt, sink_out0, sink_out1 )
   run_sim( th )
 

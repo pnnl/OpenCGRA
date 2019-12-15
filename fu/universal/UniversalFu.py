@@ -18,17 +18,17 @@ from ..single.Alu        import Alu
 
 class UniversalFu( Component ):
 
-  def construct( s, DataType, ConfigType ):
+  def construct( s, DataType, CtrlType ):
 
     # Interface
 
-    s.recv_in0  = RecvIfcRTL( DataType   )
-    s.recv_in1  = RecvIfcRTL( DataType   )
-    s.recv_in2  = RecvIfcRTL( DataType   )
-    s.recv_in3  = RecvIfcRTL( DataType   )
-    s.recv_opt  = RecvIfcRTL( ConfigType )
-    s.send_out0 = SendIfcRTL( DataType   )
-    s.send_out1 = SendIfcRTL( DataType   )
+    s.recv_in0  = RecvIfcRTL( DataType )
+    s.recv_in1  = RecvIfcRTL( DataType )
+    s.recv_in2  = RecvIfcRTL( DataType )
+    s.recv_in3  = RecvIfcRTL( DataType )
+    s.recv_opt  = RecvIfcRTL( CtrlType )
+    s.send_out0 = SendIfcRTL( DataType )
+    s.send_out1 = SendIfcRTL( DataType )
 
     @s.update
     def update_signal():
@@ -47,45 +47,45 @@ class UniversalFu( Component ):
       s.send_out0.msg.predicate = s.recv_in0.msg.predicate and s.recv_in1.msg.predicate
 
       # Alu
-      if s.recv_opt.msg.config == OPT_ADD:
+      if s.recv_opt.msg.ctrl == OPT_ADD:
         s.send_out0.msg.payload = s.recv_in0.msg.payload + s.recv_in1.msg.payload
-      elif s.recv_opt.msg.config == OPT_SUB:
+      elif s.recv_opt.msg.ctrl == OPT_SUB:
         s.send_out0.msg.payload = s.recv_in0.msg.payload - s.recv_in1.msg.payload
 
       # Mul 
-      elif s.recv_opt.msg.config == OPT_MUL:
+      elif s.recv_opt.msg.ctrl == OPT_MUL:
         s.send_out0.msg.payload = s.recv_in0.msg.payload * s.recv_in1.msg.payload
 
       # Shifter
-      elif s.recv_opt.msg.config == OPT_LLS:
+      elif s.recv_opt.msg.ctrl == OPT_LLS:
         s.send_out0.msg.payload = s.recv_in0.msg.payload << s.recv_in1.msg.payload
-      elif s.recv_opt.msg.config == OPT_LRS:
+      elif s.recv_opt.msg.ctrl == OPT_LRS:
         s.send_out0.msg.payload = s.recv_in0.msg.payload >> s.recv_in1.msg.payload
 
       # Logic
-      elif s.recv_opt.msg.config == OPT_OR:
+      elif s.recv_opt.msg.ctrl == OPT_OR:
         s.send_out0.msg.payload = s.recv_in0.msg.payload | s.recv_in1.msg.payload
-      elif s.recv_opt.msg.config == OPT_AND:
+      elif s.recv_opt.msg.ctrl == OPT_AND:
         s.send_out0.msg.payload = s.recv_in0.msg.payload & s.recv_in1.msg.payload
-      elif s.recv_opt.msg.config == OPT_NOT:
+      elif s.recv_opt.msg.ctrl == OPT_NOT:
         s.send_out0.msg.payload = ~ s.recv_in0.msg.payload
-      elif s.recv_opt.msg.config == OPT_XOR:
+      elif s.recv_opt.msg.ctrl == OPT_XOR:
         s.send_out0.msg.payload = s.recv_in0.msg.payload ^ s.recv_in1.msg.payload
 
       # Comp
-      elif s.recv_opt.msg.config == OPT_EQ:
+      elif s.recv_opt.msg.ctrl == OPT_EQ:
         if s.recv_in0.msg.payload == s.recv_in1.msg.payload:
           s.send_out0.msg = DataType( 1, 1 )
         else:
           s.send_out0.msg = DataType( 1, 1 )
-      elif s.recv_opt.msg.config == OPT_LE:
+      elif s.recv_opt.msg.ctrl == OPT_LE:
         if s.recv_in0.msg.payload < s.recv_in1.msg.payload:
           s.send_out0.msg = DataType( 1, 1 )
         else:
           s.send_out0.msg = DataType( 1, 1 )
 
       # Branch
-      elif s.recv_opt.msg.config == OPT_BRH:
+      elif s.recv_opt.msg.ctrl == OPT_BRH:
         s.send_out0.msg.payload  = s.recv_in0.msg.payload
         s.send_out1.msg.payload  = s.recv_in0.msg.payload
         if s.recv_in0.msg == DataType( 1, 1 ):
@@ -96,14 +96,12 @@ class UniversalFu( Component ):
           s.send_out1.msg.predicate = Bits1( 1 )
 
       # Phi
-      elif s.recv_opt.msg.config == OPT_PHI:
+      elif s.recv_opt.msg.ctrl == OPT_PHI:
         if s.recv_in0.msg.predicate == Bits1( 1 ):
           s.send_out0.msg = s.recv_in0.msg
         elif s.recv_in1.msg.predicate == Bits1( 1 ):
           s.send_out0.msg = s.recv_in1.msg
-  
-
 
   def line_trace( s ):
-    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.config]} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
+    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
 

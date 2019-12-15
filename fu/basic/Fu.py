@@ -14,17 +14,17 @@ from ...lib.opt_type    import *
 
 class Fu( Component ):
 
-  def construct( s, DataType, ConfigType ):
+  def construct( s, DataType, CtrlType ):
 
     # Interface
 
-    s.recv_in0  = RecvIfcRTL( DataType   )
-    s.recv_in1  = RecvIfcRTL( DataType   )
-    s.recv_in2  = RecvIfcRTL( DataType   )
-    s.recv_in3  = RecvIfcRTL( DataType   )
-    s.recv_opt  = RecvIfcRTL( ConfigType )
-    s.send_out0 = SendIfcRTL( DataType   )
-    s.send_out1 = SendIfcRTL( DataType   )
+    s.recv_in0  = RecvIfcRTL( DataType )
+    s.recv_in1  = RecvIfcRTL( DataType )
+    s.recv_in2  = RecvIfcRTL( DataType )
+    s.recv_in3  = RecvIfcRTL( DataType )
+    s.recv_opt  = RecvIfcRTL( CtrlType )
+    s.send_out0 = SendIfcRTL( DataType )
+    s.send_out1 = SendIfcRTL( DataType )
 
     @s.update
     def update_signal():
@@ -39,4 +39,4 @@ class Fu( Component ):
                        s.recv_in2.en   or s.recv_in3.en   or s.recv_opt.en
 
   def line_trace( s ):
-    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.config]} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
+    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
