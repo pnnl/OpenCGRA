@@ -25,6 +25,8 @@ class Alu( Fu ):
       s.send_out0.msg.predicate = s.recv_in0.msg.predicate and s.recv_in1.msg.predicate
       if s.recv_opt.msg.ctrl == OPT_ADD:
         s.send_out0.msg.payload = s.recv_in0.msg.payload + s.recv_in1.msg.payload
+      elif s.recv_opt.msg.ctrl == OPT_INC:
+        s.send_out0.msg.payload = s.recv_in0.msg.payload + Bits32( 1 )
       elif s.recv_opt.msg.ctrl == OPT_SUB:
         s.send_out0.msg.payload = s.recv_in0.msg.payload - s.recv_in1.msg.payload
       s.send_out1.msg = s.send_out0.msg

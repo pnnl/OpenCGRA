@@ -14,11 +14,13 @@ from pymtl3.stdlib.test              import TestSinkCL
 from pymtl3.stdlib.test.test_srcs    import TestSrcRTL
 
 from ..Tile                          import Tile
-from ...fu.single.Alu                import Alu
-from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...lib.opt_type                 import *
 from ...lib.messages                 import *
 from ...lib.routing_table            import *
+
+from ...fu.single.Alu                import Alu
+from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
+from ...fu.universal.UniversalFu     import UniversalFu
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -149,13 +151,12 @@ def test_tile_universal():
   num_xbar_inports  = 6
   num_xbar_outports = 8
   DUT = Tile
-  FunctionUnit = Alu
+  FunctionUnit = UniversalFu
   DataType     = mk_data( 16, 1 )
-  CtrlType   = mk_ctrl()
+  CtrlType     = mk_ctrl()
   RoutingTable = mk_routing_table( num_xbar_inports, num_xbar_outports )
   src_opt      = [ CtrlType( OPT_ADD ),
                    CtrlType( OPT_SUB ) ]
-#                   CtrlType( ALU=OPT_NAH ) ]
   src_routing  = [ RoutingTable( [3, 2, 1, 0, 3, 2, 1, 0] ),
                    RoutingTable( [2, 2, 2, 4, 3, 0, 0, 0] ),
                    RoutingTable( [4, 4, 1, 1, 0, 0, 0, 0] ) ]

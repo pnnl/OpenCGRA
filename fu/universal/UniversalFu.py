@@ -49,6 +49,8 @@ class UniversalFu( Component ):
       # Alu
       if s.recv_opt.msg.ctrl == OPT_ADD:
         s.send_out0.msg.payload = s.recv_in0.msg.payload + s.recv_in1.msg.payload
+      elif s.recv_opt.msg.ctrl == OPT_INC:
+        s.send_out0.msg.payload = s.recv_in0.msg.payload + Bits16( 1 )
       elif s.recv_opt.msg.ctrl == OPT_SUB:
         s.send_out0.msg.payload = s.recv_in0.msg.payload - s.recv_in1.msg.payload
 
