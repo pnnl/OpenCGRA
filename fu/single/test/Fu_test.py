@@ -123,16 +123,3 @@ def test_mul():
   th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
-def test_Mem():
-  FU = Mem
-  DataType = mk_data( 16, 1 )
-  ConfigType = mk_ctrl()
-  src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1) ]
-  src_in1  = [ DataType(0, 1), DataType(5, 1), DataType(2, 1) ]
-  sink_out = [ DataType(2, 1), DataType(2, 1), DataType(5, 1) ]
-  src_opt  = [ ConfigType( OPT_LD  ),
-               ConfigType( OPT_STR ),
-               ConfigType( OPT_LD  ) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
-  run_sim( th )
-
