@@ -17,7 +17,6 @@ from ..Alu                        import Alu
 from ..Shifter                    import Shifter
 from ..Mul                        import Mul
 from ..Logic                      import Logic
-from ..Mem                        import Mem
 from ....lib.opt_type             import *
 from ....lib.messages             import *
 

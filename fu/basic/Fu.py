@@ -39,4 +39,7 @@ class Fu( Component ):
                        s.recv_in2.en   or s.recv_in3.en   or s.recv_opt.en
 
   def line_trace( s ):
-    return f'[{s.recv_in0.msg}] {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
+    opt_str = " #"
+    if s.recv_opt.en:
+      opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
+    return f'[{s.recv_in0.msg}] {opt_str} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
