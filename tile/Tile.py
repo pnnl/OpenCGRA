@@ -12,9 +12,12 @@ from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ..noc.Crossbar     import Crossbar
 from ..noc.Channel      import Channel
 
+from ..mem.ctrl.CtrlMem import CtrlMem
+
 class Tile( Component ):
 
-  def construct( s, Fu, DataType, CtrlType, RoutingTableType ):
+  def construct( s, Fu, DataType, CtrlType, RoutingTableType,
+                 ctrl_mem_size, num_ctrl ):
 
     # Constant
 
@@ -24,24 +27,32 @@ class Tile( Component ):
     num_fu_outports   = 2
     num_mesh_ports    = 4
 
+    AddrType = mk_bits( clog2( ctrl_mem_size ) )
+
     # Interfaces
 
-    s.recv_opt     = RecvIfcRTL( CtrlType )
     s.recv_routing = RecvIfcRTL( RoutingTableType )
     s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
     s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
+
+    s.recv_waddr = RecvIfcRTL( AddrType )
+    s.recv_wopt  = RecvIfcRTL( CtrlType )
 
     # Components
 
     s.element  = Fu( DataType, CtrlType )
     s.crossbar = Crossbar( DataType, RoutingTableType,
                            num_xbar_inports, num_xbar_outports )
+    s.ctrl_mem = CtrlMem( CtrlType, ctrl_mem_size, num_ctrl )
     s.channel  = [ Channel ( DataType ) for _ in range( num_xbar_outports ) ]
 
     # Connections
 
-    s.recv_opt     //= s.element.recv_opt
+    s.ctrl_mem.recv_waddr //= s.recv_waddr
+    s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
+
     s.recv_routing //= s.crossbar.recv_routing
+    s.element.recv_opt //=  s.ctrl_mem.send_ctrl
 
     for i in range( num_mesh_ports  ):
       s.recv_data[i] //= s.crossbar.recv_data[i]

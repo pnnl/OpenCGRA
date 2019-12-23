@@ -22,29 +22,35 @@ from ...fu.single.Alu                import Alu
 from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...fu.universal.UniversalFu     import UniversalFu
 
+from ...mem.ctrl.CtrlMem             import CtrlMem
+
 #-------------------------------------------------------------------------
 # Test harness
 #-------------------------------------------------------------------------
 
 class TestHarness( Component ):
 
-  def construct( s, DUT, FunctionUnit, DataType, CtrlType,
+  def construct( s, DUT, FunctionUnit, AddrType, DataType, CtrlType,
                  RoutingTableType, num_tile_inports, num_tile_outports,
-                 src_data, src_opt, src_routing, sink_out ):
+                 ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
+                 sink_out ):
 
     s.num_tile_inports  = num_tile_inports
     s.num_tile_outports = num_tile_outports
 
     s.src_opt      = TestSrcRTL( CtrlType, src_opt )
+    s.opt_waddr    = TestSrcRTL( AddrType, opt_waddr )
     s.src_routing  = TestSrcRTL( RoutingTableType, src_routing )
     s.src_data     = [ TestSrcRTL( DataType, src_data[i]  )
                      for i in range( num_tile_inports  ) ]
     s.sink_out     = [ TestSinkCL( DataType, sink_out[i] )
                      for i in range( num_tile_outports ) ]
 
-    s.dut = DUT( FunctionUnit, DataType, CtrlType, RoutingTableType )
+    s.dut = DUT( FunctionUnit, DataType, CtrlType, RoutingTableType,
+                 ctrl_mem_size, len(src_opt) )
 
-    connect( s.src_opt.send,     s.dut.recv_opt     )
+    connect( s.src_opt.send,     s.dut.recv_wopt    )
+    connect( s.opt_waddr.send,   s.dut.recv_waddr   )
     connect( s.src_routing.send, s.dut.recv_routing )
 
     for i in range( num_tile_inports ):
@@ -95,14 +101,17 @@ def test_tile_alu():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
-  DUT = Tile
+  ctrl_mem_size     = 8
+
+  AddrType     = mk_bits( clog2( ctrl_mem_size ) )
+  DUT          = Tile
   FunctionUnit = Alu
   DataType     = mk_data( 16, 1 )
-  CtrlType   = mk_ctrl()
+  CtrlType     = mk_ctrl()
   RoutingTable = mk_routing_table( num_xbar_inports, num_xbar_outports )
   src_opt      = [ CtrlType( OPT_ADD ),
                    CtrlType( OPT_SUB ) ]
-#                   CtrlType( ALU=OPT_NAH ) ]
+  opt_waddr    = [ AddrType( 0 ), AddrType( 1 ) ]
   src_routing  = [ RoutingTable( [3, 2, 1, 0, 3, 2, 1, 0] ),
                    RoutingTable( [2, 2, 2, 4, 3, 0, 0, 0] ),
                    RoutingTable( [4, 4, 1, 1, 0, 0, 0, 0] ) ]
@@ -114,9 +123,10 @@ def test_tile_alu():
                    [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
                    [DataType(2, 1), DataType( 3, 1)],
                    [DataType(1, 1), DataType( 7, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType,
+  th = TestHarness( DUT, FunctionUnit, AddrType, DataType, CtrlType,
                     RoutingTable, num_tile_inports, num_tile_outports,
-                    src_data, src_opt, src_routing, sink_out )
+                    ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
+                    sink_out )
   run_sim( th )
 
 def test_tile_triple():
@@ -124,12 +134,16 @@ def test_tile_triple():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
+  ctrl_mem_size     = 8
+
+  AddrType     = mk_bits( clog2( ctrl_mem_size ) )
   DUT = Tile
   FunctionUnit = ThreeMulAluShifter
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl()
   RoutingTable = mk_routing_table( num_xbar_inports, num_xbar_outports )
   src_opt      = [ CtrlType( OPT_MUL_SUB_LLS ) ]
+  opt_waddr    = [ AddrType( 0 ) ]
   src_routing  = [ RoutingTable( [3, 2, 1, 0, 0, 1, 3, 1] ),
                    RoutingTable( [4, 0, 1, 2, 0, 0, 0, 0] ) ]
   src_data     = [ [DataType(1, 1), DataType( 1, 1)],
@@ -140,9 +154,10 @@ def test_tile_triple():
                    [DataType(3, 1), DataType( 1, 1)],
                    [DataType(2, 1), DataType( 2, 1)],
                    [DataType(1, 1), DataType( 3, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType,
+  th = TestHarness( DUT, FunctionUnit, AddrType, DataType, CtrlType,
                     RoutingTable, num_tile_inports, num_tile_outports,
-                    src_data, src_opt, src_routing, sink_out )
+                    ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
+                    sink_out )
   run_sim( th )
 
 def test_tile_universal():
@@ -150,6 +165,9 @@ def test_tile_universal():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
+  ctrl_mem_size     = 8
+
+  AddrType     = mk_bits( clog2( ctrl_mem_size ) )
   DUT = Tile
   FunctionUnit = UniversalFu
   DataType     = mk_data( 16, 1 )
@@ -157,6 +175,7 @@ def test_tile_universal():
   RoutingTable = mk_routing_table( num_xbar_inports, num_xbar_outports )
   src_opt      = [ CtrlType( OPT_ADD ),
                    CtrlType( OPT_SUB ) ]
+  opt_waddr    = [ AddrType( 0 ), AddrType( 1 ) ]
   src_routing  = [ RoutingTable( [3, 2, 1, 0, 3, 2, 1, 0] ),
                    RoutingTable( [2, 2, 2, 4, 3, 0, 0, 0] ),
                    RoutingTable( [4, 4, 1, 1, 0, 0, 0, 0] ) ]
@@ -168,9 +187,10 @@ def test_tile_universal():
                    [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
                    [DataType(2, 1), DataType( 3, 1)],
                    [DataType(1, 1), DataType( 7, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType,
+  th = TestHarness( DUT, FunctionUnit, AddrType, DataType, CtrlType,
                     RoutingTable, num_tile_inports, num_tile_outports,
-                    src_data, src_opt, src_routing, sink_out )
+                    ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
+                    sink_out )
   run_sim( th )
 
 

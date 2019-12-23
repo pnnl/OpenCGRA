@@ -31,7 +31,6 @@ class TestHarness( Component ):
 
     s.src_data0 = TestSrcRTL( DataType,   src0_msgs  )
     s.src_data1 = TestSrcRTL( DataType,   src1_msgs  )
-#    s.src_raddr = TestSrcRTL( AddrType,   ctrl_raddr )
     s.src_waddr = TestSrcRTL( AddrType,   ctrl_waddr )
     s.src_wdata = TestSrcRTL( ConfigType, ctrl_msgs  )
     s.sink_out  = TestSinkCL( DataType,   sink_msgs  )
@@ -39,11 +38,10 @@ class TestHarness( Component ):
     s.alu       = Alu( DataType, ConfigType )
     s.ctrl_mem  = CtrlMem( ConfigType, nregs )
 
-    connect( s.alu.recv_opt,   s.ctrl_mem.send_rdata[0] )
+    connect( s.alu.recv_opt,   s.ctrl_mem.send_ctrl  )
 
-#    connect( s.src_raddr.send, s.ctrl_mem.recv_raddr[0] )
-    connect( s.src_waddr.send, s.ctrl_mem.recv_waddr[0] )
-    connect( s.src_wdata.send, s.ctrl_mem.recv_wdata[0] )
+    connect( s.src_waddr.send, s.ctrl_mem.recv_waddr )
+    connect( s.src_wdata.send, s.ctrl_mem.recv_ctrl  )
 
     connect( s.src_data0.send, s.alu.recv_in0           )
     connect( s.src_data1.send, s.alu.recv_in1           )
