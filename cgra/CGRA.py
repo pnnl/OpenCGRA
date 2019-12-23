@@ -15,8 +15,8 @@ from ..tile.Tile        import Tile
 
 class CGRA( Component ):
 
-  def construct( s, FunctionUnit, DataType, CtrlType, RoutingTableType,
-                 width, height ):
+  def construct( s, FunctionUnit, DataType, CtrlType, RtTabType,
+                 width, height, ctrl_mem_size, num_ctrl ):
 
     # Constant
     NORTH = 0
@@ -25,24 +25,26 @@ class CGRA( Component ):
     EAST  = 3
     s.num_tiles = width * height
     s.num_mesh_ports = 4
+    AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
     # Interfaces
 
-    s.recv_opt = [ RecvIfcRTL( CtrlType )         
-                   for _ in range( s.num_tiles ) ]
-    s.recv_routing = [ RecvIfcRTL( RoutingTableType )
-                       for _ in range( s.num_tiles ) ]
+    s.recv_waddr = [ RecvIfcRTL( AddrType )  for _ in range( s.num_tiles ) ]
+    s.recv_wopt  = [ RecvIfcRTL( CtrlType )  for _ in range( s.num_tiles ) ]
+    s.recv_route = [ RecvIfcRTL( RtTabType ) for _ in range( s.num_tiles ) ]
 
     # Components
 
-    s.tile = [ Tile( FunctionUnit, DataType, CtrlType, RoutingTableType ) 
+    s.tile = [ Tile( FunctionUnit, DataType, CtrlType, RtTabType,
+                     ctrl_mem_size, num_ctrl ) 
                for _ in range( s.num_tiles ) ]
 
     # Connections
 
     for i in range( s.num_tiles):
-      s.recv_opt[i]     //= s.tile[i].recv_opt
-      s.recv_routing[i] //= s.tile[i].recv_routing
+      s.recv_waddr[i] //= s.tile[i].recv_waddr
+      s.recv_wopt[i]  //= s.tile[i].recv_wopt
+      s.recv_route[i] //= s.tile[i].recv_routing
 
       if i // width > 0:
         s.tile[i].send_data[SOUTH] //= s.tile[i-width].recv_data[NORTH]

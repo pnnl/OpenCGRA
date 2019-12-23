@@ -51,8 +51,8 @@ class Tile( Component ):
     s.ctrl_mem.recv_waddr //= s.recv_waddr
     s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
 
-    s.recv_routing //= s.crossbar.recv_routing
-    s.element.recv_opt //=  s.ctrl_mem.send_ctrl
+    s.recv_routing        //= s.crossbar.recv_routing
+    s.element.recv_opt    //=  s.ctrl_mem.send_ctrl
 
     for i in range( num_mesh_ports  ):
       s.recv_data[i] //= s.crossbar.recv_data[i]

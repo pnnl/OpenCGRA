@@ -30,13 +30,15 @@ from ...mem.ctrl.CtrlMem             import CtrlMem
 
 class TestHarness( Component ):
 
-  def construct( s, DUT, FunctionUnit, AddrType, DataType, CtrlType,
+  def construct( s, DUT, FunctionUnit, DataType, CtrlType, AddrType,
                  RoutingTableType, num_tile_inports, num_tile_outports,
-                 ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
-                 sink_out ):
+                 ctrl_mem_size, src_data, src_opt,
+                 opt_waddr, src_routing, sink_out ):
 
     s.num_tile_inports  = num_tile_inports
     s.num_tile_outports = num_tile_outports
+
+    AddrType       = mk_bits( clog2( ctrl_mem_size ) )
 
     s.src_opt      = TestSrcRTL( CtrlType, src_opt )
     s.opt_waddr    = TestSrcRTL( AddrType, opt_waddr )
@@ -123,10 +125,10 @@ def test_tile_alu():
                    [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
                    [DataType(2, 1), DataType( 3, 1)],
                    [DataType(1, 1), DataType( 7, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, AddrType, DataType, CtrlType,
+  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType, AddrType,
                     RoutingTable, num_tile_inports, num_tile_outports,
-                    ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
-                    sink_out )
+                    ctrl_mem_size, src_data, src_opt,
+                    opt_waddr, src_routing, sink_out )
   run_sim( th )
 
 def test_tile_triple():
@@ -154,7 +156,7 @@ def test_tile_triple():
                    [DataType(3, 1), DataType( 1, 1)],
                    [DataType(2, 1), DataType( 2, 1)],
                    [DataType(1, 1), DataType( 3, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, AddrType, DataType, CtrlType,
+  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType, AddrType,
                     RoutingTable, num_tile_inports, num_tile_outports,
                     ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
                     sink_out )
@@ -187,7 +189,7 @@ def test_tile_universal():
                    [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
                    [DataType(2, 1), DataType( 3, 1)],
                    [DataType(1, 1), DataType( 7, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, AddrType, DataType, CtrlType,
+  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType, AddrType,
                     RoutingTable, num_tile_inports, num_tile_outports,
                     ctrl_mem_size, src_data, src_opt, opt_waddr, src_routing,
                     sink_out )

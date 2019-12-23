@@ -27,26 +27,26 @@ from ..CGRA                          import CGRA
 class TestHarness( Component ):
 
   def construct( s, DUT, FunctionUnit, DataType, CtrlType,
-                 RoutingTableType, width, height,
-                 src_opt, src_routing ):
+                 RoutingTableType, width, height, ctrl_mem_size,
+                 src_opt, ctrl_waddr, src_routing ):
 
     s.num_tiles = width * height
+    AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
     s.src_opt     = [ TestSrcRTL( CtrlType, src_opt[i] )
                       for i in range( s.num_tiles ) ]
+    s.ctrl_waddr  = [ TestSrcRTL( AddrType, ctrl_waddr[i] )
+                      for i in range( s.num_tiles ) ]
     s.src_routing = [ TestSrcRTL( RoutingTableType, src_routing[i] )
                       for i in range( s.num_tiles ) ]
-#    s.src_data    = [ TestSrcRTL( DataType, src_data[i]  )
-#                    for i in range( num_tile_inports  ) ]
-#    s.sink_out    = [ TestSinkCL( DataType, sink_out[i] )
-#                    for i in range( num_tile_outports ) ]
 
     s.dut = DUT( FunctionUnit, DataType, CtrlType, RoutingTableType,
-                 width, height )
+                 width, height, ctrl_mem_size, len( src_opt ) )
 
     for i in range( s.num_tiles ):
-      connect( s.src_opt[i].send,     s.dut.recv_opt[i]     )
-      connect( s.src_routing[i].send, s.dut.recv_routing[i] )
+      connect( s.src_opt[i].send,     s.dut.recv_wopt[i]  )
+      connect( s.ctrl_waddr[i].send,  s.dut.recv_waddr[i] )
+      connect( s.src_routing[i].send, s.dut.recv_route[i] )
 
   def done( s ):
     done = True
@@ -93,17 +93,21 @@ def test_cgra_universal():
   num_xbar_outports = 8
   width  = 2
   height = 2
+  ctrl_mem_size = 8
+  AddrType = mk_bits( clog2( ctrl_mem_size ) )
   num_tiles    = width * height
   DUT          = CGRA
   FunctionUnit = UniversalFu
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl()
-  RoutingTable = mk_routing_table( num_xbar_inports, num_xbar_outports )
+  RtTabType    = mk_routing_table( num_xbar_inports, num_xbar_outports )
   src_opt      = [ [ CtrlType( OPT_INC ), CtrlType( OPT_INC ), CtrlType( OPT_ADD ) ] 
                      for _ in range( num_tiles ) ]
-  src_routing  = [ [ RoutingTable([3, 2, 1, 0, 4, 4, 4, 4]),
-                     RoutingTable([3, 2, 1, 0, 4, 4, 4, 4]),
-                     RoutingTable([3, 2, 1, 0, 4, 4, 4, 4]) ]
+  ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ] 
+                     for _ in range( num_tiles ) ]
+  src_route    = [ [ RtTabType([3, 2, 1, 0, 4, 4, 4, 4]),
+                     RtTabType([3, 2, 1, 0, 4, 4, 4, 4]),
+                     RtTabType([3, 2, 1, 0, 4, 4, 4, 4]) ]
                      for _ in range( num_tiles ) ]
 #  src_data     = [ [DataType(1, 1), DataType( 1, 1)],
 #                   [DataType(2, 1), DataType( 2, 1)],
@@ -113,8 +117,7 @@ def test_cgra_universal():
 #                   [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
 #                   [DataType(2, 1), DataType( 3, 1)],
 #                   [DataType(1, 1), DataType( 7, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType, RoutingTable,
-                    width, height, src_opt, src_routing )
+  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType, RtTabType,
+                    width, height, ctrl_mem_size, src_opt, ctrl_waddr, src_route )
   run_sim( th )
-
 
