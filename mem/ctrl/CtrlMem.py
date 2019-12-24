@@ -43,7 +43,7 @@ class CtrlMem( Component ):
 
     @s.update
     def update_signal():
-      if s.times == TimeType( num_ctrl ):
+      if s.times == TimeType( num_ctrl ) or s.reg_file.rdata[0].ctrl == OPT_START:
         s.send_ctrl.en = b1( 0 )
       else:
         s.send_ctrl.en  = s.send_ctrl.rdy # s.recv_raddr[i].rdy
@@ -52,7 +52,7 @@ class CtrlMem( Component ):
 
     @s.update_ff
     def update_raddr():
-      if s.reg_file.rdata[0].ctrl != OPT_NAH:
+      if s.reg_file.rdata[0].ctrl != OPT_START:
         s.reg_file.raddr[0] <<= s.reg_file.raddr[0] + AddrType( 1 )
         if s.times + TimeType( 1 )  == TimeType( mem_size ):
           s.times <<= TimeType( 0 )
@@ -60,6 +60,6 @@ class CtrlMem( Component ):
           s.times <<= s.times + TimeType( 1 )
 
   def line_trace( s ):
-    out_str  = "|".join([ str(data)     for data in s.reg_file.regs ])
+    out_str  = "||".join([ str(data) for data in s.reg_file.regs ])
     return f'{s.recv_ctrl.msg} : [{out_str}] : {s.send_ctrl.msg}'
 

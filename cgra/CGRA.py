@@ -15,7 +15,7 @@ from ..tile.Tile        import Tile
 
 class CGRA( Component ):
 
-  def construct( s, FunctionUnit, DataType, CtrlType, RtTabType,
+  def construct( s, FunctionUnit, DataType, CtrlType,# RtTabType,
                  width, height, ctrl_mem_size, num_ctrl ):
 
     # Constant
@@ -31,11 +31,11 @@ class CGRA( Component ):
 
     s.recv_waddr = [ RecvIfcRTL( AddrType )  for _ in range( s.num_tiles ) ]
     s.recv_wopt  = [ RecvIfcRTL( CtrlType )  for _ in range( s.num_tiles ) ]
-    s.recv_route = [ RecvIfcRTL( RtTabType ) for _ in range( s.num_tiles ) ]
+#    s.recv_route = [ RecvIfcRTL( RtTabType ) for _ in range( s.num_tiles ) ]
 
     # Components
 
-    s.tile = [ Tile( FunctionUnit, DataType, CtrlType, RtTabType,
+    s.tile = [ Tile( FunctionUnit, DataType, CtrlType,#RtTabType,
                      ctrl_mem_size, num_ctrl ) 
                for _ in range( s.num_tiles ) ]
 
@@ -44,7 +44,7 @@ class CGRA( Component ):
     for i in range( s.num_tiles):
       s.recv_waddr[i] //= s.tile[i].recv_waddr
       s.recv_wopt[i]  //= s.tile[i].recv_wopt
-      s.recv_route[i] //= s.tile[i].recv_routing
+#      s.recv_route[i] //= s.tile[i].recv_routing
 
       if i // width > 0:
         s.tile[i].send_data[SOUTH] //= s.tile[i-width].recv_data[NORTH]

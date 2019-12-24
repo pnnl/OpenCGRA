@@ -16,7 +16,6 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 from ..Crossbar                   import Crossbar
 from ...lib.opt_type              import *
 from ...lib.messages              import *
-from ...lib.routing_table         import *
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -24,25 +23,25 @@ from ...lib.routing_table         import *
 
 class TestHarness( Component ):
 
-  def construct( s, CrossbarUnit, DataType, RoutingTableType,
+  def construct( s, CrossbarUnit, DataType, CtrlType,
                  num_inports, num_outports,
                  src_data, src_routing, sink_out ):
 
     s.num_inports  = num_inports
     s.num_outports = num_outports
 
-    s.src_routing  = TestSrcRTL( RoutingTableType, src_routing )
+    s.src_opt      = TestSrcRTL( CtrlType, src_routing )
     s.src_data     = [ TestSrcRTL( DataType, src_data[i]  )
                      for i in range( num_inports  ) ]
     s.sink_out     = [ TestSinkCL( DataType, sink_out[i] )
                      for i in range( num_outports ) ]
 
-    s.dut = CrossbarUnit( DataType, RoutingTableType, num_inports, num_outports )
+    s.dut = CrossbarUnit( DataType, CtrlType, num_inports, num_outports )
 
     for i in range( num_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
       connect( s.dut.send_data[i],  s.sink_out[i].recv )
-    connect( s.src_routing.send,     s.dut.recv_routing )
+    connect( s.src_opt.send,     s.dut.recv_opt )
 
   def done( s ):
     done = True
@@ -87,11 +86,11 @@ def test_crossbar():
   num_inports  = 3
   num_outports = 3
   DataType     = mk_data( 16, 1 )
-  RoutingTable = mk_routing_table( num_inports, num_outports )
-  src_routing  = [ RoutingTable( [1, 2, 1] ) ]
+  CtrlType     = mk_ctrl( num_inports, num_outports )
+  src_opt      = [ CtrlType( OPT_ADD, [1, 2, 0]) ]
   src_data     = [ [DataType(3, 1)], [DataType(2, 1)], [DataType(9, 1)] ]
-  sink_out     = [ [DataType(2, 1)], [DataType(9, 1)], [DataType(2, 1)] ]
-  th = TestHarness( FU, DataType, RoutingTable, num_outports, num_inports,
-                    src_data, src_routing, sink_out )
+  sink_out     = [ [DataType(2, 1)], [DataType(9, 1)], [DataType(3, 1)] ]
+  th = TestHarness( FU, DataType, CtrlType, num_outports, num_inports,
+                    src_data, src_opt, sink_out )
   run_sim( th )
 
