@@ -12,15 +12,16 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
+from ...lib.mem_param   import *
 from pymtl3.stdlib.rtl  import RegisterFile
 
 class DataMem( Component ):
 
-  def construct( s, DataType, nregs=8, rd_ports=1, wr_ports=1 ):
+  def construct( s, DataType, rd_ports=1, wr_ports=1 ):
 
     # Constant
 
-    AddrType = mk_bits( clog2( nregs ) )
+    AddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
 
     # Interface
 
@@ -31,7 +32,7 @@ class DataMem( Component ):
 
     # Component
 
-    s.reg_file   = RegisterFile( DataType, nregs, rd_ports, wr_ports )
+    s.reg_file   = RegisterFile( DataType, DATA_MEM_SIZE, rd_ports, wr_ports )
 
     # Connections
 

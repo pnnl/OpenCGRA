@@ -26,7 +26,7 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
+  def construct( s, FunctionUnit, DataType, ConfigType, num_inports, num_outports,
                  src0_msgs, src1_msgs, ctrl_msgs, sink_msgs ):
 
     s.src_in0  = TestSrcRTL( DataType,   src0_msgs   )
@@ -34,12 +34,12 @@ class TestHarness( Component ):
     s.src_opt  = TestSrcRTL( ConfigType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType,   sink_msgs   )
 
-    s.dut = FunctionUnit( DataType, ConfigType )
+    s.dut = FunctionUnit( DataType, ConfigType, num_inports, num_outports )
 
-    connect( s.src_in0.send,  s.dut.recv_in0  )
-    connect( s.src_in1.send,  s.dut.recv_in1  )
-    connect( s.src_opt.send,  s.dut.recv_opt  )
-    connect( s.dut.send_out0, s.sink_out.recv )
+    connect( s.src_in0.send,    s.dut.recv_in[0] )
+    connect( s.src_in1.send,    s.dut.recv_in[1] )
+    connect( s.src_opt.send,    s.dut.recv_opt   )
+    connect( s.dut.send_out[0], s.sink_out.recv  )
 
   def done( s ):
     return s.src_in0.done() and s.src_in1.done() and\
@@ -73,52 +73,64 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_alu():
   FU = Alu
-  DataType   = mk_data( 16, 1 )
-  ConfigType = mk_ctrl()
-  src_in0    = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
-  src_in1    = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
-  sink_out   = [ DataType(3, 1), DataType(5, 1), DataType(8, 1) ]
-  src_opt    = [ ConfigType( OPT_ADD ),
-                 ConfigType( OPT_ADD ),
-                 ConfigType( OPT_SUB ) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
+  DataType     = mk_data( 16, 1 )
+  ConfigType   = mk_ctrl()
+  num_inports  = 4
+  num_outports = 2
+  src_in0      = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
+  src_in1      = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
+  sink_out     = [ DataType(3, 1), DataType(5, 1), DataType(8, 1) ]
+  src_opt      = [ ConfigType( OPT_ADD ),
+                   ConfigType( OPT_ADD ),
+                   ConfigType( OPT_SUB ) ]
+  th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
+                    src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
 def test_logic():
   FU = Logic
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
+  num_inports  = 4
+  num_outports = 2
   src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(4, 1), DataType(1, 1)  ]
   src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(3, 1), DataType(2, 1)  ]
   sink_out = [ DataType(3, 1), DataType(2, 1), DataType(0xfffb, 1), DataType(3, 1) ]
   src_opt  = [ ConfigType( OPT_OR  ), ConfigType( OPT_AND ),
                ConfigType( OPT_NOT ), ConfigType( OPT_XOR ) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
+  th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
+                    src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
 def test_shifter():
   FU = Shifter
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
+  num_inports  = 4
+  num_outports = 2
   src_in0  = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1),  DataType(1, 1) ]
   sink_out = [ DataType(4, 1), DataType(16, 1), DataType(2, 1) ]
   src_opt  = [ ConfigType( OPT_LLS ),
                ConfigType( OPT_LLS ),
                ConfigType( OPT_LRS ) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
+  th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
+                    src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 
 def test_mul():
   FU = Mul
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
+  num_inports  = 4
+  num_outports = 2
   src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(4, 1)  ]
   src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]
   sink_out = [ DataType(2, 1), DataType(6, 1), DataType(12, 1) ]
   src_opt  = [ ConfigType( OPT_MUL ),
                ConfigType( OPT_MUL ),
                ConfigType( OPT_MUL ) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
+  th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
+                    src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 

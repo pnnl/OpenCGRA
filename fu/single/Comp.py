@@ -16,23 +16,24 @@ from ..basic.Fu         import Fu
 
 class Comp( Fu ):
 
-  def construct( s, DataType, ConfigType ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports ):
 
-    super( Comp, s ).construct( DataType, ConfigType )
-    # data:      s.recv_in0
-    # reference: s.recv_in1
+    super( Comp, s ).construct( DataType, ConfigType, num_inports, num_outports,
+                                [OPT_EQ, OPT_LE] )
+    # data:      s.recv_in[0]
+    # reference: s.recv_in[1]
 
     @s.update
     def comb_logic():
-      predicate = s.recv_in0.msg.predicate & s.recv_in1.msg.predicate
+      predicate = s.recv_in[0].msg.predicate & s.recv_in[1].msg.predicate
       if s.recv_opt.msg.ctrl == OPT_EQ:
-        if s.recv_in0.msg.payload == s.recv_in1.msg.payload:
-          s.send_out0.msg = DataType( 1, predicate )
+        if s.recv_in[0].msg.payload == s.recv_in[1].msg.payload:
+          s.send_out[0].msg = DataType( 1, predicate )
         else:
-          s.send_out0.msg = DataType( 0, predicate )
+          s.send_out[0].msg = DataType( 0, predicate )
       elif s.recv_opt.msg.ctrl == OPT_LE:
-        if s.recv_in0.msg.payload < s.recv_in1.msg.payload:
-          s.send_out0.msg = DataType( 1, predicate )
+        if s.recv_in[0].msg.payload < s.recv_in[1].msg.payload:
+          s.send_out[0].msg = DataType( 1, predicate )
         else:
-          s.send_out0.msg = DataType( 0, predicate )
+          s.send_out[0].msg = DataType( 0, predicate )
 

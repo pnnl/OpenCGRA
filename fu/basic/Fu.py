@@ -14,32 +14,34 @@ from ...lib.opt_type    import *
 
 class Fu( Component ):
 
-  def construct( s, DataType, CtrlType ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports, opt_list ):
 
     # Interface
 
-    s.recv_in0  = RecvIfcRTL( DataType )
-    s.recv_in1  = RecvIfcRTL( DataType )
-    s.recv_in2  = RecvIfcRTL( DataType )
-    s.recv_in3  = RecvIfcRTL( DataType )
+    s.recv_in  = [ RecvIfcRTL( DataType ) for _ in range( num_inports ) ]
     s.recv_opt  = RecvIfcRTL( CtrlType )
-    s.send_out0 = SendIfcRTL( DataType )
-    s.send_out1 = SendIfcRTL( DataType )
+    s.send_out = [ SendIfcRTL( DataType ) for _ in range( num_inports ) ]
 
     @s.update
     def update_signal():
-      s.recv_in0.rdy = s.send_out0.rdy or s.send_out1.rdy
-      s.recv_in1.rdy = s.send_out0.rdy or s.send_out1.rdy
-      s.recv_in2.rdy = s.send_out0.rdy or s.send_out1.rdy
-      s.recv_in3.rdy = s.send_out0.rdy or s.send_out1.rdy
-      s.recv_opt.rdy = s.send_out0.rdy or s.send_out1.rdy
-      s.send_out0.en = s.recv_in0.en   or s.recv_in1.en   or\
-                       s.recv_in2.en   or s.recv_in3.en   or s.recv_opt.en
-      s.send_out1.en = s.recv_in0.en   or s.recv_in1.en   or\
-                       s.recv_in2.en   or s.recv_in3.en   or s.recv_opt.en
+      for i in range( num_inports ):
+        for j in range( num_outports ):
+          s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
+
+      for j in range( num_outports ):
+        s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
+
+      for j in range( num_outports ):
+        for i in range( num_inports ):
+          s.send_out[j].en = s.recv_in[i].en or s.send_out[j].en
+        s.send_out[j].en = s.send_out[j].en and s.recv_opt.en
+
+      if s.recv_opt.msg.ctrl not in opt_list:
+        for j in range( num_outports ):
+          s.send_out[j].en = b1( 0 )
 
   def line_trace( s ):
     opt_str = " #"
     if s.recv_opt.en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
-    return f'[{s.recv_in0.msg}] {opt_str} [{s.recv_in1.msg}] = [{s.send_out0.msg}]'
+    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg}] = [{s.send_out[0].msg}]'

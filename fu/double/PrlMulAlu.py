@@ -18,12 +18,14 @@ from ..single.Alu        import Alu
 
 class PrlMulAlu( TwoPrlCombo ):
 
-  def construct( s, DataType, CtrlType ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports ):
 
-    super( PrlMulAlu, s ).construct( DataType, CtrlType, Mul, Alu )
+    super( PrlMulAlu, s ).construct( DataType, CtrlType, Mul, Alu,
+                                     num_inports, num_outports )
 
     @s.update
     def update_opt():
+
       if s.recv_opt.msg.ctrl == OPT_MUL_ADD:
         s.Fu0.recv_opt.msg = CtrlType( OPT_MUL )
         s.Fu1.recv_opt.msg = CtrlType( OPT_ADD )

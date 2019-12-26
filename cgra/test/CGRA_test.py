@@ -10,15 +10,16 @@ Author : Cheng Tan
 """
 
 from pymtl3 import *
-from pymtl3.stdlib.test              import TestSinkCL
-from pymtl3.stdlib.test.test_srcs    import TestSrcRTL
+from pymtl3.stdlib.test           import TestSinkCL
+from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ...lib.opt_type                 import *
-from ...lib.messages                 import *
-#from ...lib.routing_table            import *
+from ...lib.opt_type              import *
+from ...lib.messages              import *
+from ...lib.mem_param             import *
 
-from ...fu.universal.UniversalFu     import UniversalFu
-from ..CGRA                          import CGRA
+from ...fu.flexible.FlexibleFu    import FlexibleFu
+from ...fu.single.Alu             import Alu
+from ..CGRA                       import CGRA
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -26,11 +27,11 @@ from ..CGRA                          import CGRA
 
 class TestHarness( Component ):
 
-  def construct( s, DUT, FunctionUnit, DataType, CtrlType, #RoutingTableType,
-                 width, height, ctrl_mem_size, src_opt, ctrl_waddr):#, src_routing ):
+  def construct( s, DUT, FunctionUnit, FuList, DataType, CtrlType, #RoutingTableType,
+                 width, height, src_opt, ctrl_waddr):#, src_routing ):
 
     s.num_tiles = width * height
-    AddrType = mk_bits( clog2( ctrl_mem_size ) )
+    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
 
     s.src_opt     = [ TestSrcRTL( CtrlType, src_opt[i] )
                       for i in range( s.num_tiles ) ]
@@ -39,8 +40,8 @@ class TestHarness( Component ):
 #    s.src_routing = [ TestSrcRTL( RoutingTableType, src_routing[i] )
 #                      for i in range( s.num_tiles ) ]
 
-    s.dut = DUT( FunctionUnit, DataType, CtrlType,# RoutingTableType,
-                 width, height, ctrl_mem_size, len( src_opt ) )
+    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType,# RoutingTableType,
+                 width, height, len( src_opt ) )
 
     for i in range( s.num_tiles ):
       connect( s.src_opt[i].send,     s.dut.recv_wopt[i]  )
@@ -92,12 +93,12 @@ def test_cgra_universal():
   num_xbar_outports = 8
   width  = 2
   height = 2
-  ctrl_mem_size = 8
   RouteType = mk_bits( clog2( num_xbar_inports + 1 ) )
-  AddrType = mk_bits( clog2( ctrl_mem_size ) )
+  AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
   num_tiles    = width * height
   DUT          = CGRA
-  FunctionUnit = UniversalFu
+  FunctionUnit = FlexibleFu
+  FuList      = [Alu]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
 #  RtTabType    = mk_routing_table( num_xbar_inports, num_xbar_outports )
@@ -125,7 +126,7 @@ def test_cgra_universal():
 #                   [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
 #                   [DataType(2, 1), DataType( 3, 1)],
 #                   [DataType(1, 1), DataType( 7, 1)] ]
-  th = TestHarness( DUT, FunctionUnit, DataType, CtrlType,
-                    width, height, ctrl_mem_size, src_opt, ctrl_waddr )
+  th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
+                    width, height, src_opt, ctrl_waddr )
   run_sim( th )
 

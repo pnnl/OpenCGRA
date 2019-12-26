@@ -7,17 +7,17 @@ Author : Cheng Tan
   Date : Dec 11, 2019
 """
 
-from pymtl3             import *
-from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ..noc.Crossbar     import Crossbar
-from ..noc.Channel      import Channel
-
-from ..mem.ctrl.CtrlMem import CtrlMem
+from pymtl3                   import *
+from pymtl3.stdlib.ifcs       import SendIfcRTL, RecvIfcRTL
+from ..noc.Crossbar           import Crossbar
+from ..noc.Channel            import Channel
+from ..mem.ctrl.CtrlMem       import CtrlMem
+from ..lib.mem_param          import *
+from ..fu.flexible.FlexibleFu import FlexibleFu
 
 class Tile( Component ):
 
-  def construct( s, Fu, DataType, CtrlType,#RoutingTableType,
-                 ctrl_mem_size, num_ctrl ):
+  def construct( s, Fu, FuList, DataType, CtrlType, num_ctrl ):
 
     # Constant
 
@@ -27,11 +27,10 @@ class Tile( Component ):
     num_fu_outports   = 2
     num_mesh_ports    = 4
 
-    AddrType = mk_bits( clog2( ctrl_mem_size ) )
+    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
 
     # Interfaces
 
-#    s.recv_routing = RecvIfcRTL( RoutingTableType )
     s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
     s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
 
@@ -40,19 +39,17 @@ class Tile( Component ):
 
     # Components
 
-    s.element  = Fu( DataType, CtrlType )
+    s.element  = FlexibleFu( FuList, DataType, CtrlType,
+                             num_fu_inports, num_fu_outports )
     s.crossbar = Crossbar( DataType, CtrlType,# RoutingTableType,
                            num_xbar_inports, num_xbar_outports )
-    s.ctrl_mem = CtrlMem( CtrlType, ctrl_mem_size, num_ctrl )
+    s.ctrl_mem = CtrlMem( CtrlType, num_ctrl )
     s.channel  = [ Channel ( DataType ) for _ in range( num_xbar_outports ) ]
 
     # Connections
 
     s.ctrl_mem.recv_waddr //= s.recv_waddr
     s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
-
-#    s.ctrl_mem.send_ctrl  //= s.crossbar.recv_opt
-#    s.ctrl_mem.send_ctrl  //= s.element.recv_opt
 
     for i in range( num_mesh_ports  ):
       s.recv_data[i] //= s.crossbar.recv_data[i]
@@ -63,13 +60,11 @@ class Tile( Component ):
     for i in range( num_mesh_ports ):
       s.channel[i].send //= s.send_data[i]
 
-    s.channel[num_mesh_ports+0].send //= s.element.recv_in0
-    s.channel[num_mesh_ports+1].send //= s.element.recv_in1
-    s.channel[num_mesh_ports+2].send //= s.element.recv_in2
-    s.channel[num_mesh_ports+3].send //= s.element.recv_in3
+    for i in range( num_fu_inports ):
+      s.channel[num_mesh_ports+i].send //= s.element.recv_in[i]
 
-    s.element.send_out0 //= s.crossbar.recv_data[num_mesh_ports+0]
-    s.element.send_out1 //= s.crossbar.recv_data[num_mesh_ports+1]
+    for i in range( num_fu_outports ):
+      s.element.send_out[i] //= s.crossbar.recv_data[num_mesh_ports+i]
 
     @s.update
     def update_opt():

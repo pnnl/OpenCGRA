@@ -19,9 +19,11 @@ from ..single.Shifter   import Shifter
 
 class ThreeMulAluShifter( ThreeCombo ):
 
-  def construct( s, DataType, CtrlType ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports ):
 
-    super( ThreeMulAluShifter, s ).construct( DataType, CtrlType, Mul, Alu, Shifter )
+    super( ThreeMulAluShifter, s ).construct( DataType, CtrlType,
+                                              Mul, Alu, Shifter,
+                                              num_inports, num_outports )
 
     @s.update
     def update_opt():
@@ -39,3 +41,4 @@ class ThreeMulAluShifter( ThreeCombo ):
         s.Fu2.recv_opt.msg = CtrlType( OPT_LRS )
 
       # TODO: need to handle the other cases
+

@@ -18,9 +18,10 @@ from ..single.Alu        import Alu
 
 class SeqMulAlu( TwoSeqCombo ):
 
-  def construct( s, DataType, CtrlType ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports ):
 
-    super( SeqMulAlu, s ).construct( DataType, CtrlType, Mul, Alu )
+    super( SeqMulAlu, s ).construct( DataType, CtrlType, Mul, Alu,
+                                     num_inports, num_outports )
 
     @s.update
     def update_opt():

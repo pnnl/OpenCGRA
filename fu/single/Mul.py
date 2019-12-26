@@ -15,15 +15,16 @@ from ..basic.Fu         import Fu
 
 class Mul( Fu ):
 
-  def construct( s, DataType, ConfigType ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports ):
 
-    super( Mul, s ).construct( DataType, ConfigType )
+    super( Mul, s ).construct( DataType, ConfigType, num_inports, num_outports,
+                               [OPT_MUL] )
 
     @s.update
     def comb_logic():
-      s.send_out0.msg.predicate = s.recv_in0.msg.predicate and\
-                                 s.recv_in1.msg.predicate
+      s.send_out[0].msg.predicate = s.recv_in[0].msg.predicate and\
+                                 s.recv_in[1].msg.predicate
       if s.recv_opt.msg.ctrl == OPT_MUL:
-        s.send_out0.msg.payload = s.recv_in0.msg.payload * s.recv_in1.msg.payload
-      s.send_out1.msg = s.send_out0.msg
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload * s.recv_in[1].msg.payload
+      s.send_out[1].msg = s.send_out[0].msg
 

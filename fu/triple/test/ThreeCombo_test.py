@@ -24,7 +24,7 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, CtrlType,
+  def construct( s, FunctionUnit, DataType, CtrlType, num_inports, num_outports,
                  src0_msgs, src1_msgs, src2_msgs, src3_msgs,
                  ctrl_msgs, sink_msgs ):
 
@@ -35,14 +35,14 @@ class TestHarness( Component ):
     s.src_opt  = TestSrcRTL( CtrlType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType, sink_msgs )
 
-    s.dut = FunctionUnit( DataType, CtrlType )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports )
 
-    connect( s.src_in0.send,  s.dut.recv_in0  )
-    connect( s.src_in1.send,  s.dut.recv_in1  )
-    connect( s.src_in2.send,  s.dut.recv_in2  )
-    connect( s.src_in3.send,  s.dut.recv_in3  )
-    connect( s.src_opt.send , s.dut.recv_opt  )
-    connect( s.dut.send_out0, s.sink_out.recv )
+    connect( s.src_in0.send,    s.dut.recv_in[0] )
+    connect( s.src_in1.send,    s.dut.recv_in[1] )
+    connect( s.src_in2.send,    s.dut.recv_in[2] )
+    connect( s.src_in3.send,    s.dut.recv_in[3] )
+    connect( s.src_opt.send ,   s.dut.recv_opt   )
+    connect( s.dut.send_out[0], s.sink_out.recv  )
 
   def done( s ):
     return s.src_in0.done()  and s.src_in1.done()  and\
@@ -79,6 +79,8 @@ def test_mul_alu_shifter():
   FU = ThreeMulAluShifter
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
+  num_inports = 4
+  num_outports = 2
   src_in0  = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1),  DataType(3, 1) ]
   src_in2  = [ DataType(1, 1), DataType(3, 1),  DataType(3, 1) ]
@@ -87,7 +89,8 @@ def test_mul_alu_shifter():
   src_opt  = [ CtrlType( OPT_MUL_ADD_LLS ), 
                CtrlType( OPT_MUL_SUB_LLS ), 
                CtrlType( OPT_MUL_SUB_LRS ) ]
-  th = TestHarness( FU, DataType, CtrlType, src_in0, src_in1, src_in2, src_in3,
+  th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
+                    src_in0, src_in1, src_in2, src_in3,
                     src_opt, sink_out )
   run_sim( th )
 

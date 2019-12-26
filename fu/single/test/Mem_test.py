@@ -1,6 +1,6 @@
 """
 ==========================================================================
-Alu_test.py
+Mem_test.py
 ==========================================================================
 Test cases for functional unit.
 
@@ -16,6 +16,7 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 from ..MemUnit                    import MemUnit
 from ....mem.data.DataMem         import DataMem
 from ....lib.opt_type             import *
+from ....lib.mem_param            import *
 from ....lib.messages             import *
 
 #-------------------------------------------------------------------------
@@ -24,7 +25,7 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
+  def construct( s, FunctionUnit, DataType, ConfigType, num_inports, num_outports,
                  src0_msgs, src1_msgs, ctrl_msgs, sink_msgs ):
 
     s.src_in0  = TestSrcRTL( DataType,   src0_msgs   )
@@ -32,7 +33,7 @@ class TestHarness( Component ):
     s.src_opt  = TestSrcRTL( ConfigType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType,   sink_msgs   )
 
-    s.dut = FunctionUnit( DataType, ConfigType )
+    s.dut = FunctionUnit( DataType, ConfigType, num_inports, num_outports )
     s.data_mem = DataMem( DataType )
 
     connect( s.dut.to_mem_raddr,   s.data_mem.recv_raddr[0] )
@@ -40,10 +41,10 @@ class TestHarness( Component ):
     connect( s.dut.to_mem_waddr,   s.data_mem.recv_waddr[0] )
     connect( s.dut.to_mem_wdata,   s.data_mem.recv_wdata[0] )
 
-    connect( s.src_in0.send,  s.dut.recv_in0  )
-    connect( s.src_in1.send,  s.dut.recv_in1  )
-    connect( s.src_opt.send,  s.dut.recv_opt  )
-    connect( s.dut.send_out0, s.sink_out.recv )
+    connect( s.src_in0.send,    s.dut.recv_in[0] )
+    connect( s.src_in1.send,    s.dut.recv_in[1] )
+    connect( s.src_opt.send,    s.dut.recv_opt   )
+    connect( s.dut.send_out[0], s.sink_out.recv  )
 
   def done( s ):
     return s.src_in0.done() and s.src_in1.done() and\
@@ -79,6 +80,8 @@ def test_Mem():
   FU = MemUnit
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
+  num_inports  = 4
+  num_outports = 2
   src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1), DataType(3, 1) ]
   src_in1  = [ DataType(9, 1), DataType(6, 1), DataType(2, 1), DataType(7, 1) ]
   sink_out = [ DataType(0, 0), DataType(6, 1), DataType(6, 1) ]
@@ -86,6 +89,7 @@ def test_Mem():
                ConfigType( OPT_STR ),
                ConfigType( OPT_LD  ),
                ConfigType( OPT_LD  ) ]
-  th = TestHarness( FU, DataType, ConfigType, src_in0, src_in1, src_opt, sink_out )
+  th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
+                    src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 

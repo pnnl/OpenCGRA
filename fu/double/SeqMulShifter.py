@@ -18,10 +18,10 @@ from ..single.Shifter    import Shifter
 
 class SeqMulShifter( TwoSeqCombo ):
 
-  def construct( s, DataType, CtrlType ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports ):
 
-    super( SeqMulShifter, s ).construct( DataType, CtrlType, Mul, Shifter )
-
+    super( SeqMulShifter, s ).construct( DataType, CtrlType, Mul, Shifter,
+                                         num_inports, num_outports )
 
     @s.update
     def update_opt():

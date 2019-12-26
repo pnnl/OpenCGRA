@@ -23,7 +23,7 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, CtrlType,
+  def construct( s, FunctionUnit, DataType, CtrlType, num_inports, num_outports,
                  src_data, src_comp, src_opt, sink_if, sink_else ):
 
     s.src_data  = TestSrcRTL( DataType, src_data  )
@@ -32,13 +32,13 @@ class TestHarness( Component ):
     s.sink_if   = TestSinkCL( DataType, sink_if   )
     s.sink_else = TestSinkCL( DataType, sink_else )
 
-    s.dut = FunctionUnit( DataType, CtrlType )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports )
 
-    connect( s.src_data.send, s.dut.recv_in0   )
-    connect( s.src_comp.send, s.dut.recv_in1   )
-    connect( s.src_opt.send,  s.dut.recv_opt   )
-    connect( s.dut.send_out0, s.sink_if.recv   )
-    connect( s.dut.send_out1, s.sink_else.recv )
+    connect( s.src_data.send,   s.dut.recv_in[0] )
+    connect( s.src_comp.send,   s.dut.recv_in[1] )
+    connect( s.src_opt.send,    s.dut.recv_opt   )
+    connect( s.dut.send_out[0], s.sink_if.recv   )
+    connect( s.dut.send_out[1], s.sink_else.recv )
 
   def done( s ):
     return s.src_data.done() and s.src_comp.done()  and s.src_opt.done() and\
@@ -74,6 +74,8 @@ def test_Branch():
   FU = Branch
   DataType  = mk_data( 16, 1 )
   CtrlType  = mk_ctrl()
+  num_inports  = 4
+  num_outports = 2
   src_data  = [ DataType(7, 1), DataType(3, 1), DataType(9, 1) ]
   src_comp  = [ DataType(0, 1), DataType(1, 1), DataType(0, 1) ]
   src_opt   = [ CtrlType( OPT_BRH ),
@@ -81,7 +83,7 @@ def test_Branch():
                 CtrlType( OPT_BRH ) ]
   sink_if   = [ DataType(7, 1), DataType(3, 0), DataType(9, 1) ]
   sink_else = [ DataType(7, 0), DataType(3, 1), DataType(9, 0) ]
-  th = TestHarness( FU, DataType, CtrlType, src_data, src_comp, src_opt,
-                    sink_if, sink_else )
+  th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
+                    src_data, src_comp, src_opt, sink_if, sink_else )
 
   run_sim( th )

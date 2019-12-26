@@ -16,20 +16,21 @@ from ..basic.Fu         import Fu
 
 class Logic( Fu ):
 
-  def construct( s, DataType, ConfigType ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports ):
 
-    super( Logic, s ).construct( DataType, ConfigType )
+    super( Logic, s ).construct( DataType, ConfigType, num_inports, num_outports,
+                                 [OPT_OR, OPT_AND, OPT_NOT, OPT_XOR] )
 
     @s.update
     def comb_logic():
-      s.send_out0.msg.predicate = s.recv_in0.msg.predicate and\
-                                 s.recv_in1.msg.predicate
+      s.send_out[0].msg.predicate = s.recv_in[0].msg.predicate and\
+                                    s.recv_in[1].msg.predicate
       if s.recv_opt.msg.ctrl == OPT_OR:
-        s.send_out0.msg.payload = s.recv_in0.msg.payload | s.recv_in1.msg.payload
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload | s.recv_in[1].msg.payload
       elif s.recv_opt.msg.ctrl == OPT_AND:
-        s.send_out0.msg.payload = s.recv_in0.msg.payload & s.recv_in1.msg.payload
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload & s.recv_in[1].msg.payload
       elif s.recv_opt.msg.ctrl == OPT_NOT:
-        s.send_out0.msg.payload = ~ s.recv_in0.msg.payload
+        s.send_out[0].msg.payload = ~ s.recv_in[0].msg.payload
       elif s.recv_opt.msg.ctrl == OPT_XOR:
-        s.send_out0.msg.payload = s.recv_in0.msg.payload ^ s.recv_in1.msg.payload
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload ^ s.recv_in[1].msg.payload
 

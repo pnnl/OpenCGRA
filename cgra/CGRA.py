@@ -12,11 +12,12 @@ from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ..noc.Crossbar     import Crossbar
 from ..noc.Channel      import Channel
 from ..tile.Tile        import Tile
+from ..lib.mem_param    import *
 
 class CGRA( Component ):
 
-  def construct( s, FunctionUnit, DataType, CtrlType,# RtTabType,
-                 width, height, ctrl_mem_size, num_ctrl ):
+  def construct( s, FunctionUnit, FuList, DataType, CtrlType,
+                 width, height, num_ctrl ):
 
     # Constant
     NORTH = 0
@@ -25,26 +26,24 @@ class CGRA( Component ):
     EAST  = 3
     s.num_tiles = width * height
     s.num_mesh_ports = 4
-    AddrType = mk_bits( clog2( ctrl_mem_size ) )
+    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
 
     # Interfaces
 
     s.recv_waddr = [ RecvIfcRTL( AddrType )  for _ in range( s.num_tiles ) ]
     s.recv_wopt  = [ RecvIfcRTL( CtrlType )  for _ in range( s.num_tiles ) ]
-#    s.recv_route = [ RecvIfcRTL( RtTabType ) for _ in range( s.num_tiles ) ]
 
     # Components
 
-    s.tile = [ Tile( FunctionUnit, DataType, CtrlType,#RtTabType,
-                     ctrl_mem_size, num_ctrl ) 
+    s.tile = [ Tile( FunctionUnit, FuList, DataType, CtrlType, num_ctrl ) 
                for _ in range( s.num_tiles ) ]
+#    s.data_mem = 
 
     # Connections
 
     for i in range( s.num_tiles):
       s.recv_waddr[i] //= s.tile[i].recv_waddr
       s.recv_wopt[i]  //= s.tile[i].recv_wopt
-#      s.recv_route[i] //= s.tile[i].recv_routing
 
       if i // width > 0:
         s.tile[i].send_data[SOUTH] //= s.tile[i-width].recv_data[NORTH]
@@ -57,10 +56,6 @@ class CGRA( Component ):
 
       if i % width < width - 1:
         s.tile[i].send_data[EAST] //= s.tile[i+1].recv_data[WEST]
-
-      # Connect the unused ports
-      # FIXME: for now we hackily ground the payload field so that pymtl
-      # won't complain about net need driver.
 
       if i // width == 0:
         s.tile[i].send_data[SOUTH].rdy //= 0
