@@ -24,7 +24,7 @@ from ....lib.messages             import *
 class TestHarness( Component ):
 
   def construct( s, FunctionUnit, DataType, CtrlType, num_inports, num_outports,
-                 src_data, src_comp, src_opt, sink_if, sink_else ):
+                 data_mem_size, src_data, src_comp, src_opt, sink_if, sink_else ):
 
     s.src_data  = TestSrcRTL( DataType, src_data  )
     s.src_comp  = TestSrcRTL( DataType, src_comp  )
@@ -32,7 +32,8 @@ class TestHarness( Component ):
     s.sink_if   = TestSinkCL( DataType, sink_if   )
     s.sink_else = TestSinkCL( DataType, sink_else )
 
-    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports,
+                          data_mem_size )
 
     connect( s.src_data.send,   s.dut.recv_in[0] )
     connect( s.src_comp.send,   s.dut.recv_in[1] )
@@ -74,8 +75,9 @@ def test_Branch():
   FU = Branch
   DataType  = mk_data( 16, 1 )
   CtrlType  = mk_ctrl()
-  num_inports  = 4
-  num_outports = 2
+  num_inports   = 4
+  num_outports  = 2
+  data_mem_size = 8
   src_data  = [ DataType(7, 1), DataType(3, 1), DataType(9, 1) ]
   src_comp  = [ DataType(0, 1), DataType(1, 1), DataType(0, 1) ]
   src_opt   = [ CtrlType( OPT_BRH ),
@@ -84,6 +86,6 @@ def test_Branch():
   sink_if   = [ DataType(7, 1), DataType(3, 0), DataType(9, 1) ]
   sink_else = [ DataType(7, 0), DataType(3, 1), DataType(9, 0) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
-                    src_data, src_comp, src_opt, sink_if, sink_else )
-
+                    data_mem_size, src_data, src_comp, src_opt, sink_if, sink_else )
   run_sim( th )
+

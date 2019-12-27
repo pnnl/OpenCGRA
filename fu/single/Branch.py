@@ -16,10 +16,11 @@ from ..basic.Fu         import Fu
 
 class Branch( Fu ):
 
-  def construct( s, DataType, ConfigType, num_inports, num_outports ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( Branch, s ).construct( DataType, ConfigType, num_inports, num_outports,
-                                  [OPT_BRH] )
+           data_mem_size, [OPT_BRH] )
 
     @s.update
     def comb_logic():

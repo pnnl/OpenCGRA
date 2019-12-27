@@ -15,7 +15,6 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
 from ...lib.opt_type              import *
 from ...lib.messages              import *
-from ...lib.mem_param             import *
 
 from ...fu.flexible.FlexibleFu    import FlexibleFu
 from ...fu.single.Alu             import Alu
@@ -28,26 +27,24 @@ from ..CGRA                       import CGRA
 
 class TestHarness( Component ):
 
-  def construct( s, DUT, FunctionUnit, FuList, DataType, CtrlType, #RoutingTableType,
-                 width, height, src_opt, ctrl_waddr):#, src_routing ):
+  def construct( s, DUT, FunctionUnit, FuList, DataType, CtrlType,
+                 width, height, ctrl_mem_size, data_mem_size,
+                 src_opt, ctrl_waddr):
 
     s.num_tiles = width * height
-    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
+    AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
     s.src_opt     = [ TestSrcRTL( CtrlType, src_opt[i] )
                       for i in range( s.num_tiles ) ]
     s.ctrl_waddr  = [ TestSrcRTL( AddrType, ctrl_waddr[i] )
                       for i in range( s.num_tiles ) ]
-#    s.src_routing = [ TestSrcRTL( RoutingTableType, src_routing[i] )
-#                      for i in range( s.num_tiles ) ]
 
-    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType,# RoutingTableType,
-                 width, height, len( src_opt ) )
+    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType, width, height,
+                 ctrl_mem_size, data_mem_size, len( src_opt ) )
 
     for i in range( s.num_tiles ):
       connect( s.src_opt[i].send,     s.dut.recv_wopt[i]  )
       connect( s.ctrl_waddr[i].send,  s.dut.recv_waddr[i] )
-#      connect( s.src_routing[i].send, s.dut.recv_route[i] )
 
   def done( s ):
     done = True
@@ -55,10 +52,6 @@ class TestHarness( Component ):
       if not s.src_opt[i].done():
         done = False
         break
-#    for i in range( s.num_tiles ):
-#      if not s.src_routing[i].done():
-#        done = False
-#        break
     return done
 
   def line_trace( s ):
@@ -92,17 +85,19 @@ def test_cgra_universal():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
+  ctrl_mem_size     = 8
   width  = 2
   height = 2
   RouteType = mk_bits( clog2( num_xbar_inports + 1 ) )
-  AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
+  AddrType = mk_bits( clog2( ctrl_mem_size ) )
   num_tiles    = width * height
+  ctrl_mem_size = 8
+  data_mem_size = 8
   DUT          = CGRA
   FunctionUnit = FlexibleFu
   FuList      = [Alu, MemUnit]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
-#  RtTabType    = mk_routing_table( num_xbar_inports, num_xbar_outports )
   src_opt      = [ [ CtrlType( OPT_INC, [ 
                      RouteType(3), RouteType(2), RouteType(1), RouteType(0),
                      RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
@@ -115,19 +110,8 @@ def test_cgra_universal():
                      for _ in range( num_tiles ) ]
   ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ] 
                      for _ in range( num_tiles ) ]
-#  src_route    = [ [ RtTabType([3, 2, 1, 0, 4, 4, 4, 4]),
-#                     RtTabType([3, 2, 1, 0, 4, 4, 4, 4]),
-#                     RtTabType([3, 2, 1, 0, 4, 4, 4, 4]) ]
-#                     for _ in range( num_tiles ) ]
-#  src_data     = [ [DataType(1, 1), DataType( 1, 1)],
-#                   [DataType(2, 1), DataType( 2, 1)],
-#                   [DataType(3, 1), DataType( 3, 1)],
-#                   [DataType(4, 1), DataType( 4, 1)] ]
-#  sink_out     = [ [DataType(4, 1), DataType( 3, 1), DataType( 3, 1)],
-#                   [DataType(3, 1), DataType( 3, 1), DataType( 3, 1)],
-#                   [DataType(2, 1), DataType( 3, 1)],
-#                   [DataType(1, 1), DataType( 7, 1)] ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
-                    width, height, src_opt, ctrl_waddr )
+                    width, height, ctrl_mem_size, data_mem_size,
+                    src_opt, ctrl_waddr )
   run_sim( th )
 

@@ -16,10 +16,12 @@ from ..basic.Fu         import Fu
 
 class Comp( Fu ):
 
-  def construct( s, DataType, ConfigType, num_inports, num_outports ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( Comp, s ).construct( DataType, ConfigType, num_inports, num_outports,
-                                [OPT_EQ, OPT_LE] )
+           data_mem_size, [OPT_EQ, OPT_LE] )
+
     # data:      s.recv_in[0]
     # reference: s.recv_in[1]
 

@@ -16,7 +16,6 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 from ....fu.single.Alu            import Alu
 from ..CtrlMem                    import CtrlMem
 from ....lib.opt_type             import *
-from ....lib.mem_param            import *
 from ....lib.messages             import *
 
 #-------------------------------------------------------------------------
@@ -25,10 +24,11 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, DataType, ConfigType, src0_msgs, src1_msgs,
-                 ctrl_raddr, ctrl_waddr, ctrl_msgs, sink_msgs ):
+  def construct( s, DataType, ConfigType, ctrl_mem_size, data_mem_size,
+                 src0_msgs, src1_msgs, ctrl_raddr, ctrl_waddr,
+                 ctrl_msgs, sink_msgs ):
 
-    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
+    AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
     s.src_data0 = TestSrcRTL( DataType,   src0_msgs  )
     s.src_data1 = TestSrcRTL( DataType,   src1_msgs  )
@@ -36,8 +36,8 @@ class TestHarness( Component ):
     s.src_wdata = TestSrcRTL( ConfigType, ctrl_msgs  )
     s.sink_out  = TestSinkCL( DataType,   sink_msgs  )
 
-    s.alu       = Alu( DataType, ConfigType, 4, 2 )
-    s.ctrl_mem  = CtrlMem( ConfigType )
+    s.alu       = Alu( DataType, ConfigType, 4, 2, data_mem_size )
+    s.ctrl_mem  = CtrlMem( ConfigType, ctrl_mem_size )
 
     connect( s.alu.recv_opt,   s.ctrl_mem.send_ctrl  )
 
@@ -81,14 +81,16 @@ def run_sim( test_harness, max_cycles=100 ):
 def test_Ctrl():
   DataType  = mk_data( 16, 1 )
   CtrlType  = mk_ctrl()
-  AddrType  = mk_bits( clog2( CTRL_MEM_SIZE ) )
+  ctrl_mem_size = 8
+  data_mem_size = 8
+  AddrType  = mk_bits( clog2( ctrl_mem_size ) )
   src_data0 = [DataType(0,0),DataType(1,1),DataType(5,1),DataType(7,1),DataType(6,1)]
   src_data1 = [DataType(0,0),DataType(6,1),DataType(1,1),DataType(2,1),DataType(3,1)]
   src_raddr = [AddrType( 0 ),AddrType( 0 ),AddrType( 1 ),AddrType( 2 ),AddrType( 3 )]
   src_waddr = [AddrType( 0 ),AddrType( 1 ),AddrType( 2 ),AddrType( 3 )]
   src_wdata = [CtrlType(OPT_ADD),CtrlType(OPT_SUB),CtrlType(OPT_SUB),CtrlType(OPT_ADD)]
   sink_out  = [DataType(7,1),DataType(4,1),DataType(5,1),DataType(9,1)]
-  th = TestHarness( DataType, CtrlType, src_data0, src_data1,
-                    src_raddr, src_waddr, src_wdata, sink_out )
+  th = TestHarness( DataType, CtrlType, ctrl_mem_size, data_mem_size,
+                    src_data0, src_data1, src_raddr, src_waddr, src_wdata, sink_out )
   run_sim( th )
 

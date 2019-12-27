@@ -12,16 +12,15 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
-from ...lib.mem_param   import *
 from pymtl3.stdlib.rtl  import RegisterFile
 
 class CtrlMem( Component ):
 
-  def construct( s, CtrlType, num_ctrl=4 ):
+  def construct( s, CtrlType, ctrl_mem_size, num_ctrl=4 ):
 
     # Constant
 
-    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
+    AddrType = mk_bits( clog2( ctrl_mem_size ) )
     TimeType = mk_bits( clog2( num_ctrl+1 ) )
 
     # Interface
@@ -32,7 +31,7 @@ class CtrlMem( Component ):
 
     # Component
 
-    s.reg_file   = RegisterFile( CtrlType, CTRL_MEM_SIZE, 1, 1 )
+    s.reg_file   = RegisterFile( CtrlType, ctrl_mem_size, 1, 1 )
     s.times = Wire( TimeType )
 
     # Connections
@@ -55,7 +54,7 @@ class CtrlMem( Component ):
     def update_raddr():
       if s.reg_file.rdata[0].ctrl != OPT_START:
         s.reg_file.raddr[0] <<= s.reg_file.raddr[0] + AddrType( 1 )
-        if s.times + TimeType( 1 )  == TimeType( CTRL_MEM_SIZE ):
+        if s.times + TimeType( 1 )  == TimeType( ctrl_mem_size ):
           s.times <<= TimeType( 0 )
         else:
           s.times <<= s.times + TimeType( 1 )

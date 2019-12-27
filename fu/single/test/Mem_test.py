@@ -16,7 +16,6 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 from ..MemUnit                    import MemUnit
 from ....mem.data.DataMem         import DataMem
 from ....lib.opt_type             import *
-from ....lib.mem_param            import *
 from ....lib.messages             import *
 
 #-------------------------------------------------------------------------
@@ -25,7 +24,8 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType, num_inports, num_outports,
+  def construct( s, FunctionUnit, DataType, ConfigType,
+                 num_inports, num_outports, data_mem_size,
                  src0_msgs, src1_msgs, ctrl_msgs, sink_msgs ):
 
     s.src_in0  = TestSrcRTL( DataType,   src0_msgs   )
@@ -33,8 +33,9 @@ class TestHarness( Component ):
     s.src_opt  = TestSrcRTL( ConfigType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType,   sink_msgs   )
 
-    s.dut = FunctionUnit( DataType, ConfigType, num_inports, num_outports )
-    s.data_mem = DataMem( DataType )
+    s.dut = FunctionUnit( DataType, ConfigType, num_inports, num_outports,
+                          data_mem_size )
+    s.data_mem = DataMem( DataType, data_mem_size )
 
     connect( s.dut.to_mem_raddr,   s.data_mem.recv_raddr[0] )
     connect( s.dut.from_mem_rdata, s.data_mem.send_rdata[0] )
@@ -80,6 +81,7 @@ def test_Mem():
   FU = MemUnit
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
+  data_mem_size = 8
   num_inports  = 4
   num_outports = 2
   src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1), DataType(3, 1) ]
@@ -90,6 +92,6 @@ def test_Mem():
                ConfigType( OPT_LD  ),
                ConfigType( OPT_LD  ) ]
   th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
-                    src_in0, src_in1, src_opt, sink_out )
+                    data_mem_size, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 

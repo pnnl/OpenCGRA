@@ -12,16 +12,16 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type     import *
-from ...lib.mem_param    import *
 from ..basic.Fu          import Fu
 
 class MemUnit( Component ):
 
-  def construct( s, DataType, CtrlType, num_inports, num_outports ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports,
+                 data_mem_size ):
 
     # Constant
 
-    AddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
+    AddrType = mk_bits( clog2( data_mem_size ) )
     # Components
 
     s.opt_list = [OPT_LD, OPT_STR]

@@ -11,15 +11,14 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
-from ...lib.mem_param   import *
 
 class Fu( Component ):
 
-  def construct( s, DataType, CtrlType, num_inports, num_outports, opt_list ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports,
+                 data_mem_size, opt_list ):
 
     # Constant
 
-    AddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
     s.opt_list = opt_list
 
     # Interface

@@ -25,7 +25,7 @@ from ....lib.messages  import *
 class TestHarness( Component ):
 
   def construct( s, FunctionUnit, DataType, CtrlType, num_inports, num_outports,
-                 src0_msgs, src1_msgs, src2_msgs,
+                 data_mem_size, src0_msgs, src1_msgs, src2_msgs,
                  ctrl_msgs, sink_msgs ):
 
     s.src_in0  = TestSrcRTL( DataType, src0_msgs )
@@ -34,7 +34,8 @@ class TestHarness( Component ):
     s.src_opt  = TestSrcRTL( CtrlType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType, sink_msgs )
 
-    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports,
+                          data_mem_size )
 
     connect( s.src_in0.send,    s.dut.recv_in[0] )
     connect( s.src_in1.send,    s.dut.recv_in[1] )
@@ -76,8 +77,9 @@ def test_mul_alu():
   FU = SeqMulAlu
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  num_inports = 4
-  num_outports = 2
+  num_inports   = 4
+  num_outports  = 2
+  data_mem_size = 8
   src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(4, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(3, 1) ]
   src_in2  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1) ]
@@ -86,15 +88,17 @@ def test_mul_alu():
                CtrlType( OPT_MUL_ADD),
                CtrlType( OPT_MUL_SUB) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
-                    src_in0, src_in1, src_in2, src_opt, sink_out )
+                    data_mem_size, src_in0, src_in1, src_in2, src_opt,
+                    sink_out )
   run_sim( th )
 
 def test_mul_shifter():
   FU = SeqMulShifter
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  num_inports = 4
-  num_outports = 2
+  num_inports   = 4
+  num_outports  = 2
+  data_mem_size = 8
   src_in0  = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1),  DataType(3, 1) ]
   src_in2  = [ DataType(1, 1), DataType(2, 1),  DataType(1, 1) ]
@@ -103,6 +107,7 @@ def test_mul_shifter():
                CtrlType( OPT_MUL_LLS),
                CtrlType( OPT_MUL_LRS) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
-                    src_in0, src_in1, src_in2, src_opt, sink_out )
+                    data_mem_size, src_in0, src_in1, src_in2, src_opt,
+                    sink_out )
   run_sim( th )
 

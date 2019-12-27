@@ -12,12 +12,12 @@ from pymtl3.stdlib.ifcs       import SendIfcRTL, RecvIfcRTL
 from ..noc.Crossbar           import Crossbar
 from ..noc.Channel            import Channel
 from ..mem.ctrl.CtrlMem       import CtrlMem
-from ..lib.mem_param          import *
 from ..fu.flexible.FlexibleFu import FlexibleFu
 
 class Tile( Component ):
 
-  def construct( s, Fu, FuList, DataType, CtrlType, num_ctrl ):
+  def construct( s, Fu, FuList, DataType, CtrlType, 
+                 ctrl_mem_size, data_mem_size, num_ctrl ):
 
     # Constant
 
@@ -27,8 +27,8 @@ class Tile( Component ):
     num_fu_outports   = 2
     num_mesh_ports    = 4
 
-    CtrlAddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
-    DataAddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
+    CtrlAddrType = mk_bits( clog2( ctrl_mem_size ) )
+    DataAddrType = mk_bits( clog2( data_mem_size ) )
 
     # Interfaces
 
@@ -46,11 +46,11 @@ class Tile( Component ):
 
     # Components
 
-    s.element  = FlexibleFu( FuList, DataType, CtrlType,
-                             num_fu_inports, num_fu_outports )
-    s.crossbar = Crossbar( DataType, CtrlType,# RoutingTableType,
-                           num_xbar_inports, num_xbar_outports )
-    s.ctrl_mem = CtrlMem( CtrlType, num_ctrl )
+    s.element  = FlexibleFu( FuList, DataType, CtrlType, num_fu_inports,
+                             num_fu_outports, data_mem_size )
+    s.crossbar = Crossbar( DataType, CtrlType, num_xbar_inports,
+                           num_xbar_outports )
+    s.ctrl_mem = CtrlMem( CtrlType, ctrl_mem_size, num_ctrl )
     s.channel  = [ Channel ( DataType ) for _ in range( num_xbar_outports ) ]
 
     # Connections

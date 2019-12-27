@@ -15,10 +15,11 @@ from ..basic.Fu         import Fu
 
 class Mul( Fu ):
 
-  def construct( s, DataType, ConfigType, num_inports, num_outports ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( Mul, s ).construct( DataType, ConfigType, num_inports, num_outports,
-                               [OPT_MUL] )
+           data_mem_size, [OPT_MUL] )
 
     @s.update
     def comb_logic():

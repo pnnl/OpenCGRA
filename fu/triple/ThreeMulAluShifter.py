@@ -19,11 +19,11 @@ from ..single.Shifter   import Shifter
 
 class ThreeMulAluShifter( ThreeCombo ):
 
-  def construct( s, DataType, CtrlType, num_inports, num_outports ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( ThreeMulAluShifter, s ).construct( DataType, CtrlType,
-                                              Mul, Alu, Shifter,
-                                              num_inports, num_outports )
+           Mul, Alu, Shifter, num_inports, num_outports, data_mem_size )
 
     @s.update
     def update_opt():

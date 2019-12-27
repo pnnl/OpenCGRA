@@ -16,10 +16,11 @@ from ..basic.Fu         import Fu
 
 class Logic( Fu ):
 
-  def construct( s, DataType, ConfigType, num_inports, num_outports ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( Logic, s ).construct( DataType, ConfigType, num_inports, num_outports,
-                                 [OPT_OR, OPT_AND, OPT_NOT, OPT_XOR] )
+           data_mem_size, [OPT_OR, OPT_AND, OPT_NOT, OPT_XOR] )
 
     @s.update
     def comb_logic():

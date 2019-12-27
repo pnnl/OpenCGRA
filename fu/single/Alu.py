@@ -16,10 +16,11 @@ from ..basic.Fu         import Fu
 
 class Alu( Fu ):
 
-  def construct( s, DataType, ConfigType, num_inports, num_outports ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( Alu, s ).construct( DataType, ConfigType, num_inports, num_outports,
-                               [OPT_ADD, OPT_INC, OPT_SUB] )
+           data_mem_size, [OPT_ADD, OPT_INC, OPT_SUB] )
 
     @s.update
     def comb_logic():

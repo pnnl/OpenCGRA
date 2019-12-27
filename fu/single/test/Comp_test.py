@@ -24,14 +24,15 @@ from ....lib.messages             import *
 class TestHarness( Component ):
 
   def construct( s, FunctionUnit, DataType, CtrlType, num_inports, num_outports,
-                 src_data, src_ref, src_opt, sink_msgs ):
+                 data_mem_size, src_data, src_ref, src_opt, sink_msgs ):
 
     s.src_data = TestSrcRTL( DataType, src_data  )
     s.src_ref  = TestSrcRTL( DataType, src_ref   )
     s.src_opt  = TestSrcRTL( CtrlType, src_opt   )
     s.sink_out = TestSinkCL( DataType, sink_msgs )
 
-    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports,
+                          data_mem_size )
 
     connect( s.src_data.send, s.dut.recv_in[0]  )
     connect( s.src_ref.send,  s.dut.recv_in[1]  )
@@ -72,8 +73,9 @@ def test_Comp():
   FU = Comp
   DataType   = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  num_inports  = 4
-  num_outports = 2
+  num_inports   = 4
+  num_outports  = 2
+  data_mem_size = 8
   src_data   = [ DataType(9, 1), DataType(3, 1), DataType(3, 1) ]
   src_ref    = [ DataType(9, 1), DataType(5, 1), DataType(2, 1) ]
   src_opt    = [ CtrlType( OPT_EQ ),
@@ -81,6 +83,5 @@ def test_Comp():
                  CtrlType( OPT_EQ ) ]
   sink_out   = [ DataType(1, 1), DataType(1, 1), DataType(0, 1) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
-                    src_data, src_ref,
-                    src_opt, sink_out )
+                    data_mem_size, src_data, src_ref, src_opt, sink_out )
   run_sim( th )

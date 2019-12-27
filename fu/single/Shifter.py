@@ -16,10 +16,11 @@ from ..basic.Fu         import Fu
 
 class Shifter( Fu ):
 
-  def construct( s, DataType, ConfigType, num_inports, num_outports ):
+  def construct( s, DataType, ConfigType, num_inports, num_outports,
+                 data_mem_size ):
 
     super( Shifter, s ).construct( DataType, ConfigType, num_inports, num_outports,
-                                   [OPT_LLS, OPT_LRS] )
+           data_mem_size, [OPT_LLS, OPT_LRS] )
 
     @s.update
     def comb_logic():
