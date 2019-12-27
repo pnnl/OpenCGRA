@@ -18,6 +18,7 @@ from ...lib.opt_type                 import *
 from ...lib.mem_param                import *
 from ...lib.messages                 import *
 from ...fu.single.Alu                import Alu
+from ...fu.single.MemUnit            import MemUnit
 from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...fu.flexible.FlexibleFu       import FlexibleFu
 from ...mem.ctrl.CtrlMem             import CtrlMem
@@ -98,7 +99,7 @@ def test_tile_alu():
   AddrType     = mk_bits( clog2( CTRL_MEM_SIZE ) )
   DUT          = Tile
   FunctionUnit = FlexibleFu
-  FuList      = [Alu]
+  FuList      = [Alu, MemUnit]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   opt_waddr    = [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ]

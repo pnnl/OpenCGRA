@@ -19,6 +19,7 @@ from ...lib.mem_param             import *
 
 from ...fu.flexible.FlexibleFu    import FlexibleFu
 from ...fu.single.Alu             import Alu
+from ...fu.single.MemUnit         import MemUnit
 from ..CGRA                       import CGRA
 
 #-------------------------------------------------------------------------
@@ -98,7 +99,7 @@ def test_cgra_universal():
   num_tiles    = width * height
   DUT          = CGRA
   FunctionUnit = FlexibleFu
-  FuList      = [Alu]
+  FuList      = [Alu, MemUnit]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
 #  RtTabType    = mk_routing_table( num_xbar_inports, num_xbar_outports )

@@ -28,7 +28,7 @@ class Alu( Fu ):
       if s.recv_opt.msg.ctrl == OPT_ADD:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload + s.recv_in[1].msg.payload
       elif s.recv_opt.msg.ctrl == OPT_INC:
-        s.send_out[0].msg.payload = s.recv_in[0].msg.payload + Bits32( 1 )
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload + DataType( 1, 1 ).payload
       elif s.recv_opt.msg.ctrl == OPT_SUB:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload - s.recv_in[1].msg.payload
       s.send_out[1].msg = s.send_out[0].msg

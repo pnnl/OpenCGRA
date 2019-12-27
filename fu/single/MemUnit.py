@@ -24,7 +24,7 @@ class MemUnit( Component ):
     AddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
     # Components
 
-    opt_list = [OPT_LD, OPT_STR]
+    s.opt_list = [OPT_LD, OPT_STR]
 
     # Interface
 
@@ -54,7 +54,7 @@ class MemUnit( Component ):
           s.send_out[j].en = s.recv_in[i].en or s.send_out[j].en
         s.send_out[j].en = s.send_out[j].en and s.recv_opt.en
 
-      if s.recv_opt.msg.ctrl not in opt_list:
+      if s.recv_opt.msg.ctrl not in s.opt_list:
         for j in range( 1, num_outports ):
           s.send_out[j].en = b1( 0 )
 

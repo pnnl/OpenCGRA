@@ -27,15 +27,22 @@ class Tile( Component ):
     num_fu_outports   = 2
     num_mesh_ports    = 4
 
-    AddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
+    CtrlAddrType = mk_bits( clog2( CTRL_MEM_SIZE ) )
+    DataAddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
 
     # Interfaces
 
     s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
     s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
 
-    s.recv_waddr = RecvIfcRTL( AddrType )
+    # Ctrl
+    s.recv_waddr = RecvIfcRTL( CtrlAddrType )
     s.recv_wopt  = RecvIfcRTL( CtrlType )
+    # Data
+    s.to_mem_raddr   = SendIfcRTL( DataAddrType )
+    s.from_mem_rdata = RecvIfcRTL( DataType )
+    s.to_mem_waddr   = SendIfcRTL( DataAddrType )
+    s.to_mem_wdata   = SendIfcRTL( DataType )
 
     # Components
 
@@ -48,10 +55,16 @@ class Tile( Component ):
 
     # Connections
 
+    # Ctrl
     s.ctrl_mem.recv_waddr //= s.recv_waddr
     s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
+    # Data
+    s.to_mem_raddr   //= s.element.to_mem_raddr
+    s.from_mem_rdata //= s.element.from_mem_rdata
+    s.to_mem_waddr   //= s.element.to_mem_waddr
+    s.to_mem_wdata   //= s.element.to_mem_wdata
 
-    for i in range( num_mesh_ports  ):
+    for i in range( num_mesh_ports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]
 
     for i in range( num_xbar_outports ):

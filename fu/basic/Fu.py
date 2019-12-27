@@ -11,15 +11,21 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
+from ...lib.mem_param   import *
 
 class Fu( Component ):
 
   def construct( s, DataType, CtrlType, num_inports, num_outports, opt_list ):
 
+    # Constant
+
+    AddrType = mk_bits( clog2( DATA_MEM_SIZE ) )
+    s.opt_list = opt_list
+
     # Interface
 
     s.recv_in  = [ RecvIfcRTL( DataType ) for _ in range( num_inports ) ]
-    s.recv_opt  = RecvIfcRTL( CtrlType )
+    s.recv_opt = RecvIfcRTL( CtrlType )
     s.send_out = [ SendIfcRTL( DataType ) for _ in range( num_inports ) ]
 
     @s.update
@@ -34,7 +40,8 @@ class Fu( Component ):
       for j in range( num_outports ):
         for i in range( num_inports ):
           s.send_out[j].en = s.recv_in[i].en or s.send_out[j].en
-        s.send_out[j].en = s.send_out[j].en and s.recv_opt.en
+        # FIXME: Should be or/and, need to re-consider about it
+        s.send_out[j].en = s.send_out[j].en or s.recv_opt.en
 
       if s.recv_opt.msg.ctrl not in opt_list:
         for j in range( num_outports ):
