@@ -93,5 +93,7 @@ class CGRA( Component ):
 
   # Line trace
   def line_trace( s ):
-    return "||".join([ x.element.line_trace() for x in s.tile ])
+    str = "||".join([ x.element.line_trace() for x in s.tile ]) 
+    str += " :: [" + s.data_mem.line_trace() + "]"
+    return str
 

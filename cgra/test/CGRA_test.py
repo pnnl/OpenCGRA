@@ -106,10 +106,19 @@ def test_cgra_universal():
                      RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
                      CtrlType( OPT_ADD, [
                      RouteType(3),RouteType(2), RouteType(1), RouteType(0),
+                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ), 
+                     CtrlType( OPT_STR, [
+                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
+                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     CtrlType( OPT_ADD, [
+                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
+                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     CtrlType( OPT_ADD, [
+                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
                      RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ) ] 
                      for _ in range( num_tiles ) ]
-  ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ] 
-                     for _ in range( num_tiles ) ]
+  ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
+                     AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, ctrl_waddr )
