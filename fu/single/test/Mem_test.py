@@ -15,6 +15,7 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
 from ..MemUnit                    import MemUnit
 from ....mem.data.DataMem         import DataMem
+from ....mem.data.PseudoDataMem   import PseudoDataMem
 from ....lib.opt_type             import *
 from ....lib.messages             import *
 
@@ -24,7 +25,7 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType,
+  def construct( s, FunctionUnit, DataUnit, DataType, ConfigType,
                  num_inports, num_outports, data_mem_size,
                  src0_msgs, src1_msgs, ctrl_msgs, sink_msgs ):
 
@@ -35,7 +36,7 @@ class TestHarness( Component ):
 
     s.dut = FunctionUnit( DataType, ConfigType, num_inports, num_outports,
                           data_mem_size )
-    s.data_mem = DataMem( DataType, data_mem_size )
+    s.data_mem = DataUnit( DataType, data_mem_size )
 
     connect( s.dut.to_mem_raddr,   s.data_mem.recv_raddr[0] )
     connect( s.dut.from_mem_rdata, s.data_mem.send_rdata[0] )
@@ -79,6 +80,7 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_Mem():
   FU = MemUnit
+  DataUnit = DataMem
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
   data_mem_size = 8
@@ -91,7 +93,26 @@ def test_Mem():
                ConfigType( OPT_STR ),
                ConfigType( OPT_LD  ),
                ConfigType( OPT_LD  ) ]
-  th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
+  th = TestHarness( FU, DataUnit, DataType, ConfigType, num_inports, num_outports,
+                    data_mem_size, src_in0, src_in1, src_opt, sink_out )
+  run_sim( th )
+
+def test_PseudoMem():
+  FU = MemUnit
+  DataUnit = PseudoDataMem
+  DataType = mk_data( 16, 1 )
+  ConfigType = mk_ctrl()
+  data_mem_size = 8
+  num_inports  = 4
+  num_outports = 2
+  src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1), DataType(3, 1) ]
+  src_in1  = [ DataType(9, 1), DataType(6, 1), DataType(2, 1), DataType(7, 1) ]
+  sink_out = [ DataType(0, 0), DataType(6, 1), DataType(6, 1) ]
+  src_opt  = [ ConfigType( OPT_LD  ),
+               ConfigType( OPT_STR ),
+               ConfigType( OPT_LD  ),
+               ConfigType( OPT_LD  ) ]
+  th = TestHarness( FU, DataUnit, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
 

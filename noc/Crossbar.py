@@ -22,7 +22,9 @@ class Crossbar( Component ):
     s.recv_opt  = RecvIfcRTL( CtrlType )
     s.recv_data = [ RecvIfcRTL( DataType ) for _ in range ( num_inports  ) ]
     s.send_data = [ SendIfcRTL( DataType ) for _ in range ( num_outports ) ]
-#    s.pos  = InPort( PositionType )
+
+    # TODO: should include position information or not?
+    # s.pos  = InPort( PositionType )
 
     # Routing logic
     @s.update
