@@ -50,7 +50,7 @@ class PseudoCtrlMem( Component ):
     def update_raddr():
       if s.send_ctrl.rdy:
         s.times <<= s.times + TimeType( 1 )
-        if s.cur + AddrType( 1 )  == TimeType( num_ctrl ):
+        if s.cur + AddrType( 1 )  == AddrType( num_ctrl ):
           s.cur <<= AddrType( 0 )
         else:
           s.cur <<= s.cur + AddrType( 1 )
