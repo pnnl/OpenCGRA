@@ -31,7 +31,7 @@ class TestHarness( Component ):
   def construct( s, DUT, FunctionUnit, FuList, DataType, CtrlType,
                  ctrl_mem_size, data_mem_size,
                  num_tile_inports, num_tile_outports,
-                 src_data, src_opt, sink_out ):
+                 src_data, src_opt, src_const, sink_out ):
 
     s.num_tile_inports  = num_tile_inports
     s.num_tile_outports = num_tile_outports
@@ -43,8 +43,8 @@ class TestHarness( Component ):
     s.sink_out  = [ TestSinkCL( DataType, sink_out[i] )
                   for i in range( num_tile_outports ) ]
 
-    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType,
-                 ctrl_mem_size, data_mem_size, len(src_opt), src_opt )
+    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType, ctrl_mem_size,
+                 data_mem_size, len(src_opt), src_const, src_opt )
 
     for i in range( num_tile_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
@@ -123,6 +123,7 @@ def test_tile_alu():
                    [DataType(3, 1), DataType( 4, 1)],
                    [DataType(4, 1), DataType( 5, 1)],
                    [DataType(5, 1), DataType( 6, 1)] ]
+  src_const    = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
   sink_out     = [ [DataType(5, 1), DataType( 5, 1), DataType( 3, 1)],
                    [DataType(4, 1), DataType( 5, 1), DataType( 3, 1)],
                    [DataType(3, 1), DataType( 5, 1)],
@@ -130,6 +131,6 @@ def test_tile_alu():
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     ctrl_mem_size, data_mem_size,
                     num_tile_inports, num_tile_outports,
-                    src_data, src_opt, sink_out )
+                    src_data, src_opt, src_const, sink_out )
   run_sim( th )
 

@@ -29,14 +29,14 @@ class TestHarness( Component ):
 
   def construct( s, DUT, FunctionUnit, FuList, DataType, CtrlType,
                  width, height, ctrl_mem_size, data_mem_size,
-                 src_opt, preload_data ):
+                 src_opt, preload_data, preload_const ):
 
     s.num_tiles = width * height
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
     s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType, width, height,
                  ctrl_mem_size, data_mem_size, len( src_opt ), src_opt,
-                 preload_data )
+                 preload_data, preload_const )
 
 #  def done( s ):
 #    done = True
@@ -90,7 +90,7 @@ def test_cgra_universal():
   FuList      = [Alu, MemUnit]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
-  src_opt      = [ [ CtrlType( OPT_INC, [ 
+  src_opt      = [ [ CtrlType( OPT_ADD_CONST, [ 
                      RouteType(3), RouteType(2), RouteType(1), RouteType(0),
                      RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
                      CtrlType( OPT_ADD, [
@@ -103,9 +103,11 @@ def test_cgra_universal():
                      RouteType(3),RouteType(2), RouteType(1), RouteType(0),
                      RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ) ] 
                      for _ in range( num_tiles ) ]
-  preload_data = [DataType(7, 1), DataType(7, 1), DataType(7, 1), DataType(7, 1)]
+  preload_data  = [DataType(7, 1), DataType(7, 1), DataType(7, 1), DataType(7, 1)]
+  preload_const = [[DataType(5, 1)], [DataType(6, 1)],
+                   [DataType(7, 1)], [DataType(8, 1)]] 
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
-                    src_opt, preload_data )
+                    src_opt, preload_data, preload_const )
   run_sim( th )
 

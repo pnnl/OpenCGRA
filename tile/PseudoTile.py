@@ -13,11 +13,12 @@ from ..noc.Crossbar           import Crossbar
 from ..noc.Channel            import Channel
 from ..mem.ctrl.PseudoCtrlMem import PseudoCtrlMem
 from ..fu.flexible.FlexibleFu import FlexibleFu
+from ..mem.const.ConstQueue   import ConstQueue
 
 class PseudoTile( Component ):
 
-  def construct( s, Fu, FuList, DataType, CtrlType, 
-                 ctrl_mem_size, data_mem_size, num_ctrl, opt_list ):
+  def construct( s, Fu, FuList, DataType, CtrlType, ctrl_mem_size,
+                 data_mem_size, num_ctrl, const_list, opt_list ):
 
     # Constant
 
@@ -45,6 +46,7 @@ class PseudoTile( Component ):
 
     s.element  = FlexibleFu( FuList, DataType, CtrlType, num_fu_inports,
                              num_fu_outports, data_mem_size )
+    s.const_queue = ConstQueue( DataType, const_list )
     s.crossbar = Crossbar( DataType, CtrlType, num_xbar_inports,
                            num_xbar_outports )
     s.ctrl_mem = PseudoCtrlMem( CtrlType, ctrl_mem_size, num_ctrl, opt_list )
@@ -53,10 +55,11 @@ class PseudoTile( Component ):
     # Connections
 
     # Data
-    s.to_mem_raddr   //= s.element.to_mem_raddr
-    s.from_mem_rdata //= s.element.from_mem_rdata
-    s.to_mem_waddr   //= s.element.to_mem_waddr
-    s.to_mem_wdata   //= s.element.to_mem_wdata
+    s.to_mem_raddr       //= s.element.to_mem_raddr
+    s.from_mem_rdata     //= s.element.from_mem_rdata
+    s.to_mem_waddr       //= s.element.to_mem_waddr
+    s.to_mem_wdata       //= s.element.to_mem_wdata
+    s.element.recv_const //=  s.const_queue.send_const
 
     for i in range( num_mesh_ports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]
