@@ -23,15 +23,19 @@ class Fu( Component ):
 
     # Interface
 
-    s.recv_in  = [ RecvIfcRTL( DataType ) for _ in range( num_inports ) ]
-    s.recv_opt = RecvIfcRTL( CtrlType )
-    s.send_out = [ SendIfcRTL( DataType ) for _ in range( num_inports ) ]
+    s.recv_in    = [ RecvIfcRTL( DataType ) for _ in range( num_inports ) ]
+    s.recv_const = RecvIfcRTL( DataType )
+    s.recv_opt   = RecvIfcRTL( CtrlType )
+    s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_inports ) ]
 
     @s.update
     def update_signal():
       for i in range( num_inports ):
         for j in range( num_outports ):
           s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
+
+      for j in range( num_outports ):
+        s.recv_const.rdy = s.send_out[j].rdy or s.recv_const.rdy
 
       for j in range( num_outports ):
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy

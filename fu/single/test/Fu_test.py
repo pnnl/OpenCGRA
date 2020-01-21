@@ -17,6 +17,7 @@ from ..Alu                        import Alu
 from ..Shifter                    import Shifter
 from ..Mul                        import Mul
 from ..Logic                      import Logic
+from ....mem.const.ConstQueue     import ConstQueue
 from ....lib.opt_type             import *
 from ....lib.messages             import *
 
@@ -26,19 +27,22 @@ from ....lib.messages             import *
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, DataType, ConfigType, num_inports, num_outports,
-                 data_mem_size, src0_msgs, src1_msgs, ctrl_msgs, sink_msgs ):
+  def construct( s, FunctionUnit, DataType, ConfigType, num_inports,
+                 num_outports, data_mem_size, src0_msgs, src1_msgs,
+                 src_const, ctrl_msgs, sink_msgs ):
 
     s.src_in0  = TestSrcRTL( DataType,   src0_msgs )
     s.src_in1  = TestSrcRTL( DataType,   src1_msgs )
     s.src_opt  = TestSrcRTL( ConfigType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType,   sink_msgs )
 
+    s.const_queue = ConstQueue( DataType, src_const )
     s.dut = FunctionUnit( DataType, ConfigType, num_inports, num_outports,
                           data_mem_size )
 
     connect( s.src_in0.send,    s.dut.recv_in[0] )
     connect( s.src_in1.send,    s.dut.recv_in[1] )
+    connect( s.dut.recv_const,  s.const_queue.send_const )
     connect( s.src_opt.send,    s.dut.recv_opt   )
     connect( s.dut.send_out[0], s.sink_out.recv  )
 
@@ -79,14 +83,15 @@ def test_alu():
   data_mem_size = 8
   num_inports  = 4
   num_outports = 2
-  src_in0      = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
+  src_in0      = [ DataType(1, 1), DataType(7, 1), DataType(4, 1) ]
   src_in1      = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
-  sink_out     = [ DataType(3, 1), DataType(5, 1), DataType(8, 1) ]
-  src_opt      = [ ConfigType( OPT_ADD ),
-                   ConfigType( OPT_ADD ),
-                   ConfigType( OPT_SUB ) ]
+  src_const    = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
+  sink_out     = [ DataType(6, 1), DataType(4, 1), DataType(11, 1) ]
+  src_opt      = [ ConfigType( OPT_ADD_CONST ),
+                   ConfigType( OPT_SUB ),
+                   ConfigType( OPT_ADD_CONST ) ]
   th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
-                    data_mem_size, src_in0, src_in1, src_opt, sink_out )
+                    data_mem_size, src_in0, src_in1, src_const, src_opt, sink_out )
   run_sim( th )
 
 def test_logic():

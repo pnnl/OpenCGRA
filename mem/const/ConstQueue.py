@@ -32,7 +32,6 @@ class ConstQueue( Component ):
     s.const_queue = [ DataType( 0 ) for _ in range( num_const ) ]
     for i in range( len( const_list ) ):
       s.const_queue[ i ] = const_list[i]
-#    s.times = Wire( TimeType )
     s.cur  = Wire( AddrType )
 
     @s.update
@@ -41,15 +40,11 @@ class ConstQueue( Component ):
 
     @s.update
     def update_signal():
-#      if s.times == TimeType( num_ctrl ) or s.sram[s.cur].ctrl == OPT_START:
-#        s.send_const.en = b1( 0 )
-#      else:
       s.send_const.en = s.send_const.rdy
 
     @s.update_ff
     def update_raddr():
       if s.send_const.rdy:
-#        s.times <<= s.times + TimeType( 1 )
         if s.cur + AddrType( 1 )  == AddrType( num_const ):
           s.cur <<= AddrType( 0 )
         else:

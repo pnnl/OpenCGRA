@@ -20,7 +20,7 @@ class Alu( Fu ):
                  data_mem_size ):
 
     super( Alu, s ).construct( DataType, ConfigType, num_inports, num_outports,
-           data_mem_size, [OPT_ADD, OPT_INC, OPT_SUB] )
+           data_mem_size, [OPT_ADD, OPT_ADD_CONST, OPT_INC, OPT_SUB] )
 
     @s.update
     def comb_logic():
@@ -28,6 +28,8 @@ class Alu( Fu ):
                                     s.recv_in[1].msg.predicate
       if s.recv_opt.msg.ctrl == OPT_ADD:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload + s.recv_in[1].msg.payload
+      if s.recv_opt.msg.ctrl == OPT_ADD_CONST:
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload + s.recv_const.msg.payload
       elif s.recv_opt.msg.ctrl == OPT_INC:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload + DataType( 1, 1 ).payload
       elif s.recv_opt.msg.ctrl == OPT_SUB:

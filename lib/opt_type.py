@@ -15,6 +15,7 @@ from pymtl3 import *
 OPT_START = Bits5( 0  )
 OPT_NAH   = Bits5( 1  )
 OPT_ADD   = Bits5( 2  )
+OPT_ADD_CONST = Bits5( 25 )
 OPT_INC   = Bits5( 3  )
 OPT_SUB   = Bits5( 4  )
 OPT_LLS   = Bits5( 5  )
@@ -34,14 +35,15 @@ OPT_MUL_ADD = Bits5( 18 )
 OPT_MUL_SUB = Bits5( 19 )
 OPT_MUL_LLS = Bits5( 20 )
 OPT_MUL_LRS = Bits5( 21 )
-OPT_MUL_ADD_LLS = Bits16( 22 )
-OPT_MUL_SUB_LLS = Bits16( 23 )
-OPT_MUL_SUB_LRS = Bits16( 24 )
+OPT_MUL_ADD_LLS = Bits5( 22 )
+OPT_MUL_SUB_LLS = Bits5( 23 )
+OPT_MUL_SUB_LRS = Bits5( 24 )
 
 OPT_SYMBOL_DICT = {
   OPT_START : "(start)",
   OPT_NAH   : "( )",
   OPT_ADD   : "(+)",
+  OPT_ADD_CONST : "(+')",
   OPT_INC   : "(++)",
   OPT_SUB   : "(-)",
   OPT_LLS   : "(<<)",
