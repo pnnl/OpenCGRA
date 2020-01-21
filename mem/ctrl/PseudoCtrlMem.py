@@ -49,11 +49,11 @@ class PseudoCtrlMem( Component ):
     @s.update_ff
     def update_raddr():
       if s.send_ctrl.rdy:
-        s.cur <<= s.cur + AddrType( 1 )
-        if s.times + TimeType( 1 )  == TimeType( ctrl_mem_size ):
-          s.times <<= TimeType( 0 )
+        s.times <<= s.times + TimeType( 1 )
+        if s.cur + AddrType( 1 )  == TimeType( num_ctrl ):
+          s.cur <<= AddrType( 0 )
         else:
-          s.times <<= s.times + TimeType( 1 )
+          s.cur <<= s.cur + AddrType( 1 )
 
   def line_trace( s ):
     out_str  = "||".join([ str(data) for data in s.sram ])
