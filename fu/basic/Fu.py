@@ -41,10 +41,7 @@ class Fu( Component ):
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
 
       for j in range( num_outports ):
-        for i in range( num_inports ):
-          s.send_out[j].en = s.recv_in[i].en or s.send_out[j].en
-        # FIXME: Should be or/and, need to re-consider about it
-        s.send_out[j].en = s.send_out[j].en and s.recv_opt.en
+        s.send_out[j].en = s.recv_opt.en
 
       if s.recv_opt.msg.ctrl not in opt_list:
         for j in range( num_outports ):
@@ -54,4 +51,4 @@ class Fu( Component ):
     opt_str = " #"
     if s.recv_opt.en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
-    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg}] = [{s.send_out[0].msg}]'
+    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}]'

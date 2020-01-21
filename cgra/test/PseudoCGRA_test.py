@@ -80,32 +80,32 @@ def test_cgra_universal():
   ctrl_mem_size     = 8
   width  = 2
   height = 2
-  RouteType = mk_bits( clog2( num_xbar_inports + 1 ) )
-  AddrType = mk_bits( clog2( ctrl_mem_size ) )
-  num_tiles    = width * height
+  RouteType     = mk_bits( clog2( num_xbar_inports + 1 ) )
+  AddrType      = mk_bits( clog2( ctrl_mem_size ) )
+  num_tiles     = width * height
   ctrl_mem_size = 8
-  data_mem_size = 8
-  DUT          = PseudoCGRA
-  FunctionUnit = FlexibleFu
-  FuList      = [Alu, MemUnit]
-  DataType     = mk_data( 16, 1 )
-  CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
-  src_opt      = [ [ CtrlType( OPT_ADD_CONST, [ 
-                     RouteType(3), RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
-                     CtrlType( OPT_ADD, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ), 
-                     CtrlType( OPT_STR, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
-                     CtrlType( OPT_SUB, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ) ] 
-                     for _ in range( num_tiles ) ]
+  data_mem_size = 10
+  DUT           = PseudoCGRA
+  FunctionUnit  = FlexibleFu
+  FuList        = [Alu, MemUnit]
+  DataType      = mk_data( 16, 1 )
+  CtrlType      = mk_ctrl( num_xbar_inports, num_xbar_outports )
+  src_opt       = [[CtrlType( OPT_ADD_CONST, [ 
+                    RouteType(3), RouteType(2), RouteType(1), RouteType(0),
+                    RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                    CtrlType( OPT_ADD, [
+                    RouteType(3),RouteType(2), RouteType(1), RouteType(0),
+                    RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ), 
+                    CtrlType( OPT_STR, [
+                    RouteType(3),RouteType(2), RouteType(1), RouteType(0),
+                    RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                    CtrlType( OPT_SUB, [
+                    RouteType(3),RouteType(2), RouteType(1), RouteType(0),
+                    RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ) ] 
+                    for _ in range( num_tiles ) ]
   preload_data  = [DataType(7, 1), DataType(7, 1), DataType(7, 1), DataType(7, 1)]
-  preload_const = [[DataType(5, 1)], [DataType(6, 1)],
-                   [DataType(7, 1)], [DataType(8, 1)]] 
+  preload_const = [[DataType(2, 1)], [DataType(1, 1)],
+                   [DataType(4, 1)], [DataType(3, 1)]] 
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, preload_data, preload_const )
