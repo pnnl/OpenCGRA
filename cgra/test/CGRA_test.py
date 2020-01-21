@@ -40,7 +40,7 @@ class TestHarness( Component ):
                       for i in range( s.num_tiles ) ]
 
     s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType, width, height,
-                 ctrl_mem_size, data_mem_size, len( src_opt ) )
+                 ctrl_mem_size, data_mem_size, len( src_opt[0] ) )
 
     for i in range( s.num_tiles ):
       connect( s.src_opt[i].send,     s.dut.recv_wopt[i]  )
@@ -85,13 +85,12 @@ def test_cgra_universal():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
-  ctrl_mem_size     = 8
+  ctrl_mem_size     = 6
   width  = 2
   height = 2
   RouteType = mk_bits( clog2( num_xbar_inports + 1 ) )
   AddrType = mk_bits( clog2( ctrl_mem_size ) )
   num_tiles    = width * height
-  ctrl_mem_size = 8
   data_mem_size = 8
   DUT          = CGRA
   FunctionUnit = FlexibleFu

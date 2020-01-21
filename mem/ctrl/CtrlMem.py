@@ -19,7 +19,7 @@ class CtrlMem( Component ):
   def construct( s, CtrlType, ctrl_mem_size, num_ctrl=4 ):
 
     # Constant
-
+    assert( ctrl_mem_size <= num_ctrl )
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
     TimeType = mk_bits( clog2( num_ctrl+1 ) )
 
@@ -53,11 +53,12 @@ class CtrlMem( Component ):
     @s.update_ff
     def update_raddr():
       if s.reg_file.rdata[0].ctrl != OPT_START:
-        s.reg_file.raddr[0] <<= s.reg_file.raddr[0] + AddrType( 1 )
-        if s.times + TimeType( 1 )  == TimeType( ctrl_mem_size ):
-          s.times <<= TimeType( 0 )
-        else:
+        if s.times < TimeType( num_ctrl ):
           s.times <<= s.times + TimeType( 1 )
+        if s.reg_file.raddr[0] < AddrType( ctrl_mem_size-1 ):
+          s.reg_file.raddr[0] <<= s.reg_file.raddr[0] + AddrType( 1 )
+        else:
+          s.reg_file.raddr[0] <<= AddrType( 0 )
 
   def line_trace( s ):
     out_str  = "||".join([ str(data) for data in s.reg_file.regs ])

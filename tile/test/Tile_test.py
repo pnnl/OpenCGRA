@@ -106,7 +106,7 @@ def test_tile_alu():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
-  ctrl_mem_size     = 8
+  ctrl_mem_size     = 3
   data_mem_size     = 8
   RouteType    = mk_bits( clog2( num_xbar_inports + 1 ) )
   AddrType     = mk_bits( clog2( ctrl_mem_size ) )

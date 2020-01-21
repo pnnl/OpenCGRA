@@ -83,7 +83,7 @@ def test_Ctrl():
   MemUnit = CtrlMem
   DataType  = mk_data( 16, 1 )
   CtrlType  = mk_ctrl()
-  ctrl_mem_size = 8
+  ctrl_mem_size = 4
   data_mem_size = 8
   AddrType  = mk_bits( clog2( ctrl_mem_size ) )
   src_data0 = [DataType(0,0),DataType(1,1),DataType(5,1),DataType(7,1),DataType(6,1)]
