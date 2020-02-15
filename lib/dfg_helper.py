@@ -11,6 +11,7 @@ Author : Cheng Tan
 """
 
 from .opt_type           import *
+from .messages           import *
 from ..fu.single.Alu     import Alu
 from ..fu.single.Shifter import Shifter
 from ..fu.single.Logic   import Logic
@@ -35,9 +36,10 @@ class Element:
     s.num_input      = len(input_element)
     s.num_output     = len(output_element)
     s.current_input_index = 0
-    s.input_value    = [ None ] * len(input_element)
-    print("input value: ", s.input_value)
-    s.output_value   = [ None ] * len(output_element)
+    DataType = mk_data( 16, 1 )
+    s.input_value    = [ DataType( 0, 0 ) ] * len(input_element)
+    s.output_value   = [ DataType( 0, 0 ) ] * len(output_element)
+    s.live_out       = 0 if s.num_output > 0 else 1
 
   # ---------------------------------------------------------------------
   # Update output value which will affect the input value of its
@@ -72,6 +74,9 @@ class DFG:
         s.num_const  += element.num_const
         s.num_input  += element.num_input
         s.num_output += element.num_output
+        if 'out2' in dfg[i].keys():
+#        if dfg[i]['out2'] != None:
+          element.live_out = 1
 
   def get_element( s, _id ):
     for e in s.elements:

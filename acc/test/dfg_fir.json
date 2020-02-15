@@ -74,7 +74,7 @@
   {
     "fu"         : "Comp",
     "id"         : 9,
-    "opt"        : "OPT_CMP",
+    "opt"        : "OPT_EQ",
     "in_const"   : [0],
     "in"         : [8],
     "out"        : [10,11]
@@ -93,6 +93,7 @@
     "opt"        : "OPT_BRH",
     "in_const"   : [],
     "in"         : [9,7],
-    "out"        : [1]
+    "out"        : [1],
+    "out2"       : []
   }
 ]

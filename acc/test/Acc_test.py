@@ -59,7 +59,6 @@ def run_sim( test_harness, max_cycles=10 ):
   # Run simulation
 
   ncycles = 0
-  print()
   print( "{}:{}".format( ncycles, test_harness.line_trace() ))
   while not test_harness.done() and ncycles < max_cycles:
     test_harness.tick()
@@ -75,20 +74,24 @@ def run_sim( test_harness, max_cycles=10 ):
   test_harness.tick()
 
 def test_acc():
-  target_json = "dfg_simple.json"
+  target_json = "dfg_fir.json"
   script_dir  = os.path.dirname(__file__)
   file_path   = os.path.join( script_dir, target_json )
   fu_dfg      = DFG( file_path )
-
-  DUT      = AccRTL
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
   src_data = [ [DataType(6-2*i, 1)] for i in range( fu_dfg.num_const ) ]
 
-  sink_out = [ [DataType(20, 1)] ]
-  th = TestHarness( DUT, fu_dfg, DataType, CtrlType, src_data, sink_out )
-  run_sim( th )
-
+  print( "num_const: ", fu_dfg.num_const )
+  print( "----------------- FL test ------------------" )
   # FL golden reference
   acc_fl( fu_dfg, DataType, CtrlType, src_data )
+  print()
+
+#  print( "----------------- RTL test ------------------" )
+#  DUT      = AccRTL
+#  sink_out = [ [DataType(20, 1)] ]
+#  th = TestHarness( DUT, fu_dfg, DataType, CtrlType, src_data, sink_out )
+#  run_sim( th )
+
 
