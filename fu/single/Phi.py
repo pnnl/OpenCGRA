@@ -29,6 +29,9 @@ class Phi( Fu ):
           s.send_out[0].msg = s.recv_in[0].msg
         elif s.recv_in[1].msg.predicate == Bits1( 1 ):
           s.send_out[0].msg = s.recv_in[1].msg
+        else:
+          s.send_out[0].msg = s.recv_in[0].msg
+          s.send_out[0].msg.predicate = Bits1( 1 )
 
   def line_trace( s ):
     symbol0 = "#"

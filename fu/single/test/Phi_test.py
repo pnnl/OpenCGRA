@@ -81,7 +81,7 @@ def test_Phi():
   src_opt  = [ CtrlType( OPT_PHI ),
                CtrlType( OPT_PHI ),
                CtrlType( OPT_PHI ) ]
-  sink_out = [ DataType(0, 0), DataType(3, 1), DataType(2, 1) ]
+  sink_out = [ DataType(1, 1), DataType(3, 1), DataType(2, 1) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )

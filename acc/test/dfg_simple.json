@@ -1,6 +1,6 @@
 [
   {
-    "fu"        : "ALU",
+    "fu"        : "Alu",
     "id"        : 0,
     "opt"       : "OPT_ADD",
     "in"        : [],
@@ -8,7 +8,7 @@
     "out"       : [2]
   },
   {
-    "fu"        : "ALU",
+    "fu"        : "Alu",
     "id"        : 1,
     "opt"       : "OPT_SUB",
     "in"        : [],
@@ -16,7 +16,7 @@
     "out"       : [2]
   },
   {
-    "fu"        : "MUL",
+    "fu"        : "Mul",
     "id"        : 2,
     "opt"       : "OPT_MUL",
     "in"        : [0,1],
