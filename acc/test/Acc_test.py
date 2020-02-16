@@ -80,18 +80,24 @@ def test_acc():
   fu_dfg      = DFG( file_path )
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  src_data = [ [DataType(6-2*i, 1)] for i in range( fu_dfg.num_const ) ]
+  const_data = [ DataType( 0, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 1, 1  ),
+                 DataType( 10, 1 ) ]
 
-  print( "num_const: ", fu_dfg.num_const )
+  spm = [ 1 ] * 100
+
   print( "----------------- FL test ------------------" )
   # FL golden reference
-  acc_fl( fu_dfg, DataType, CtrlType, src_data )
+  acc_fl( fu_dfg, DataType, CtrlType, const_data, spm )
   print()
 
 #  print( "----------------- RTL test ------------------" )
 #  DUT      = AccRTL
 #  sink_out = [ [DataType(20, 1)] ]
-#  th = TestHarness( DUT, fu_dfg, DataType, CtrlType, src_data, sink_out )
+#  th = TestHarness( DUT, fu_dfg, DataType, CtrlType, const_data, sink_out )
 #  run_sim( th )
 
 

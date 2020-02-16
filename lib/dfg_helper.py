@@ -23,30 +23,41 @@ from ..fu.single.Branch  import Branch
 
 import json
 
-class Element:
+class Node:
 
-  def __init__( s, id, FuType, opt, const_index, input_element, output_element ):
-    s.id             = id
-    s.fu_type        = FuType
-    s.opt            = opt
-    s.const_index    = const_index
-    s.input_element  = input_element
-    s.output_element = output_element
-    s.num_const      = len(const_index)
-    s.num_input      = len(input_element)
-    s.num_output     = len(output_element)
+  def __init__( s, id, FuType, opt, const_index, input_node, output_node ):
+    s.id          = id
+    s.fu_type     = FuType
+    s.opt         = opt
+    s.const_index = const_index
+    s.num_const   = len( const_index )
+    s.num_input   = len( input_node  )
+    DataType      = mk_data( 16, 1 )
+    s.input_node  = input_node
+    s.input_value = [ DataType( 0, 0 ) ] * s.num_input
+
+    # 2D array for output since there will be multiple results generated,
+    # and each of them will route to different successors.
+    s.output_node  = output_node
+    s.num_output   = [ len( array ) for array in output_node ]
+    s.output_value = [ [ DataType( 0, 0 ) for _ in array ]
+                         for array in output_node ]
+
+    # We manually or automatically pick one BRH node to insert a live_out
+    # output, which will indicate the 'exit' point.
+    s.live_out = 0
+
+    # This is used to update the input value without consideration of the
+    # ordering, which means the we cannot support 'partial' operation, such
+    # as 'LE'.
     s.current_input_index = 0
-    DataType = mk_data( 16, 1 )
-    s.input_value    = [ DataType( 0, 0 ) ] * len(input_element)
-    s.output_value   = [ DataType( 0, 0 ) ] * len(output_element)
-    s.live_out       = 0 if s.num_output > 0 else 1
 
   # ---------------------------------------------------------------------
   # Update output value which will affect the input value of its
   # successors.
   # ----------------------------------------------------------------------
-  def updateOutput( s, output_index, value ):
-    s.output_value[output_index] = value
+  def updateOutput( s, i, j, value ):
+    s.output_value[i][j] = value
 
   def updateInput( s, value ):
     s.input_value[s.current_input_index] = value
@@ -57,30 +68,33 @@ class Element:
 class DFG:
 
   def __init__( s, json_file_name ):
-    s.elements    = []
+    s.nodes       = []
     s.num_const   = 0
     s.num_input   = 0
-    s.num_output  = 0
+#    s.num_output  = 0
+    # We assume single liveout for now
     s.num_liveout = 1
     with open(json_file_name) as json_file:
       dfg = json.load(json_file)
       print(dfg)
       for i in range( len(dfg) ):
-        element = Element( i, getUnitType(dfg[i]['fu']),
-                           getOptType(dfg[i]['opt']),
-                           dfg[i]['in_const'], dfg[i]['in'],
-                           dfg[i]['out'] )
-        s.elements.append( element )
-        s.num_const  += element.num_const
-        s.num_input  += element.num_input
-        s.num_output += element.num_output
-        if 'out2' in dfg[i].keys():
+        node = Node( i,
+                     getUnitType(dfg[i]['fu']),
+                     getOptType(dfg[i]['opt']),
+                     dfg[i]['in_const'],
+                     dfg[i]['in'],
+                     dfg[i]['out'] )
+        s.nodes.append( node )
+        s.num_const  += node.num_const
+        s.num_input  += node.num_input
+#        s.num_output += node.num_output
+        if 'live_out' in dfg[i].keys():
 #        if dfg[i]['out2'] != None:
-          element.live_out = 1
+          node.live_out = 1
 
-  def get_element( s, _id ):
-    for e in s.elements:
-      if e.id == _id:
+  def get_node( s, id ):
+    for e in s.nodes:
+      if e.id == id:
         return e
     return None
 

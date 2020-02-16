@@ -5,7 +5,7 @@
     "opt"        : "OPT_PHI",
     "in_const"   : [0],
     "in"         : [10],
-    "out"        : [2,4,8]
+    "out"        : [[2,4,8]]
   },
   {
     "fu"         : "Phi",
@@ -13,7 +13,7 @@
     "opt"        : "OPT_PHI",
     "in_const"   : [0],
     "in"         : [11],
-    "out"        : [7]
+    "out"        : [[7]]
   },
   {
     "fu"         : "Alu",
@@ -21,7 +21,7 @@
     "opt"        : "OPT_ADD",
     "in_const"   : [0],
     "in"         : [0],
-    "out"        : [3]
+    "out"        : [[3]]
   },
   {
     "fu"         : "MemUnit",
@@ -29,7 +29,7 @@
     "opt"        : "OPT_LD",
     "in_const"   : [],
     "in"         : [2],
-    "out"        : [6]
+    "out"        : [[6]]
   },
   {
     "fu"         : "Alu",
@@ -37,7 +37,7 @@
     "opt"        : "OPT_ADD",
     "in_const"   : [0],
     "in"         : [0],
-    "out"        : [5]
+    "out"        : [[5]]
   },
   {
     "fu"         : "MemUnit",
@@ -45,7 +45,7 @@
     "opt"        : "OPT_LD",
     "in_const"   : [],
     "in"         : [4],
-    "out"        : [6]
+    "out"        : [[6]]
   },
   {
     "fu"         : "Mul",
@@ -53,7 +53,7 @@
     "opt"        : "OPT_MUL",
     "in_const"   : [],
     "in"         : [3,5],
-    "out"        : [7]
+    "out"        : [[7]]
   },
   {
     "fu"         : "Alu",
@@ -61,7 +61,7 @@
     "opt"        : "OPT_ADD",
     "in_const"   : [],
     "in"         : [1,6],
-    "out"        : [11]
+    "out"        : [[11]]
   },
   {
     "fu"         : "Alu",
@@ -69,7 +69,7 @@
     "opt"        : "OPT_ADD",
     "in_const"   : [0],
     "in"         : [0],
-    "out"        : [9,10]
+    "out"        : [[9,10]]
   },
   {
     "fu"         : "Comp",
@@ -77,23 +77,23 @@
     "opt"        : "OPT_EQ",
     "in_const"   : [0],
     "in"         : [8],
-    "out"        : [10,11]
+    "out"        : [[10,11]]
   },
   {
     "fu"         : "Branch",
     "id"         : 10,
     "opt"        : "OPT_BRH",
-    "in_const"   : [0,1],
-    "in"         : [9,8],
-    "out"        : [0]
+    "in_const"   : [],
+    "in"         : [8,9],
+    "out"        : [[0]]
   },
   {
     "fu"         : "Branch",
     "id"         : 11,
     "opt"        : "OPT_BRH",
     "in_const"   : [],
-    "in"         : [9,7],
-    "out"        : [1],
-    "out2"       : []
+    "in"         : [7,9],
+    "out"        : [[1],[]],
+    "live_out"   : []
   }
 ]
