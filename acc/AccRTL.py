@@ -50,6 +50,7 @@ class AccRTL( Component ):
               s.elements[node.input_node[i-node.num_const]].send_out[0]
           s.channels[channel_index].send //=\
               s.elements[node.id].recv_in[i]
+          print( "node: ", node.id, "; channel: ", channel_index )
           channel_index += 1
 
       if node.live_out > 0:
