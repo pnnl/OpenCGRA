@@ -101,8 +101,8 @@ def test_flexible_alu():
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
   data_mem_size = 8
-  num_inports = 4
-  num_outports = 2
+  num_inports   = 2
+  num_outports  = 2
   src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
   sink_out = [ DataType(3, 1), DataType(5, 1), DataType(8, 1) ]
@@ -118,8 +118,8 @@ def test_flexible_mul():
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
   data_mem_size = 8
-  num_inports = 4
-  num_outports = 2
+  num_inports   = 2
+  num_outports  = 2
   src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(2, 1) ]
   sink_out = [ DataType(2, 1), DataType(6, 1), DataType(18, 1) ]
@@ -135,8 +135,8 @@ def test_flexible_universal():
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
   data_mem_size = 8
-  num_inports = 4
-  num_outports = 2
+  num_inports   = 2
+  num_outports  = 2
   src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(3, 0) ]
   src_in1   = [ DataType(2, 1), DataType(0, 1), DataType(2, 1) ]
   sink_out0 = [ DataType(0, 1), DataType(2, 1), DataType(2, 1) ]

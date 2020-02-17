@@ -20,7 +20,7 @@ class Channel( Component ):
 
     # Component
 
-    s.register = NormalQueueRTL( PacketType, 2 )
+    s.register = NormalQueueRTL( PacketType, 1 )
 
     # Connections
 
@@ -38,5 +38,5 @@ class Channel( Component ):
   def line_trace( s ):
 #    trace = '>' + s.register.line_trace() + '>'
 #    return f"{s.recv.msg}({trace}){s.send.msg}"
-    return f"[{s.recv.msg}]>[{s.send.msg}]"
+    return f"[{s.recv.msg}]>({s.register.count})>[{s.send.msg}]"
 

@@ -5,15 +5,15 @@
     "opt"       : "OPT_ADD",
     "in"        : [],
     "in_const"  : [0,1],
-    "out"       : [2]
+    "out"       : [[2]]
   },
   {
     "fu"        : "Alu",
     "id"        : 1,
-    "opt"       : "OPT_SUB",
+    "opt"       : "OPT_ADD",
     "in"        : [],
     "in_const"  : [0,1],
-    "out"       : [2]
+    "out"       : [[2]]
   },
   {
     "fu"        : "Mul",
@@ -21,8 +21,18 @@
     "opt"       : "OPT_MUL",
     "in"        : [0,1],
     "in_const"  : [],
-    "out"       : []
+    "out"       : [[3]]
+  },
+  {
+    "fu"        : "Branch",
+    "id"        : 3,
+    "opt"       : "OPT_BRH",
+    "in"        : [2],
+    "in_const"  : [0],
+    "out"       : [[]],
+    "live_out"  : []
   }
+
 ]
 
 

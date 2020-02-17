@@ -18,17 +18,18 @@ from ..lib.messages import *
 #------------------------------------------------------------------------
 # Assuming that the elements in FuDFG are already ordered well.
 #------------------------------------------------------------------------
-def acc_fl( FuDFG, DataType, CtrlType, src_const, spm ):
+def acc_fl( FuDFG, DataType, CtrlType, src_const, data_spm ):
 
   live_out = DataType( 0, 0 )
 
-  print("data SPM: ", spm)
+  print("data SPM: ", data_spm)
 
   while live_out.predicate == Bits1( 0 ):
     const_index = 0
     for node in FuDFG.nodes:
       current_input = []
       print("id: ", node.id, " node.num_const: ", node.num_const, "; node.num_input: ", node.num_input)
+      # Assume const goes in first, then the output from predecessor.
       if node.num_const != 0:
         for _ in range( node.num_const ):
           current_input.append( src_const[const_index] );
@@ -36,7 +37,7 @@ def acc_fl( FuDFG, DataType, CtrlType, src_const, spm ):
       if node.num_input != 0:
         for value in node.input_value:
           current_input.append(value);
-  
+ 
       result  = [ DataType( 0, 1 ) for _ in node.num_output ]
       print( "id: ", node.id, " current_input: ", current_input )
       if node.opt == OPT_ADD:
@@ -51,7 +52,7 @@ def acc_fl( FuDFG, DataType, CtrlType, src_const, spm ):
         else:
           result[0].payload = current_input[0].payload
       elif node.opt == OPT_LD:
-        result[0].payload = spm[current_input[0].payload]
+        result[0].payload = data_spm[current_input[0].payload]
       elif node.opt == OPT_EQ:
 #        if current_input[0].payload == current_input[1].payload:
         # FIXME: need to specify the constant input for each node
@@ -93,5 +94,5 @@ def acc_fl( FuDFG, DataType, CtrlType, src_const, spm ):
     print( "--------------------------------------" )
   
   print( "final live_out: ", live_out )
-  return live_out, spm
+  return live_out, data_spm
 

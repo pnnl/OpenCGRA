@@ -84,8 +84,8 @@ def test_Mem():
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
   data_mem_size = 8
-  num_inports  = 4
-  num_outports = 2
+  num_inports  = 2
+  num_outports = 1
   src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1), DataType(3, 1) ]
   src_in1  = [ DataType(9, 1), DataType(6, 1), DataType(2, 1), DataType(7, 1) ]
   sink_out = [ DataType(0, 0), DataType(6, 1), DataType(6, 1) ]
@@ -103,8 +103,8 @@ def test_PseudoMem():
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
   data_mem_size = 8
-  num_inports  = 4
-  num_outports = 2
+  num_inports  = 2
+  num_outports = 1
   src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1), DataType(3, 1) ]
   src_in1  = [ DataType(9, 1), DataType(6, 1), DataType(2, 1), DataType(7, 1) ]
   sink_out = [ DataType(0, 0), DataType(6, 1), DataType(6, 1) ]

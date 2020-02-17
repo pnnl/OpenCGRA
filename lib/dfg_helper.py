@@ -67,13 +67,15 @@ class Node:
 
 class DFG:
 
-  def __init__( s, json_file_name ):
+  def __init__( s, json_file_name, const_list, data_spm ):
     s.nodes       = []
     s.num_const   = 0
     s.num_input   = 0
 #    s.num_output  = 0
     # We assume single liveout for now
     s.num_liveout = 1
+    s.const_list  = const_list
+    s.data_spm    = data_spm
     with open(json_file_name) as json_file:
       dfg = json.load(json_file)
       print(dfg)

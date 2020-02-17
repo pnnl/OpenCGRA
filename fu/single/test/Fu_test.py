@@ -81,8 +81,8 @@ def test_alu():
   DataType     = mk_data( 16, 1 )
   ConfigType   = mk_ctrl()
   data_mem_size = 8
-  num_inports  = 4
-  num_outports = 2
+  num_inports  = 2
+  num_outports = 1
   src_in0      = [ DataType(1, 1), DataType(7, 1), DataType(4, 1) ]
   src_in1      = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
   src_const    = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
@@ -98,8 +98,8 @@ def test_logic():
   FU = Logic
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
-  num_inports  = 4
-  num_outports = 2
+  num_inports  = 2
+  num_outports = 1
   data_mem_size = 8
   src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(4, 1), DataType(1, 1)  ]
   src_in1   = [ DataType(2, 1), DataType(3, 1), DataType(3, 1), DataType(2, 1)  ]
@@ -115,8 +115,8 @@ def test_shifter():
   FU = Shifter
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
-  num_inports  = 4
-  num_outports = 2
+  num_inports  = 2
+  num_outports = 1
   data_mem_size = 8
   src_in0   = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1   = [ DataType(2, 1), DataType(3, 1),  DataType(1, 1) ]
@@ -133,8 +133,8 @@ def test_mul():
   FU = Mul
   DataType = mk_data( 16, 1 )
   ConfigType = mk_ctrl()
-  num_inports  = 4
-  num_outports = 2
+  num_inports  = 2
+  num_outports = 1
   data_mem_size = 8
   src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(4, 1)  ]
   src_in1   = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]

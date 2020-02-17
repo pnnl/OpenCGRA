@@ -42,6 +42,8 @@ class Fu( Component ):
 
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en
+        for i in range( num_inports ):
+          s.send_out[j].en = s.send_out[j].en and s.recv_in[i].en
 
       if s.recv_opt.msg.ctrl not in opt_list:
         for j in range( num_outports ):

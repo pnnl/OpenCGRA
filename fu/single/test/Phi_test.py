@@ -73,8 +73,8 @@ def test_Phi():
   FU = Phi
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  num_inports   = 4
-  num_outports  = 2
+  num_inports   = 2
+  num_outports  = 1
   data_mem_size = 8
   src_in0  = [ DataType(1, 0), DataType(3, 1), DataType(3, 0) ]
   src_in1  = [ DataType(0, 0), DataType(5, 0), DataType(2, 1) ]

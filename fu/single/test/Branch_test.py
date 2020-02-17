@@ -75,7 +75,7 @@ def test_Branch():
   FU = Branch
   DataType  = mk_data( 16, 1 )
   CtrlType  = mk_ctrl()
-  num_inports   = 4
+  num_inports   = 2
   num_outports  = 2
   data_mem_size = 8
   src_data  = [ DataType(7, 1), DataType(3, 1), DataType(9, 1) ]

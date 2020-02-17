@@ -46,4 +46,4 @@ class Branch( Fu ):
       symbol0 = " "
       symbol1 = "*"
       winner  = "else"
-    return f'[{s.send_out[0].msg} {symbol0}] ({winner}) [{s.send_out[1].msg} {symbol1}]'
+    return f'[{s.recv_in[0].msg}][{s.recv_in[1].msg}] => [{s.send_out[0].msg} {symbol0}] ({winner}) [{s.send_out[1].msg} {symbol1}]'

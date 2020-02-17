@@ -73,8 +73,8 @@ def test_Comp():
   FU = Comp
   DataType   = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  num_inports   = 4
-  num_outports  = 2
+  num_inports   = 2
+  num_outports  = 1
   data_mem_size = 8
   src_data   = [ DataType(9, 1), DataType(3, 1), DataType(3, 1) ]
   src_ref    = [ DataType(9, 1), DataType(5, 1), DataType(2, 1) ]

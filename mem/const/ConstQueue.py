@@ -39,7 +39,7 @@ class ConstQueue( Component ):
       s.send_const.msg = s.const_queue[ s.cur ]
 
     @s.update
-    def update_signal():
+    def update_en():
       s.send_const.en = s.send_const.rdy
 
     @s.update_ff
