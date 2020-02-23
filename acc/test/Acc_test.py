@@ -45,7 +45,7 @@ class TestHarness( Component ):
   def line_trace( s ):
     return s.dut.line_trace()
 
-def run_sim( test_harness, max_cycles=20 ):
+def run_sim( test_harness, max_cycles=10 ):
   test_harness.elaborate()
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
@@ -68,7 +68,7 @@ def run_sim( test_harness, max_cycles=20 ):
   test_harness.tick()
 
 def test_acc():
-  target_json = "dfg_simple.json"
+  target_json = "dfg_fir.json"
   script_dir  = os.path.dirname(__file__)
   file_path   = os.path.join( script_dir, target_json )
   DataType = mk_data( 16, 1 )
@@ -89,7 +89,7 @@ def test_acc():
 
   print( "----------------- RTL test ------------------" )
   DUT      = AccRTL
-  sink_out = [ DataType( 9, 1 ) ]
+  sink_out = [ DataType( 1, 1 ) ]
   th = TestHarness( DUT, fu_dfg, DataType, CtrlType, const_data, sink_out )
   run_sim( th )
 

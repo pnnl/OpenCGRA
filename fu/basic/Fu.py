@@ -41,9 +41,12 @@ class Fu( Component ):
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
 
       for j in range( num_outports ):
-        s.send_out[j].en = s.recv_opt.en
-        for i in range( num_inports ):
-          s.send_out[j].en = s.send_out[j].en and s.recv_in[i].en
+        s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy
+        if OPT_PHI in opt_list or OPT_LD in opt_list:
+          s.send_out[j].en = s.send_out[j].en and s.recv_in[0].en
+        else:
+          for i in range( num_inports ):
+            s.send_out[j].en = s.send_out[j].en and s.recv_in[i].en
 
       if s.recv_opt.msg.ctrl not in opt_list:
         for j in range( num_outports ):

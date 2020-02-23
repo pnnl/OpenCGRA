@@ -16,6 +16,10 @@ class Multicaster( Component ):
 
   def construct( s, DataType, num_outports = 2 ):
 
+    # Constand
+    if num_outports == 0:
+      num_outports = 1
+
     # Interface
 
     s.recv = RecvIfcRTL( DataType )
@@ -33,5 +37,5 @@ class Multicaster( Component ):
   def line_trace( s ):
     recv_str = s.recv.msg
     out_str  = "|".join([ str(x.msg) for x in s.send ])
-    return f"{recv_str} -> {out_str}"
+    return f"{recv_str} -> {out_str}({s.recv.rdy},{s.send[0].en})"
 

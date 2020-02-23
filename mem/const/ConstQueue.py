@@ -52,5 +52,5 @@ class ConstQueue( Component ):
 
   def line_trace( s ):
     out_str  = "||".join([ str(data) for data in s.const_queue ])
-    return f'[{out_str}] : {s.send_const.msg}'
+    return f'[{out_str}] : {s.send_const.msg}({s.send_const.en})'
 

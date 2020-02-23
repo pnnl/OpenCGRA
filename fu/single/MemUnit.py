@@ -63,26 +63,28 @@ class MemUnit( Component ):
           s.send_out[j].en = b1( 0 )
 
       s.send_out[0].msg = s.from_mem_rdata.msg
-      s.send_out[0].en = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
+#      s.send_out[0].en = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
       s.to_mem_waddr.en = b1( 0 )
       s.to_mem_wdata.en = b1( 0 )
       if s.recv_opt.msg.ctrl == OPT_LD:
-        s.recv_in[0].rdy  = s.to_mem_raddr.rdy
-        s.recv_in[1].rdy  = s.from_mem_rdata.rdy
-        s.to_mem_raddr.msg = s.recv_in[0].msg.payload
-        s.to_mem_raddr.en = s.recv_in[0].en
+        s.send_out[0].en     = s.from_mem_rdata.en and s.recv_in[0].en
+        s.recv_in[0].rdy     = s.to_mem_raddr.rdy
+        s.recv_in[1].rdy     = s.from_mem_rdata.rdy
+        s.to_mem_raddr.msg   = s.recv_in[0].msg.payload
+        s.to_mem_raddr.en    = s.recv_in[0].en
         s.from_mem_rdata.rdy = s.send_out[0].rdy
-        s.send_out[0].msg = s.from_mem_rdata.msg
+        s.send_out[0].msg    = s.from_mem_rdata.msg
 
       elif s.recv_opt.msg.ctrl == OPT_STR:
-        s.recv_in[0].rdy = s.to_mem_waddr.rdy
-        s.recv_in[1].rdy = s.to_mem_wdata.rdy 
+        s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
+        s.recv_in[0].rdy   = s.to_mem_waddr.rdy
+        s.recv_in[1].rdy   = s.to_mem_wdata.rdy 
         s.to_mem_waddr.msg = s.recv_in[0].msg.payload
         s.to_mem_waddr.en  = s.recv_in[0].en
         s.to_mem_wdata.msg = s.recv_in[1].msg
         s.to_mem_wdata.en  = s.recv_in[1].en
-        s.send_out[0].en = b1( 0 )
-        s.send_out[0].msg = s.from_mem_rdata.msg
+        s.send_out[0].en   = b1( 0 )
+        s.send_out[0].msg  = s.from_mem_rdata.msg
 
   def line_trace( s ):
     out_msg = s.send_out[0].msg

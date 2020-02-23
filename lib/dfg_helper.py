@@ -29,6 +29,7 @@ class Node:
     s.id          = id
     s.fu_type     = FuType
     s.opt         = opt
+    s.layer       = 0
     s.const_index = const_index
     s.num_const   = len( const_index )
     s.num_input   = len( input_node  )
@@ -52,6 +53,8 @@ class Node:
     # as 'LE'.
     s.current_input_index = 0
 
+    s.current_output_index = 0
+
   # ---------------------------------------------------------------------
   # Update output value which will affect the input value of its
   # successors.
@@ -64,6 +67,12 @@ class Node:
     s.current_input_index += 1
     if s.current_input_index == s.num_input:
       s.current_input_index = 0
+
+def get_node( node_id, nodes ):
+  for node in nodes:
+    if node.id == node_id:
+      return node
+  return None
 
 class DFG:
 
@@ -78,7 +87,6 @@ class DFG:
     s.data_spm    = data_spm
     with open(json_file_name) as json_file:
       dfg = json.load(json_file)
-      print(dfg)
       for i in range( len(dfg) ):
         node = Node( i,
                      getUnitType(dfg[i]['fu']),
@@ -87,18 +95,30 @@ class DFG:
                      dfg[i]['in'],
                      dfg[i]['out'] )
         s.nodes.append( node )
+        max_layer = -1
+        for input_node in node.input_node:
+          pre_node = get_node( input_node, s.nodes )
+          if( pre_node != None ):
+            if pre_node.layer > max_layer:
+              max_layer = pre_node.layer
+        node.layer = max_layer + 1
+          
         s.num_const  += node.num_const
         s.num_input  += node.num_input
 #        s.num_output += node.num_output
         if 'live_out' in dfg[i].keys():
 #        if dfg[i]['out2'] != None:
           node.live_out = 1
-
-  def get_node( s, id ):
-    for e in s.nodes:
-      if e.id == id:
-        return e
-    return None
+    s.layer_diff_list = [ 0 ] * s.num_input
+    channel_index= 0
+    for node in s.nodes:
+      for node_id in node.input_node:
+        layer_diff = node.layer - get_node( node_id, s.nodes ).layer
+        if layer_diff > 0:
+          s.layer_diff_list[channel_index] = layer_diff
+        else:
+          s.layer_diff_list[channel_index] = 1
+        channel_index += 1
 
 # -----------------------------------------------------------------------
 # Global dictionary for UnitType and OptType
