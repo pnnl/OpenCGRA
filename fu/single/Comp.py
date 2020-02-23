@@ -38,4 +38,5 @@ class Comp( Fu ):
           s.send_out[0].msg = DataType( 1, predicate )
         else:
           s.send_out[0].msg = DataType( 0, predicate )
+      print( "predicate: ", predicate )
 

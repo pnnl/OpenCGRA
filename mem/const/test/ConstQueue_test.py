@@ -31,7 +31,7 @@ class TestHarness( Component ):
     s.src_opt     = TestSrcRTL( ConfigType, ctrl_msgs )
     s.sink_out    = TestSinkCL( DataType,   sink_msgs )
 
-    s.alu         = Alu( DataType, ConfigType, 4, 2, 8 )
+    s.alu         = Alu( DataType, ConfigType, 2, 1, 8 )
     s.const_queue = ConstQueue( DataType, src_const )
 
     connect( s.src_in0.send,    s.alu.recv_in[0]         )
@@ -43,9 +43,9 @@ class TestHarness( Component ):
     return s.src_in0.done() and s.src_opt.done() and s.sink_out.done()
 
   def line_trace( s ):
-    return s.alu.line_trace()
+    return s.const_queue.line_trace() + s.alu.line_trace()
 
-def run_sim( test_harness, max_cycles=100 ):
+def run_sim( test_harness, max_cycles=10 ):
   test_harness.elaborate()
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()

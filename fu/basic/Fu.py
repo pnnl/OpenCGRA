@@ -41,6 +41,9 @@ class Fu( Component ):
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
 
       for j in range( num_outports ):
+        s.send_out[j].en = s.recv_opt.en
+
+      for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy
         if OPT_PHI in opt_list or OPT_LD in opt_list:
           s.send_out[j].en = s.send_out[j].en and s.recv_in[0].en
@@ -54,6 +57,6 @@ class Fu( Component ):
 
   def line_trace( s ):
     opt_str = " #"
-    if s.recv_opt.en:
+    if s.send_out[0].en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
     return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}]'

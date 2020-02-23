@@ -34,7 +34,7 @@ class TestHarness( Component ):
     s.src_data1 = TestSrcRTL( DataType,   src1_msgs  )
     s.sink_out  = TestSinkCL( DataType,   sink_msgs  )
 
-    s.alu       = Alu( DataType, ConfigType, 4, 2, data_mem_size )
+    s.alu       = Alu( DataType, ConfigType, 2, 2, data_mem_size )
     s.ctrl_mem  = MemUnit( ConfigType, ctrl_mem_size, len(ctrl_msgs), ctrl_msgs )
 
     connect( s.alu.recv_opt,   s.ctrl_mem.send_ctrl  )

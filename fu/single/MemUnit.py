@@ -59,7 +59,7 @@ class MemUnit( Component ):
         s.send_out[j].en = s.send_out[j].en and s.recv_opt.en
 
       if s.recv_opt.msg.ctrl not in s.opt_list:
-        for j in range( 1, num_outports ):
+        for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )
 
       s.send_out[0].msg = s.from_mem_rdata.msg
