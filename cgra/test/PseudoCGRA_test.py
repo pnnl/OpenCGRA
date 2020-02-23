@@ -21,6 +21,8 @@ from ...fu.single.Alu             import Alu
 from ...fu.single.MemUnit         import MemUnit
 from ..PseudoCGRA                 import PseudoCGRA
 
+import os
+
 #-------------------------------------------------------------------------
 # Test harness
 #-------------------------------------------------------------------------
@@ -73,6 +75,9 @@ def run_sim( test_harness, max_cycles=10 ):
   test_harness.tick()
 
 def test_cgra_universal():
+  target_json = "config_fir.json"
+  script_dir  = os.path.dirname(__file__)
+  file_path   = os.path.join( script_dir, target_json )
   num_tile_inports  = 4
   num_tile_outports = 4
   num_xbar_inports  = 6

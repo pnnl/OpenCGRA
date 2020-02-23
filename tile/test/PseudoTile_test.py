@@ -111,14 +111,14 @@ def test_tile_alu():
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   src_opt      = [ CtrlType( OPT_NAH, [
-                   RouteType(3), RouteType(2), RouteType(1), RouteType(0),
-                   RouteType(3), RouteType(2), RouteType(1), RouteType(0)] ),
+                   RouteType(4), RouteType(3), RouteType(2), RouteType(1),
+                   RouteType(4), RouteType(3), RouteType(2), RouteType(1)] ),
                    CtrlType( OPT_ADD, [
-                   RouteType(2), RouteType(2), RouteType(2), RouteType(4),
-                   RouteType(3), RouteType(0), RouteType(0), RouteType(0)] ),
+                   RouteType(3), RouteType(3), RouteType(3), RouteType(5),
+                   RouteType(4), RouteType(1), RouteType(1), RouteType(1)] ),
                    CtrlType( OPT_SUB, [
-                   RouteType(4), RouteType(4), RouteType(1), RouteType(1),
-                   RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ) ]
+                   RouteType(5), RouteType(5), RouteType(2), RouteType(2),
+                   RouteType(1), RouteType(1), RouteType(1), RouteType(1)] ) ]
   src_data     = [ [DataType(2, 1), DataType( 3, 1)],
                    [DataType(3, 1), DataType( 4, 1)],
                    [DataType(4, 1), DataType( 5, 1)],

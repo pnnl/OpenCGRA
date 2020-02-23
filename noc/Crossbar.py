@@ -17,6 +17,8 @@ class Crossbar( Component ):
   def construct( s, DataType, CtrlType,
                  num_inports = 5, num_outports = 5 ):
 
+    OutType     = mk_bits( num_outports + 1 )
+
     # Interface
 
     s.recv_opt  = RecvIfcRTL( CtrlType )
@@ -34,9 +36,11 @@ class Crossbar( Component ):
         for i in range( num_outports ):
           in_dir  = s.recv_opt.msg.outport[i]
           out_rdy = out_rdy | s.send_data[i].rdy
-          s.recv_data[in_dir].rdy = s.send_data[i].rdy
-          s.send_data[i].en       = s.recv_data[in_dir].en
-          s.send_data[i].msg      = s.recv_data[in_dir].msg
+          if in_dir > OutType( 0 ):
+            in_dir = in_dir - OutType( 1 )
+            s.recv_data[in_dir].rdy = s.send_data[i].rdy
+            s.send_data[i].en       = s.recv_data[in_dir].en
+            s.send_data[i].msg      = s.recv_data[in_dir].msg
       else:
         for i in range( num_outports ):
           s.send_data[i].en = b1( 0 )
