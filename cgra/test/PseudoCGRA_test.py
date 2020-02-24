@@ -75,10 +75,7 @@ def run_sim( test_harness, max_cycles=10 ):
   test_harness.tick()
   test_harness.tick()
 
-def test_cgra_universal():
-  target_json = "config_fir.json"
-  script_dir  = os.path.dirname(__file__)
-  file_path   = os.path.join( script_dir, target_json )
+def test_cgra_2x2_universal():
 
   num_tile_inports  = 4
   num_tile_outports = 4
@@ -97,11 +94,6 @@ def test_cgra_universal():
   FuList        = [Alu, MemUnit]
   DataType      = mk_data( 16, 1 )
   CtrlType      = mk_ctrl( num_xbar_inports, num_xbar_outports )
-
-  II = 4
-  cgra_ctrl     = CGRACtrl( file_path, CtrlType, RouteType, 4, 4,
-                            num_xbar_outports, II )
-
   src_opt       = [[CtrlType( OPT_ADD_CONST, [ 
                     RouteType(3), RouteType(2), RouteType(1), RouteType(0),
                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
@@ -118,6 +110,43 @@ def test_cgra_universal():
   preload_data  = [DataType(7, 1), DataType(7, 1), DataType(7, 1), DataType(7, 1)]
   preload_const = [[DataType(2, 1)], [DataType(1, 1)],
                    [DataType(4, 1)], [DataType(3, 1)]] 
+  th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
+                    width, height, ctrl_mem_size, data_mem_size,
+                    src_opt, preload_data, preload_const )
+  run_sim( th )
+
+def test_cgra_2x2_universal_fir():
+  target_json = "config_fir.json"
+  script_dir  = os.path.dirname(__file__)
+  file_path   = os.path.join( script_dir, target_json )
+
+  II                = 4
+  num_tile_inports  = 4
+  num_tile_outports = 4
+  num_xbar_inports  = 6
+  num_xbar_outports = 8
+  ctrl_mem_size     = 8
+  width             = 4
+  height            = 4
+  num_tiles         = width * height
+  RouteType         = mk_bits( clog2( num_xbar_inports + 1 ) )
+  AddrType          = mk_bits( clog2( ctrl_mem_size ) )
+  num_tiles         = width * height
+  ctrl_mem_size     = II
+  data_mem_size     = 10
+  DUT               = PseudoCGRA
+  FunctionUnit      = FlexibleFu
+  FuList            = [Alu, MemUnit]
+  DataType          = mk_data( 16, 1 )
+  CtrlType          = mk_ctrl( num_xbar_inports, num_xbar_outports )
+
+  cgra_ctrl         = CGRACtrl( file_path, CtrlType, RouteType, width, height,
+                                num_xbar_outports, II )
+  src_opt           = cgra_ctrl.get_ctrl()
+  print( src_opt )
+  preload_data  = [ DataType( 1, 1 ) ] * data_mem_size
+  preload_const = [ [ DataType( 1, 1 ) ] * II ] * num_tiles
+
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, preload_data, preload_const )

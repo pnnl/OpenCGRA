@@ -18,16 +18,24 @@ import json
 
 class TileCtrl:
 
-  def __init__( s, FuType, CtrlType, RouteType, x, y, II ):
+  def __init__( s, FuType, CtrlType, RouteType, x, y, num_outports, II ):
     s.FuType = FuType
+    s.CtrlType = CtrlType
+    s.RouteType = RouteType
     s.x      = x
     s.y      = y
-    s.opts   = [ CtrlType( 0, 0 ) ] * II
-    s.routes = [ RouteType( 0 ) ] * II
+    s.II     = II
+#    s.opts   = [ CtrlType( 0, 0 ) ] * II
+#    s.routes = [ [ RouteType( 0 ) ] * num_outports ] * II
+    s.ctrl   = [ CtrlType( OPT_NAH, [ RouteType( 0 ) ] * num_outports ) ] * II
 
-  def update_ctrl( s, cycle, opt, route ):
-    s.opts[cycle]   = opt
-    s.routes[cycle] = route
+  def update_ctrl( s, cycle, ctrl ):
+#    s.opts[cycle]   = opt
+#    s.routes[cycle] = route
+    s.ctrl[ cycle ] = ctrl
+
+  def get_ctrl( s ):
+    return s.ctrl
 
 def get_tile( x, y, tiles ):
   for tile in tiles:
@@ -42,7 +50,8 @@ class CGRACtrl:
     s.tiles = []
     for x in range( width ):
       for y in range( height ):
-        s.tiles.append( TileCtrl( FlexibleFu, CtrlType, RouteType, x, y, II ) )
+        s.tiles.append( TileCtrl( FlexibleFu, CtrlType, RouteType,
+                                  x, y, num_outports, II ) )
     with open( json_file_name ) as json_file:
       ctrls = json.load( json_file )
       for ctrl in ctrls:
@@ -52,7 +61,12 @@ class CGRACtrl:
           out = ctrl['out_'+str(i)]
           out = RouteType( out + 1 ) if out != "none" else RouteType( 0 )
           route.append( out )
-        tile.update_ctrl( ctrl['cycle']%II, CtrlType( opt_map[ ctrl['opt'] ] ), route )
-        print( tile.routes )
+        tile.update_ctrl( ctrl['cycle']%II, CtrlType( opt_map[ ctrl['opt'] ], route ) )
+#        print( tile.ctrl )
 
+  def get_ctrl( s ):
+    ctrls = []
+    for tile in s.tiles:
+      ctrls.append( tile.ctrl )
+    return ctrls
 
