@@ -15,6 +15,7 @@ from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
 from ...lib.opt_type              import *
 from ...lib.messages              import *
+from ...lib.ctrl_helper           import *
 
 from ...fu.flexible.FlexibleFu    import FlexibleFu
 from ...fu.single.Alu             import Alu
@@ -78,6 +79,7 @@ def test_cgra_universal():
   target_json = "config_fir.json"
   script_dir  = os.path.dirname(__file__)
   file_path   = os.path.join( script_dir, target_json )
+
   num_tile_inports  = 4
   num_tile_outports = 4
   num_xbar_inports  = 6
@@ -95,6 +97,11 @@ def test_cgra_universal():
   FuList        = [Alu, MemUnit]
   DataType      = mk_data( 16, 1 )
   CtrlType      = mk_ctrl( num_xbar_inports, num_xbar_outports )
+
+  II = 4
+  cgra_ctrl     = CGRACtrl( file_path, CtrlType, RouteType, 4, 4,
+                            num_xbar_outports, II )
+
   src_opt       = [[CtrlType( OPT_ADD_CONST, [ 
                     RouteType(3), RouteType(2), RouteType(1), RouteType(0),
                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
