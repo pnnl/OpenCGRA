@@ -42,8 +42,10 @@ class FlexibleFu( Component ):
 
     # Connection
 
+    has_one_mem_unit = False
     for i in range( s.fu_list_size ):
       if hasattr(s.fu[i], 'to_mem_raddr'):
+        has_one_mem_unit = True
         s.to_mem_raddr   //= s.fu[i].to_mem_raddr
         s.from_mem_rdata //= s.fu[i].from_mem_rdata
         s.to_mem_waddr   //= s.fu[i].to_mem_waddr

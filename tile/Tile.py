@@ -13,6 +13,7 @@ from ..noc.Crossbar           import Crossbar
 from ..noc.Channel            import Channel
 from ..mem.ctrl.CtrlMem       import CtrlMem
 from ..fu.flexible.FlexibleFu import FlexibleFu
+from ..fu.single.MemUnit      import MemUnit
 
 class Tile( Component ):
 
@@ -31,7 +32,6 @@ class Tile( Component ):
     DataAddrType = mk_bits( clog2( data_mem_size ) )
 
     # Interfaces
-
     s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
     s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
 
@@ -59,10 +59,11 @@ class Tile( Component ):
     s.ctrl_mem.recv_waddr //= s.recv_waddr
     s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
     # Data
-    s.to_mem_raddr   //= s.element.to_mem_raddr
-    s.from_mem_rdata //= s.element.from_mem_rdata
-    s.to_mem_waddr   //= s.element.to_mem_waddr
-    s.to_mem_wdata   //= s.element.to_mem_wdata
+    if MemUnit in FuList:
+      s.to_mem_raddr   //= s.element.to_mem_raddr
+      s.from_mem_rdata //= s.element.from_mem_rdata
+      s.to_mem_waddr   //= s.element.to_mem_waddr
+      s.to_mem_wdata   //= s.element.to_mem_wdata
 
     for i in range( num_mesh_ports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]

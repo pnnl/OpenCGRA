@@ -17,7 +17,7 @@ class Crossbar( Component ):
   def construct( s, DataType, CtrlType,
                  num_inports = 5, num_outports = 5 ):
 
-    OutType     = mk_bits( num_outports + 1 )
+    OutType     = mk_bits( clog2( num_inports + 1 ) )
 
     # Interface
 

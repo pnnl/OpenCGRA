@@ -22,6 +22,7 @@ class CtrlMem( Component ):
     assert( ctrl_mem_size <= num_ctrl )
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
     TimeType = mk_bits( clog2( num_ctrl+1 ) )
+    last_item = AddrType( ctrl_mem_size - 1 )
 
     # Interface
 
@@ -55,7 +56,7 @@ class CtrlMem( Component ):
       if s.reg_file.rdata[0].ctrl != OPT_START:
         if s.times < TimeType( num_ctrl ):
           s.times <<= s.times + TimeType( 1 )
-        if s.reg_file.raddr[0] < AddrType( ctrl_mem_size-1 ):
+        if s.reg_file.raddr[0] < last_item:
           s.reg_file.raddr[0] <<= s.reg_file.raddr[0] + AddrType( 1 )
         else:
           s.reg_file.raddr[0] <<= AddrType( 0 )
