@@ -5,7 +5,7 @@ Tile_test.py
 Test cases for Tile.
 
 Author : Cheng Tan
-  Date : Dec 11, 2019
+  Date : Mar 2, 2019
 
 """
 
@@ -22,7 +22,7 @@ from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...fu.flexible.FlexibleFu       import FlexibleFu
 from ...mem.ctrl.CtrlMem             import CtrlMem
 
-from pymtl3.passes.backends.yosys import TranslationPass, ImportPass
+from pymtl3.passes.backends.yosys    import TranslationPass, ImportPass
 
 #-------------------------------------------------------------------------
 # Test harness
