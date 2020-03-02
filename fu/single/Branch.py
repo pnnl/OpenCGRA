@@ -20,10 +20,12 @@ class Branch( Fu ):
                  data_mem_size ):
 
     super( Branch, s ).construct( DataType, ConfigType, num_inports, num_outports,
-           data_mem_size, [OPT_BRH] )
+           data_mem_size )
 
     @s.update
     def comb_logic():
+      for j in range( num_outports ):
+        s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_BRH:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload
         s.send_out[1].msg.payload = s.recv_in[0].msg.payload
@@ -33,6 +35,9 @@ class Branch( Fu ):
         else:
           s.send_out[0].msg.predicate = Bits1( 0 )
           s.send_out[1].msg.predicate = Bits1( 1 )
+      else:
+        for j in range( num_outports ):
+          s.send_out[j].en = b1( 0 )
 
   def line_trace( s ):
     symbol0 = "?"

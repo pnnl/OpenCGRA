@@ -17,6 +17,9 @@ from ..Comp                       import Comp
 from ....lib.opt_type             import *
 from ....lib.messages             import *
 
+from pymtl3.passes.backends.yosys import TranslationPass, ImportPass
+from pymtl3.passes.PassGroups import *
+
 #-------------------------------------------------------------------------
 # Test harness
 #-------------------------------------------------------------------------
@@ -48,9 +51,14 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
+  test_harness.dut.yosys_translate = True
+  test_harness.dut.yosys_import = True
+  test_harness.apply( TranslationPass() )
+  test_harness = ImportPass()( test_harness )
   test_harness.apply( SimulationPass() )
+#  test_harness.apply( SimpleSimPass() )
   test_harness.sim_reset()
-
+  
   # Run simulation
 
   ncycles = 0
@@ -71,7 +79,7 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_Comp():
   FU = Comp
-  DataType   = mk_data( 16, 1 )
+  DataType   = mk_data( 32, 1 )
   CtrlType = mk_ctrl()
   num_inports   = 2
   num_outports  = 1
@@ -85,3 +93,4 @@ def test_Comp():
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_data, src_ref, src_opt, sink_out )
   run_sim( th )
+

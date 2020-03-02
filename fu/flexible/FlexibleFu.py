@@ -13,11 +13,6 @@ from pymtl3 import *
 from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type     import *
 
-from ..single.Alu        import Alu
-from ..single.Shifter    import Shifter
-from ..single.Mul        import Mul
-from ..single.Logic      import Logic
-
 class FlexibleFu( Component ):
 
   def construct( s, FuList, DataType, CtrlType, num_inports, num_outports,
@@ -48,10 +43,7 @@ class FlexibleFu( Component ):
     # Connection
 
     for i in range( s.fu_list_size ):
-#      s.fu[i].recv_const //= s.recv_const
-#      s.fu[i].recv_const.msg = s.recv_const.msg
-#      s.fu[i].recv_const.en  = s.recv_const.en
-      if OPT_LD in s.fu[i].opt_list:
+      if hasattr(s.fu[i], 'to_mem_raddr'):
         s.to_mem_raddr   //= s.fu[i].to_mem_raddr
         s.from_mem_rdata //= s.fu[i].from_mem_rdata
         s.to_mem_waddr   //= s.fu[i].to_mem_waddr

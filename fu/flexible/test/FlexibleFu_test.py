@@ -26,6 +26,8 @@ from ...single.MemUnit            import MemUnit
 from ...single.Comp               import Comp 
 from ...single.Branch             import Branch
 
+from pymtl3.passes.backends.yosys import TranslationPass, ImportPass
+
 #-------------------------------------------------------------------------
 # Test harness
 #-------------------------------------------------------------------------
@@ -55,7 +57,7 @@ class TestHarness( Component ):
 
     is_memory_unit = False
     for i in range( s.dut.fu_list_size ):
-      if OPT_LD in s.dut.fu[i].opt_list:
+      if hasattr(s.dut.fu[i], "to_mem_raddr"):
         is_memory_unit = True
     if is_memory_unit:
       s.dut.to_mem_raddr.rdy   //= 0
@@ -74,6 +76,10 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
+#  test_harness.dut.yosys_translate = True
+#  test_harness.dut.yosys_import = True
+#  test_harness.apply( TranslationPass() )
+#  test_harness = ImportPass()( test_harness )
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
@@ -137,9 +143,9 @@ def test_flexible_universal():
   data_mem_size = 8
   num_inports   = 2
   num_outports  = 2
-  src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(3, 0) ]
+  src_in0   = [ DataType(2, 1), DataType(2, 1), DataType(3, 0) ]
   src_in1   = [ DataType(2, 1), DataType(0, 1), DataType(2, 1) ]
-  sink_out0 = [ DataType(0, 1), DataType(2, 1), DataType(2, 1) ]
+  sink_out0 = [ DataType(1, 1), DataType(2, 1), DataType(2, 1) ]
   sink_out1 = [ DataType(0, 0), DataType(2, 0), DataType(0, 0) ]
   src_opt   = [ CtrlType(OPT_EQ), CtrlType(OPT_BRH), CtrlType(OPT_PHI) ]
   th = TestHarness( FU, FuList, DataType, CtrlType, data_mem_size,

@@ -15,11 +15,7 @@ from ...lib.opt_type    import *
 class Fu( Component ):
 
   def construct( s, DataType, CtrlType, num_inports, num_outports,
-                 data_mem_size, opt_list ):
-
-    # Constant
-
-    s.opt_list = opt_list
+                 data_mem_size ):
 
     # Interface
 
@@ -39,21 +35,6 @@ class Fu( Component ):
 
       for j in range( num_outports ):
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
-
-      for j in range( num_outports ):
-        s.send_out[j].en = s.recv_opt.en
-
-      for j in range( num_outports ):
-        s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy
-        if OPT_PHI in opt_list or OPT_LD in opt_list:
-          s.send_out[j].en = s.send_out[j].en and s.recv_in[0].en
-        else:
-          for i in range( num_inports ):
-            s.send_out[j].en = s.send_out[j].en and s.recv_in[i].en
-
-      if s.recv_opt.msg.ctrl not in opt_list:
-        for j in range( num_outports ):
-          s.send_out[j].en = b1( 0 )
 
   def line_trace( s ):
     opt_str = " #"

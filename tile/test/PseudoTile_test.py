@@ -53,7 +53,7 @@ class TestHarness( Component ):
 
     is_memory_unit = False
     for i in range( s.dut.element.fu_list_size ):
-      if OPT_LD in s.dut.element.fu[i].opt_list:
+      if hasattr(s.dut.element.fu[i], "to_mem_raddr"):
         is_memory_unit = True
     if is_memory_unit:
       s.dut.to_mem_raddr.rdy   //= 0

@@ -22,9 +22,6 @@ class MemUnit( Component ):
     # Constant
 
     AddrType = mk_bits( clog2( data_mem_size ) )
-    # Components
-
-    s.opt_list = [OPT_LD, OPT_STR]
 
     # Interface
 
@@ -42,7 +39,6 @@ class MemUnit( Component ):
 
     @s.update
     def comb_logic():
-
       for i in range( 2, num_inports ):
         for j in range( num_outports ):
           s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
@@ -57,10 +53,6 @@ class MemUnit( Component ):
         for i in range( num_inports ):
           s.send_out[j].en = s.recv_in[i].en or s.send_out[j].en
         s.send_out[j].en = s.send_out[j].en and s.recv_opt.en
-
-      if s.recv_opt.msg.ctrl not in s.opt_list:
-        for j in range( num_outports ):
-          s.send_out[j].en = b1( 0 )
 
       s.send_out[0].msg = s.from_mem_rdata.msg
 #      s.send_out[0].en = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
@@ -85,6 +77,9 @@ class MemUnit( Component ):
         s.to_mem_wdata.en  = s.recv_in[1].en
         s.send_out[0].en   = b1( 0 )
         s.send_out[0].msg  = s.from_mem_rdata.msg
+      else:
+        for j in range( num_outports ):
+          s.send_out[j].en = b1( 0 )
 
   def line_trace( s ):
     out_msg = s.send_out[0].msg

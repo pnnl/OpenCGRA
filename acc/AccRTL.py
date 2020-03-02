@@ -54,7 +54,8 @@ class AccRTL( Component ):
 #      for i in range( node.num_output[0] ):
       s.elements[node.id].send_out[0] //= s.mcasters[node.id].recv
 
-      if OPT_LD in s.elements[node.id].opt_list:
+#      if OPT_LD in s.elements[node.id].opt_list:
+      if hasattr(s.elements[node.id], "to_mem_raddr"):
         s.data_mem.recv_raddr[mem_port_index] //= s.elements[node.id].to_mem_raddr
         s.data_mem.send_rdata[mem_port_index] //= s.elements[node.id].from_mem_rdata
         s.data_mem.recv_waddr[mem_port_index] //= s.elements[node.id].to_mem_waddr
