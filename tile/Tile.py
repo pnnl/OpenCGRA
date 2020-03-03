@@ -95,6 +95,6 @@ class Tile( Component ):
     channel_recv_str = "|".join([ str(x.recv.msg) for x in s.channel ])
     channel_send_str = "|".join([ str(x.send.msg) for x in s.channel ])
 #    out_str = "|".join([ str(x.msg) for x in s.send_out ])
-    out_str  = "|".join([ x.line_trace() for x in s.send_data ])
+    out_str  = "|".join([ "("+str(x.msg.payload)+","+str(x.msg.predicate)+")" for x in s.send_data ])
     return f"{recv_str} => [{s.crossbar.recv_opt.msg}] ({s.element.line_trace()}) => {channel_recv_str} => {channel_send_str} => {out_str}"
 

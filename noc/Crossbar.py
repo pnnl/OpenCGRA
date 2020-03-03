@@ -48,7 +48,7 @@ class Crossbar( Component ):
 
   # Line trace
   def line_trace( s ):
-    recv_str = "|".join([ str(x.msg) for x in s.recv_data ])
-    out_str  = "|".join([ str(x.msg) for x in s.send_data ])
+    recv_str = "|".join([ str(x.msg.payload) for x in s.recv_data ])
+    out_str  = "|".join([ str(x.msg.payload) for x in s.send_data ])
     return f"{recv_str} [{s.recv_opt.msg}] {out_str}"
 

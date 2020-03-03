@@ -87,7 +87,8 @@ def test_crossbar():
   num_outports = 3
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_inports, num_outports )
-  src_opt      = [ CtrlType( OPT_ADD, [2, 3, 1]) ]
+  RouteType    = mk_bits( clog2( num_inports + 1 ) )
+  src_opt      = [ CtrlType( OPT_ADD, [RouteType(2), RouteType(3), RouteType(1)]) ]
   src_data     = [ [DataType(3, 1)], [DataType(2, 1)], [DataType(9, 1)] ]
   sink_out     = [ [DataType(2, 1)], [DataType(9, 1)], [DataType(3, 1)] ]
   th = TestHarness( FU, DataType, CtrlType, num_outports, num_inports,
