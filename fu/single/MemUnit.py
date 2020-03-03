@@ -62,7 +62,7 @@ class MemUnit( Component ):
         s.send_out[0].en     = s.from_mem_rdata.en and s.recv_in[0].en
         s.recv_in[0].rdy     = s.to_mem_raddr.rdy
         s.recv_in[1].rdy     = s.from_mem_rdata.rdy
-        s.to_mem_raddr.msg   = s.recv_in[0].msg.payload
+        s.to_mem_raddr.msg   = AddrType( s.recv_in[0].msg.payload )
         s.to_mem_raddr.en    = s.recv_in[0].en
         s.from_mem_rdata.rdy = s.send_out[0].rdy
         s.send_out[0].msg    = s.from_mem_rdata.msg
@@ -71,7 +71,7 @@ class MemUnit( Component ):
         s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
         s.recv_in[0].rdy   = s.to_mem_waddr.rdy
         s.recv_in[1].rdy   = s.to_mem_wdata.rdy 
-        s.to_mem_waddr.msg = s.recv_in[0].msg.payload
+        s.to_mem_waddr.msg = AddrType( s.recv_in[0].msg.payload )
         s.to_mem_waddr.en  = s.recv_in[0].en
         s.to_mem_wdata.msg = s.recv_in[1].msg
         s.to_mem_wdata.en  = s.recv_in[1].en

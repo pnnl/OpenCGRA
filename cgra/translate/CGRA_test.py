@@ -61,10 +61,10 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
-#  test_harness.dut.yosys_translate = True
-#  test_harness.dut.yosys_import = True
-#  test_harness.apply( TranslationPass() )
-#  test_harness = ImportPass()( test_harness )
+  test_harness.dut.yosys_translate = True
+  test_harness.dut.yosys_import = True
+  test_harness.apply( TranslationPass() )
+  test_harness = ImportPass()( test_harness )
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
@@ -100,7 +100,7 @@ def test_cgra_universal():
   data_mem_size = 8
   DUT          = CGRA
   FunctionUnit = FlexibleFu
-  FuList      = [Alu, MemUnit]
+  FuList      = [MemUnit]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   src_opt      = [ [ CtrlType( OPT_INC, [ 
