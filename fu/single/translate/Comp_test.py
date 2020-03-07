@@ -10,8 +10,9 @@ Author : Cheng Tan
 """
 
 from pymtl3 import *
-from pymtl3.stdlib.test           import TestSinkCL
+#from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
+from pymtl3.stdlib.test.test_sinks import TestSinkRTL
 
 from ..Comp                       import Comp
 from ....lib.opt_type             import *
@@ -32,7 +33,7 @@ class TestHarness( Component ):
     s.src_data = TestSrcRTL( DataType, src_data  )
     s.src_ref  = TestSrcRTL( DataType, src_ref   )
     s.src_opt  = TestSrcRTL( CtrlType, src_opt   )
-    s.sink_out = TestSinkCL( DataType, sink_msgs )
+    s.sink_out = TestSinkRTL( DataType, sink_msgs )
 
     s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports,
                           data_mem_size )
@@ -44,7 +45,7 @@ class TestHarness( Component ):
 
   def done( s ):
     return s.src_data.done() and s.sink_out.done()
-#    return s.src_data.done() and s.src_ref.done() and\
+#    return s.src_data.done() and s.src_ref.done() #and\
 #           s.src_opt.done()  and s.sink_out.done()
 
   def line_trace( s ):
@@ -54,8 +55,13 @@ class TestHarness( Component ):
 #  test_harness.dut.verilog_import = True
 #  test_harness.apply( SimpleSimPass() )
 
-def run_sim( test_harness, max_cycles=100 ):
+def run_sim( test_harness, max_cycles=5 ):
   test_harness.elaborate()
+  test_harness.dut.verilog_translate_import = True
+#  test_harness.apply( TranslationPass() )
+#  test_harness = VerilatorImportPass()( test_harness )
+  test_harness.dut.config_verilog_import = VerilatorImportConfigs(vl_Wno_list = ['UNSIGNED', 'UNOPTFLAT', 'WIDTH', 'WIDTHCONCAT', 'ALWCOMBORDER'])
+  test_harness = TranslationImportPass()(test_harness)
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 

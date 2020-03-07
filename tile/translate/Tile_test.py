@@ -22,7 +22,7 @@ from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...fu.flexible.FlexibleFu       import FlexibleFu
 from ...mem.ctrl.CtrlMem             import CtrlMem
 
-from pymtl3.passes.backends.yosys    import TranslationPass, ImportPass
+from pymtl3.passes.backends.verilog import TranslationImportPass
 
 #-------------------------------------------------------------------------
 # Test harness
@@ -82,10 +82,9 @@ class TestHarness( Component ):
 
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
-  test_harness.dut.yosys_translate = True
-  test_harness.dut.yosys_import = True
-  test_harness.apply( TranslationPass() )
-  test_harness = ImportPass()( test_harness )
+  test_harness.dut.verilog_translate_import = True
+  test_harness.dut.config_verilog_import = VerilatorImportConfigs(vl_Wno_list =         ['UNSIGNED', 'UNOPTFLAT', 'WIDTH', 'WIDTHCONCAT', 'ALWCOMBORDER'])
+  test_harness = TranslationImportPass()(test_harness)
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
