@@ -17,7 +17,7 @@ from ..Comp                       import Comp
 from ....lib.opt_type             import *
 from ....lib.messages             import *
 
-from pymtl3.passes.backends.yosys import TranslationPass, ImportPass
+from pymtl3.passes.backends.verilog import TranslationPass, VerilatorImportPass, TranslationImportPass
 from pymtl3.passes.PassGroups import *
 
 #-------------------------------------------------------------------------
@@ -49,14 +49,18 @@ class TestHarness( Component ):
   def line_trace( s ):
     return s.dut.line_trace()
 
+#  test_harness.dut.verilog_translate = True
+#  test_harness.dut.verilog_import = True
+#  test_harness.apply( SimpleSimPass() )
+
 def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
-  test_harness.dut.yosys_translate = True
-  test_harness.dut.yosys_import = True
-  test_harness.apply( TranslationPass() )
-  test_harness = ImportPass()( test_harness )
+  test_harness.dut.verilog_translate_import = True
+#  test_harness.apply( TranslationPass() )
+#  test_harness = VerilatorImportPass()( test_harness )
+  test_harness.dut.config_verilog_import = VerilatorImportConfigs(vl_Wno_list = ['UNSIGNED', 'UNOPTFLAT', 'WIDTH', 'WIDTHCONCAT', 'ALWCOMBORDER'])
+  test_harness = TranslationImportPass()(test_harness)
   test_harness.apply( SimulationPass() )
-#  test_harness.apply( SimpleSimPass() )
   test_harness.sim_reset()
   
   # Run simulation
