@@ -17,12 +17,22 @@ class Fu( Component ):
   def construct( s, DataType, CtrlType, num_inports, num_outports,
                  data_mem_size ):
 
+    AddrType = mk_bits( clog2( data_mem_size ) )
+    s.const_zero = DataType(0, 0)
+
+
     # Interface
 
     s.recv_in    = [ RecvIfcRTL( DataType ) for _ in range( num_inports ) ]
     s.recv_const = RecvIfcRTL( DataType )
     s.recv_opt   = RecvIfcRTL( CtrlType )
     s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_inports ) ]
+
+    # Redundant interfaces for MemUnit
+    s.to_mem_raddr   = SendIfcRTL( AddrType )
+    s.from_mem_rdata = RecvIfcRTL( DataType )
+    s.to_mem_waddr   = SendIfcRTL( AddrType )
+    s.to_mem_wdata   = SendIfcRTL( DataType )
 
     @s.update
     def update_signal():
@@ -33,6 +43,16 @@ class Fu( Component ):
       for j in range( num_outports ):
         s.recv_const.rdy = s.send_out[j].rdy or s.recv_const.rdy
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
+
+    @s.update
+    def update_mem():
+      s.to_mem_waddr.en    = b1( 0 )
+      s.to_mem_wdata.en    = b1( 0 )
+      s.to_mem_wdata.msg   = s.const_zero
+      s.to_mem_waddr.msg   = AddrType( 0 )
+      s.to_mem_raddr.msg   = AddrType( 0 )
+      s.to_mem_raddr.en    = b1( 0 )
+      s.from_mem_rdata.rdy = b1( 0 )
 
   def line_trace( s ):
     opt_str = " #"

@@ -56,16 +56,17 @@ class TestHarness( Component ):
     connect( s.dut.send_out[0], s.sink_out0.recv )
     connect( s.dut.send_out[1], s.sink_out1.recv )
 
-    is_memory_unit = False
-    for i in range( s.dut.fu_list_size ):
-      if hasattr(s.dut.fu[i], "to_mem_raddr"):
-        is_memory_unit = True
-    if is_memory_unit:
-      s.dut.to_mem_raddr.rdy   //= 0
-      s.dut.from_mem_rdata.en  //= 0
-      s.dut.from_mem_rdata.msg //= DataType( 0, 0 )
-      s.dut.to_mem_waddr.rdy   //= 0
-      s.dut.to_mem_wdata.rdy   //= 0
+    AddrType = mk_bits( clog2( data_mem_size ) )
+    s.to_mem_raddr   = [ TestSinkRTL( AddrType, [] ) for _ in FuList ]
+    s.from_mem_rdata = [ TestSrcRTL( DataType, [] )  for _ in FuList ]
+    s.to_mem_waddr   = [ TestSinkRTL( AddrType, [] ) for _ in FuList ]
+    s.to_mem_wdata   = [ TestSinkRTL( DataType, [] ) for _ in FuList ]
+
+    for i in range( len( FuList ) ):
+      s.to_mem_raddr[i].recv   //= s.dut.to_mem_raddr[i]
+      s.from_mem_rdata[i].send //= s.dut.from_mem_rdata[i]
+      s.to_mem_waddr[i].recv   //= s.dut.to_mem_waddr[i]
+      s.to_mem_wdata[i].recv   //= s.dut.to_mem_wdata[i]
 
   def done( s ):
     return s.src_in0.done()   and s.src_in1.done()   and\

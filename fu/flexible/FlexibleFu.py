@@ -5,7 +5,7 @@ FlexibleFu.py
 A flexible functional unit whose functionality can be parameterized.
 
 Author : Cheng Tan
-  Date : Dec [2]4, [2][0][1]9
+  Date : Dec 24, 2019
 
 """
 
@@ -30,10 +30,10 @@ class FlexibleFu( Component ):
     s.recv_opt   = RecvIfcRTL( CtrlType )
     s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_outports ) ]
 
-    s.to_mem_raddr   = SendIfcRTL( AddrType )
-    s.from_mem_rdata = RecvIfcRTL( DataType )
-    s.to_mem_waddr   = SendIfcRTL( AddrType )
-    s.to_mem_wdata   = SendIfcRTL( DataType )
+    s.to_mem_raddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
+    s.from_mem_rdata = [ RecvIfcRTL( DataType ) for _ in range( s.fu_list_size ) ]
+    s.to_mem_waddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
+    s.to_mem_wdata   = [ SendIfcRTL( DataType ) for _ in range( s.fu_list_size ) ]
 
     # Components
 
@@ -44,12 +44,12 @@ class FlexibleFu( Component ):
 
     has_one_mem_unit = False
     for i in range( s.fu_list_size ):
-      if hasattr(s.fu[i], 'to_mem_raddr'):
-        has_one_mem_unit = True
-        s.to_mem_raddr   //= s.fu[i].to_mem_raddr
-        s.from_mem_rdata //= s.fu[i].from_mem_rdata
-        s.to_mem_waddr   //= s.fu[i].to_mem_waddr
-        s.to_mem_wdata   //= s.fu[i].to_mem_wdata
+#      if hasattr(s.fu[i], 'to_mem_raddr'):
+#        has_one_mem_unit = True
+      s.to_mem_raddr[i]   //= s.fu[i].to_mem_raddr
+      s.from_mem_rdata[i] //= s.fu[i].from_mem_rdata
+      s.to_mem_waddr[i]   //= s.fu[i].to_mem_waddr
+      s.to_mem_wdata[i]   //= s.fu[i].to_mem_wdata
 
     @s.update
     def comb_logic():
@@ -74,7 +74,7 @@ class FlexibleFu( Component ):
           s.fu[i].recv_in[j].msg = s.recv_in[j].msg
           s.fu[i].recv_in[j].en  = s.recv_in[j].en
           s.recv_in[j].rdy       = s.fu[i].recv_in[j].rdy or s.recv_in[j].rdy
-         
+
         # send_out connection
         for j in range( num_outports ):
           if s.fu[i].send_out[j].en:

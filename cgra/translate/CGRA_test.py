@@ -99,27 +99,27 @@ def test_cgra_universal():
   data_mem_size = 8
   DUT          = CGRA
   FunctionUnit = FlexibleFu
-  FuList      = [Alu]
+  FuList      = [MemUnit]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   src_opt      = [ [ CtrlType( OPT_INC, [
-                     RouteType(3), RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     RouteType(4), RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_INC, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_STR, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
-                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
-                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ) ]
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ]
                      for _ in range( num_tiles ) ]
   ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
                      AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
