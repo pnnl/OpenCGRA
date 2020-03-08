@@ -51,11 +51,12 @@ class TestHarness( Component ):
     for i in range( num_tile_outports ):
       connect( s.dut.send_data[i],  s.sink_out[i].recv )
 
-    is_memory_unit = False
-    for i in range( s.dut.element.fu_list_size ):
-      if hasattr(s.dut.element.fu[i], "to_mem_raddr"):
-        is_memory_unit = True
-    if is_memory_unit:
+#    is_memory_unit = False
+#    for i in range( s.dut.element.fu_list_size ):
+#      if hasattr(s.dut.element.fu[i], "to_mem_raddr"):
+#        is_memory_unit = True
+#    if is_memory_unit:
+    if MemUnit in FuList:
       s.dut.to_mem_raddr.rdy   //= 0
       s.dut.from_mem_rdata.en  //= 0
       s.dut.from_mem_rdata.msg //= DataType( 0, 0 )

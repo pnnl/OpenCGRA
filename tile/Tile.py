@@ -39,6 +39,11 @@ class Tile( Component ):
     s.recv_waddr = RecvIfcRTL( CtrlAddrType )
     s.recv_wopt  = RecvIfcRTL( CtrlType )
     # Data
+#    s.to_mem_raddr   = [ SendIfcRTL( DataAddrType ) for _ in range(len(FuList)) ]
+#    s.from_mem_rdata = [ RecvIfcRTL( DataType )     for _ in range(len(FuList)) ]
+#    s.to_mem_waddr   = [ SendIfcRTL( DataAddrType ) for _ in range(len(FuList)) ]
+#    s.to_mem_wdata   = [ SendIfcRTL( DataType )     for _ in range(len(FuList)) ]
+
     s.to_mem_raddr   = SendIfcRTL( DataAddrType )
     s.from_mem_rdata = RecvIfcRTL( DataType )
     s.to_mem_waddr   = SendIfcRTL( DataAddrType )
@@ -59,11 +64,19 @@ class Tile( Component ):
     s.ctrl_mem.recv_waddr //= s.recv_waddr
     s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
     # Data
-    if MemUnit in FuList:
-      s.to_mem_raddr   //= s.element.to_mem_raddr
-      s.from_mem_rdata //= s.element.from_mem_rdata
-      s.to_mem_waddr   //= s.element.to_mem_waddr
-      s.to_mem_wdata   //= s.element.to_mem_wdata
+#    if MemUnit in FuList:
+    for i in range( len( FuList ) ):
+      if FuList[i] == MemUnit:
+        s.to_mem_raddr   //= s.element.to_mem_raddr[i]
+        s.from_mem_rdata //= s.element.from_mem_rdata[i]
+        s.to_mem_waddr   //= s.element.to_mem_waddr[i]
+        s.to_mem_wdata   //= s.element.to_mem_wdata[i]
+      else:
+        s.element.to_mem_raddr[i].rdy   //= 0
+        s.element.from_mem_rdata[i].en  //= 0
+        s.element.from_mem_rdata[i].msg //= DataType( 0, 0 )
+        s.element.to_mem_waddr[i].rdy   //= 0
+        s.element.to_mem_wdata[i].rdy   //= 0
 
     for i in range( num_mesh_ports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]

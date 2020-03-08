@@ -14,6 +14,7 @@ from ..noc.Channel            import Channel
 from ..mem.ctrl.PseudoCtrlMem import PseudoCtrlMem
 from ..fu.flexible.FlexibleFu import FlexibleFu
 from ..mem.const.ConstQueue   import ConstQueue
+from ..fu.single.MemUnit      import MemUnit
 
 class PseudoTile( Component ):
 
@@ -55,11 +56,24 @@ class PseudoTile( Component ):
     # Connections
 
     # Data
-    s.to_mem_raddr       //= s.element.to_mem_raddr
-    s.from_mem_rdata     //= s.element.from_mem_rdata
-    s.to_mem_waddr       //= s.element.to_mem_waddr
-    s.to_mem_wdata       //= s.element.to_mem_wdata
-    s.element.recv_const //=  s.const_queue.send_const
+#    s.to_mem_raddr       //= s.element.to_mem_raddr
+#    s.from_mem_rdata     //= s.element.from_mem_rdata
+#    s.to_mem_waddr       //= s.element.to_mem_waddr
+#    s.to_mem_wdata       //= s.element.to_mem_wdata
+#    s.element.recv_const //=  s.const_queue.send_const
+
+    for i in range( len( FuList ) ):
+      if FuList[i] == MemUnit:
+        s.to_mem_raddr   //= s.element.to_mem_raddr[i]
+        s.from_mem_rdata //= s.element.from_mem_rdata[i]
+        s.to_mem_waddr   //= s.element.to_mem_waddr[i]
+        s.to_mem_wdata   //= s.element.to_mem_wdata[i]
+      else:
+        s.element.to_mem_raddr[i].rdy   //= 0
+        s.element.from_mem_rdata[i].en  //= 0
+        s.element.from_mem_rdata[i].msg //= DataType( 0, 0 )
+        s.element.to_mem_waddr[i].rdy   //= 0
+        s.element.to_mem_wdata[i].rdy   //= 0
 
     for i in range( num_mesh_ports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]
