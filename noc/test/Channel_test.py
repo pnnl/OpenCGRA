@@ -14,8 +14,6 @@ from pymtl3.stdlib.test.test_sinks import TestSinkRTL
 from pymtl3.stdlib.test            import TestVectorSimulator
 from ..Channel                     import Channel
 
-from pymtl3.passes.backends.yosys  import TranslationPass, ImportPass
-
 #-------------------------------------------------------------------------
 # TestHarness
 #-------------------------------------------------------------------------
@@ -47,14 +45,8 @@ def run_sim( test_harness, max_cycles=100 ):
 
   # Create a simulator
   test_harness.elaborate()
-  test_harness.dut.yosys_translate = True
-  test_harness.dut.yosys_import = True
-  test_harness.apply( TranslationPass() )
-  test_harness = ImportPass()( test_harness )
-
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
-
 
   # Run simulation
 

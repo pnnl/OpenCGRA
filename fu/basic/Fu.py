@@ -32,8 +32,6 @@ class Fu( Component ):
 
       for j in range( num_outports ):
         s.recv_const.rdy = s.send_out[j].rdy or s.recv_const.rdy
-
-      for j in range( num_outports ):
         s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
 
   def line_trace( s ):

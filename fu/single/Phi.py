@@ -25,7 +25,7 @@ class Phi( Fu ):
     @s.update
     def comb_logic():
       for j in range( num_outports ):
-        s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy and s.recv_in[0].en
+        s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en
       if s.recv_opt.msg.ctrl == OPT_PHI:
         if s.recv_in[0].msg.predicate == Bits1( 1 ):
           s.send_out[0].msg = s.recv_in[0].msg

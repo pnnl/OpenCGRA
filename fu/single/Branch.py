@@ -25,7 +25,7 @@ class Branch( Fu ):
     @s.update
     def comb_logic():
       for j in range( num_outports ):
-        s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
+        s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_BRH:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload
         s.send_out[1].msg.payload = s.recv_in[0].msg.payload

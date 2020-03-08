@@ -27,7 +27,7 @@ class Logic( Fu ):
       s.send_out[0].msg.predicate = s.recv_in[0].msg.predicate and\
                                     s.recv_in[1].msg.predicate
       for j in range( num_outports ):
-        s.send_out[j].en = s.recv_opt.en and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
+        s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_OR:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload | s.recv_in[1].msg.payload
       elif s.recv_opt.msg.ctrl == OPT_AND:
