@@ -17,6 +17,7 @@ from ..Tile                          import Tile
 from ...lib.opt_type                 import *
 from ...lib.messages                 import *
 from ...fu.single.Alu                import Alu
+from ...fu.single.Mul                import Mul
 from ...fu.single.MemUnit            import MemUnit
 from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...fu.flexible.FlexibleFu       import FlexibleFu
@@ -63,12 +64,14 @@ class TestHarness( Component ):
 #      if hasattr(s.dut.element.fu[i], "to_mem_raddr"):
 #        is_memory_unit = True
 #    if is_memory_unit:
-    if MemUnit in FuList:
-      s.dut.to_mem_raddr.rdy   //= 0
-      s.dut.from_mem_rdata.en  //= 0
-      s.dut.from_mem_rdata.msg //= DataType( 0, 0 )
-      s.dut.to_mem_waddr.rdy   //= 0
-      s.dut.to_mem_wdata.rdy   //= 0
+
+#    for i in range( len( FuList ) ):
+#      if FuList[i] == MemUnit:
+    s.dut.to_mem_raddr.rdy   //= 0
+    s.dut.from_mem_rdata.en  //= 0
+    s.dut.from_mem_rdata.msg //= DataType( 0, 0 )
+    s.dut.to_mem_waddr.rdy   //= 0
+    s.dut.to_mem_wdata.rdy   //= 0
 
   def done( s ):
     done = True
@@ -118,8 +121,8 @@ def test_tile_alu():
   AddrType     = mk_bits( clog2( ctrl_mem_size ) )
   DUT          = Tile
   FunctionUnit = FlexibleFu
-#  FuList      = [Alu, MemUnit]
-  FuList      = [Alu]
+  FuList      = [Alu, MemUnit]
+#  FuList      = [Alu, Mul]
   DataType     = mk_data( 32, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   opt_waddr    = [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ]

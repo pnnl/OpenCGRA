@@ -26,7 +26,7 @@ class Fu( Component ):
     s.recv_in    = [ RecvIfcRTL( DataType ) for _ in range( num_inports ) ]
     s.recv_const = RecvIfcRTL( DataType )
     s.recv_opt   = RecvIfcRTL( CtrlType )
-    s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_inports ) ]
+    s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_outports ) ]
 
     # Redundant interfaces for MemUnit
     s.to_mem_raddr   = SendIfcRTL( AddrType )

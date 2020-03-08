@@ -12,6 +12,7 @@ Author : Cheng Tan
 from pymtl3 import *
 from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type     import *
+from ...fu.single.MemUnit            import MemUnit
 
 class FlexibleFu( Component ):
 
@@ -35,6 +36,11 @@ class FlexibleFu( Component ):
     s.to_mem_waddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
     s.to_mem_wdata   = [ SendIfcRTL( DataType ) for _ in range( s.fu_list_size ) ]
 
+#    s.to_mem_raddr   = SendIfcRTL( AddrType )
+#    s.from_mem_rdata = RecvIfcRTL( DataType )
+#    s.to_mem_waddr   = SendIfcRTL( AddrType )
+#    s.to_mem_wdata   = SendIfcRTL( DataType )
+
     # Components
 
     s.fu = [ FuList[i]( DataType, CtrlType, num_inports, num_outports,
@@ -42,14 +48,17 @@ class FlexibleFu( Component ):
 
     # Connection
 
-    has_one_mem_unit = False
-    for i in range( s.fu_list_size ):
+#    has_one_mem_unit = False
+    for i in range( len( FuList ) ):
 #      if hasattr(s.fu[i], 'to_mem_raddr'):
+#        has_one_mem_unit = True
+#      if FuList[i] == MemUnit:
 #        has_one_mem_unit = True
       s.to_mem_raddr[i]   //= s.fu[i].to_mem_raddr
       s.from_mem_rdata[i] //= s.fu[i].from_mem_rdata
       s.to_mem_waddr[i]   //= s.fu[i].to_mem_waddr
       s.to_mem_wdata[i]   //= s.fu[i].to_mem_wdata
+
 
     @s.update
     def comb_logic():

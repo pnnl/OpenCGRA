@@ -17,7 +17,7 @@ from ..fu.single.MemUnit      import MemUnit
 
 class Tile( Component ):
 
-  def construct( s, Fu, FuList, DataType, CtrlType, 
+  def construct( s, Fu, FuList, DataType, CtrlType,
                  ctrl_mem_size, data_mem_size, num_ctrl ):
 
     # Constant
@@ -62,21 +62,27 @@ class Tile( Component ):
 
     # Ctrl
     s.ctrl_mem.recv_waddr //= s.recv_waddr
-    s.ctrl_mem.recv_ctrl  //= s.recv_wopt 
+    s.ctrl_mem.recv_ctrl  //= s.recv_wopt
     # Data
 #    if MemUnit in FuList:
     for i in range( len( FuList ) ):
       if FuList[i] == MemUnit:
+#        s.to_mem_raddr   //= s.element.to_mem_raddr
+#        s.from_mem_rdata //= s.element.from_mem_rdata
+#        s.to_mem_waddr   //= s.element.to_mem_waddr
+#        s.to_mem_wdata   //= s.element.to_mem_wdata
         s.to_mem_raddr   //= s.element.to_mem_raddr[i]
         s.from_mem_rdata //= s.element.from_mem_rdata[i]
         s.to_mem_waddr   //= s.element.to_mem_waddr[i]
         s.to_mem_wdata   //= s.element.to_mem_wdata[i]
+
       else:
         s.element.to_mem_raddr[i].rdy   //= 0
         s.element.from_mem_rdata[i].en  //= 0
         s.element.from_mem_rdata[i].msg //= DataType( 0, 0 )
         s.element.to_mem_waddr[i].rdy   //= 0
         s.element.to_mem_wdata[i].rdy   //= 0
+
 
     for i in range( num_mesh_ports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]

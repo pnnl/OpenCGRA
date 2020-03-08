@@ -30,7 +30,7 @@ class MemUnit( Component ):
     s.recv_opt = RecvIfcRTL( CtrlType )
     s.send_out = [ SendIfcRTL( DataType ) for _ in range( num_outports ) ]
 
-    # Interface to the data sram, need to interface them with 
+    # Interface to the data sram, need to interface them with
     # the data memory module in top level
     s.to_mem_raddr   = SendIfcRTL( AddrType )
     s.from_mem_rdata = RecvIfcRTL( DataType )
@@ -70,7 +70,7 @@ class MemUnit( Component ):
       elif s.recv_opt.msg.ctrl == OPT_STR:
         s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
         s.recv_in[0].rdy   = s.to_mem_waddr.rdy
-        s.recv_in[1].rdy   = s.to_mem_wdata.rdy 
+        s.recv_in[1].rdy   = s.to_mem_wdata.rdy
         s.to_mem_waddr.msg = AddrType( s.recv_in[0].msg.payload )
         s.to_mem_waddr.en  = s.recv_in[0].en
         s.to_mem_wdata.msg = s.recv_in[1].msg
