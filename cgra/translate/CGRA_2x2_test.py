@@ -10,16 +10,22 @@ Author : Cheng Tan
 """
 
 from pymtl3 import *
-from pymtl3.stdlib.test           import TestSinkCL
-from pymtl3.stdlib.test.test_srcs import TestSrcRTL
+from pymtl3.stdlib.test             import TestSinkCL
+from pymtl3.stdlib.test.test_srcs   import TestSrcRTL
 
-from ...lib.opt_type              import *
-from ...lib.messages              import *
+from ...lib.opt_type                import *
+from ...lib.messages                import *
 
-from ...fu.flexible.FlexibleFu    import FlexibleFu
-from ...fu.single.Alu             import Alu
-from ...fu.single.MemUnit         import MemUnit
-from ..CGRA                       import CGRA
+from ...fu.flexible.FlexibleFu      import FlexibleFu
+from ...fu.single.Alu               import Alu
+from ...fu.single.MemUnit           import MemUnit
+from ...fu.single.Mul               import Mul
+from ...fu.single.Shifter           import Shifter
+from ...fu.single.Logic             import Logic
+from ...fu.single.Phi               import Phi
+from ...fu.single.Comp              import Comp
+from ...fu.single.Branch            import Branch
+from ..CGRA                         import CGRA
 
 from pymtl3.passes.backends.verilog import TranslationImportPass
 
@@ -99,7 +105,7 @@ def test_cgra_universal():
   data_mem_size = 8
   DUT          = CGRA
   FunctionUnit = FlexibleFu
-  FuList      = [MemUnit]
+  FuList       = [ Alu, Mul, Logic, Shifter, Phi, Comp, Branch, MemUnit ]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   src_opt      = [ [ CtrlType( OPT_INC, [

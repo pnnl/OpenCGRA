@@ -22,24 +22,36 @@ class Comp( Fu ):
     super( Comp, s ).construct( DataType, ConfigType, num_inports, num_outports,
            data_mem_size )
 
+    s.const_zero = DataType(0, 0)
+    s.const_one  = DataType(1, 0)
+
     # data:      s.recv_in[0]
     # reference: s.recv_in[1]
 
     @s.update
     def comb_logic():
       predicate = s.recv_in[0].msg.predicate & s.recv_in[1].msg.predicate
+      s.send_out[0].msg = s.const_one
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_EQ:
         if s.recv_in[0].msg.payload == s.recv_in[1].msg.payload:
-          s.send_out[0].msg = DataType( 1, predicate )
+#          s.send_out[0].msg = DataType( 1, predicate )
+          s.send_out[0].msg = s.const_one
+          s.send_out[0].msg.predicate = predicate
         else:
-          s.send_out[0].msg = DataType( 0, predicate )
+          s.send_out[0].msg = s.const_zero
+          s.send_out[0].msg.predicate = predicate
+#          s.send_out[0].msg = DataType( 0, predicate )
       elif s.recv_opt.msg.ctrl == OPT_LE:
         if s.recv_in[0].msg.payload < s.recv_in[1].msg.payload:
-          s.send_out[0].msg = DataType( 1, predicate )
+          s.send_out[0].msg = s.const_one
+          s.send_out[0].msg.predicate = predicate
+#          s.send_out[0].msg = DataType( 1, predicate )
         else:
-          s.send_out[0].msg = DataType( 0, predicate )
+          s.send_out[0].msg = s.const_zero
+          s.send_out[0].msg.predicate = predicate
+#          s.send_out[0].msg = DataType( 0, predicate )
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )
