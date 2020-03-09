@@ -19,7 +19,7 @@ class CtrlMem( Component ):
   def construct( s, CtrlType, ctrl_mem_size, num_ctrl=4 ):
 
     # Constant
-    assert( ctrl_mem_size <= num_ctrl )
+    # assert( ctrl_mem_size <= num_ctrl )
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
     TimeType = mk_bits( clog2( num_ctrl+1 ) )
     last_item = AddrType( ctrl_mem_size - 1 )

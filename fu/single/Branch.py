@@ -29,7 +29,7 @@ class Branch( Fu ):
       if s.recv_opt.msg.ctrl == OPT_BRH:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload
         s.send_out[1].msg.payload = s.recv_in[0].msg.payload
-        if s.recv_in[1].msg.payload == Bits16( 0 ):
+        if s.recv_in[1].msg.payload == Bits32( 0 ):
           s.send_out[0].msg.predicate = Bits1( 1 )
           s.send_out[1].msg.predicate = Bits1( 0 )
         else:
