@@ -89,6 +89,11 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
   test_harness.tick()
 
+import platform
+import pytest
+
+@pytest.mark.skipif('Linux' not in platform.platform(),
+                    reason="requires linux (gcc)")
 def test_hetero_2x2():
   num_tile_inports  = 4
   num_tile_outports = 4
