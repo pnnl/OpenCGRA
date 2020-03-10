@@ -53,7 +53,7 @@ class TestHarness( Component ):
     connect( s.src_in1.send,    s.dut.recv_in[1] )
     connect( s.src_opt.send,    s.dut.recv_opt   )
     connect( s.dut.send_out[0], s.sink_out0.recv )
-    connect( s.dut.send_out[1], s.sink_out1.recv )
+#    connect( s.dut.send_out[1], s.sink_out1.recv )
 
     AddrType = mk_bits( clog2( data_mem_size ) )
     s.to_mem_raddr   = [ TestSinkCL( AddrType, [] ) for _ in FuList ]
@@ -69,8 +69,7 @@ class TestHarness( Component ):
 
   def done( s ):
     return s.src_in0.done()   and s.src_in1.done()   and\
-           s.src_opt.done()   and s.sink_out0.done() and\
-           s.sink_out1.done()
+           s.src_opt.done()   and s.sink_out0.done()
 
   def line_trace( s ):
     return s.dut.line_trace()

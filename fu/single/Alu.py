@@ -41,5 +41,5 @@ class Alu( Fu ):
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )
-      s.send_out[1].msg = s.send_out[0].msg
+      #s.send_out[1].msg = s.send_out[0].msg
 

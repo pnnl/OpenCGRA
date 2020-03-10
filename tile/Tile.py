@@ -14,11 +14,13 @@ from ..noc.Channel            import Channel
 from ..mem.ctrl.CtrlMem       import CtrlMem
 from ..fu.flexible.FlexibleFu import FlexibleFu
 from ..fu.single.MemUnit      import MemUnit
+from ..fu.single.Alu          import Alu
 
 class Tile( Component ):
 
-  def construct( s, Fu, FuList, DataType, CtrlType,
-                 ctrl_mem_size, data_mem_size, num_ctrl ):
+  def construct( s, DataType, CtrlType, ctrl_mem_size,
+                 data_mem_size, num_ctrl,
+                 Fu=FlexibleFu, FuList=[MemUnit,Alu] ):
 
     # Constant
 

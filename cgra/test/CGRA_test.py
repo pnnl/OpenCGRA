@@ -18,6 +18,7 @@ from ...lib.messages              import *
 
 from ...fu.flexible.FlexibleFu    import FlexibleFu
 from ...fu.single.Alu             import Alu
+from ...fu.single.Shifter         import Shifter
 from ...fu.single.MemUnit         import MemUnit
 from ..CGRA                       import CGRA
 
@@ -39,8 +40,9 @@ class TestHarness( Component ):
     s.ctrl_waddr  = [ TestSrcRTL( AddrType, ctrl_waddr[i] )
                       for i in range( s.num_tiles ) ]
 
-    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType, width, height,
-                 ctrl_mem_size, data_mem_size, len( src_opt[0] ) )
+    s.dut = DUT( DataType, CtrlType, width, height,
+                 ctrl_mem_size, data_mem_size,
+                 len( src_opt[0] ), FunctionUnit, FuList )
 
     for i in range( s.num_tiles ):
       connect( s.src_opt[i].send,     s.dut.recv_wopt[i]  )
@@ -80,7 +82,7 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
   test_harness.tick()
 
-def test_cgra_universal():
+def test_homo_2x2():
   num_tile_inports  = 4
   num_tile_outports = 4
   num_xbar_inports  = 6
@@ -121,5 +123,49 @@ def test_cgra_universal():
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, ctrl_waddr )
+  run_sim( th )
+
+def test_hetero_2x2():
+  num_tile_inports  = 4
+  num_tile_outports = 4
+  num_xbar_inports  = 6
+  num_xbar_outports = 8
+  ctrl_mem_size     = 6
+  width  = 2
+  height = 2
+  RouteType = mk_bits( clog2( num_xbar_inports + 1 ) )
+  AddrType = mk_bits( clog2( ctrl_mem_size ) )
+  num_tiles    = width * height
+  data_mem_size = 8
+  DUT          = CGRA
+  FunctionUnit = FlexibleFu
+  FuList      = [MemUnit, Alu]
+  DataType     = mk_data( 16, 1 )
+  CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
+  src_opt      = [ [ CtrlType( OPT_INC, [ 
+                     RouteType(4), RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                     CtrlType( OPT_INC, [
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                     CtrlType( OPT_ADD, [
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ), 
+                     CtrlType( OPT_STR, [
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                     CtrlType( OPT_ADD, [
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                     CtrlType( OPT_ADD, [
+                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ] 
+                     for _ in range( num_tiles ) ]
+  ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
+                     AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
+  th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
+                    width, height, ctrl_mem_size, data_mem_size,
+                    src_opt, ctrl_waddr )
+  th.set_param("top.dut.tile[1].construct", FuList=[MemUnit,Shifter])
   run_sim( th )
 

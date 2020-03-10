@@ -13,6 +13,7 @@ from pymtl3 import *
 from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type     import *
 from ...fu.single.MemUnit            import MemUnit
+from ...fu.single.Alu    import Alu
 
 class FlexibleFu( Component ):
 

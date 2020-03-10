@@ -15,11 +15,10 @@ from ...lib.opt_type    import *
 class Fu( Component ):
 
   def construct( s, DataType, CtrlType, num_inports, num_outports,
-                 data_mem_size ):
+                 data_mem_size=4 ):
 
     AddrType = mk_bits( clog2( data_mem_size ) )
     s.const_zero = DataType(0, 0)
-
 
     # Interface
 

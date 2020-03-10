@@ -45,8 +45,8 @@ class TestHarness( Component ):
     s.sink_out  = [ TestSinkCL( DataType, sink_out[i] )
                   for i in range( num_tile_outports ) ]
 
-    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType,
-                 ctrl_mem_size, data_mem_size, len(src_opt) )
+    s.dut = DUT( DataType, CtrlType, ctrl_mem_size, data_mem_size,
+                 len(src_opt), FunctionUnit, FuList )
 
     connect( s.src_opt.send,   s.dut.recv_wopt  )
     connect( s.opt_waddr.send, s.dut.recv_waddr )

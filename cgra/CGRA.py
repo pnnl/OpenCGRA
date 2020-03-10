@@ -7,19 +7,22 @@ Author : Cheng Tan
   Date : Dec 15, 2019
 """
 
-from pymtl3             import *
-from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
-from ..noc.Crossbar     import Crossbar
-from ..noc.Channel      import Channel
-from ..tile.Tile        import Tile
-from ..lib.opt_type     import *
-from ..mem.data.DataMem import DataMem
+from pymtl3              import *
+from pymtl3.stdlib.ifcs  import SendIfcRTL, RecvIfcRTL
+from ..noc.Crossbar      import Crossbar
+from ..noc.Channel       import Channel
+from ..tile.Tile         import Tile
+from ..lib.opt_type      import *
+from ..mem.data.DataMem  import DataMem
+from ..fu.single.MemUnit import MemUnit
+from ..fu.single.Alu     import Alu
+from ..fu.flexible.FlexibleFu import FlexibleFu
 
 class CGRA( Component ):
 
-  def construct( s, FunctionUnit, FuList, DataType, CtrlType,
-                 width, height, ctrl_mem_size, data_mem_size,
-                 num_ctrl ):
+  def construct( s, DataType, CtrlType, width, height,
+                 ctrl_mem_size, data_mem_size,
+                 num_ctrl, FunctionUnit, FuList ):
 
     # Constant
     NORTH = 0
@@ -37,8 +40,8 @@ class CGRA( Component ):
 
     # Components
 
-    s.tile = [ Tile( FunctionUnit, FuList, DataType, CtrlType, ctrl_mem_size,
-               data_mem_size, num_ctrl ) for _ in range( s.num_tiles ) ]
+    s.tile = [ Tile( DataType, CtrlType, ctrl_mem_size, data_mem_size,
+               num_ctrl ) for _ in range( s.num_tiles ) ]
     s.data_mem = DataMem( DataType, data_mem_size, height, height )
 
     # Connections
