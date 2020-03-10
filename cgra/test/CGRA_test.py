@@ -99,7 +99,7 @@ def test_homo_2x2():
   FuList      = [MemUnit, Alu]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
-  src_opt      = [ [ CtrlType( OPT_INC, [ 
+  src_opt      = [ [ CtrlType( OPT_INC, [
                      RouteType(4), RouteType(3), RouteType(2), RouteType(1),
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_INC, [
@@ -107,7 +107,7 @@ def test_homo_2x2():
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
                      RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ), 
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_STR, [
                      RouteType(4),RouteType(3), RouteType(2), RouteType(1),
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
@@ -116,7 +116,7 @@ def test_homo_2x2():
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
                      RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ] 
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ]
                      for _ in range( num_tiles ) ]
   ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
                      AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
@@ -142,7 +142,7 @@ def test_hetero_2x2():
   FuList      = [MemUnit, Alu]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
-  src_opt      = [ [ CtrlType( OPT_INC, [ 
+  src_opt      = [ [ CtrlType( OPT_INC, [
                      RouteType(4), RouteType(3), RouteType(2), RouteType(1),
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_INC, [
@@ -150,7 +150,7 @@ def test_hetero_2x2():
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
                      RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ), 
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_STR, [
                      RouteType(4),RouteType(3), RouteType(2), RouteType(1),
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
@@ -159,13 +159,14 @@ def test_hetero_2x2():
                      RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
                      CtrlType( OPT_ADD, [
                      RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ] 
+                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ]
                      for _ in range( num_tiles ) ]
   ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
                      AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, ctrl_waddr )
-  th.set_param("top.dut.tile[1].construct", FuList=[MemUnit,Shifter])
+  th.set_param("top.dut.tile[1].construct", FuList=[Shifter])
+  #th.set_param("top.dut.tile[1].construct", FuList=[MemUnit,Shifter])
   run_sim( th )
 

@@ -17,8 +17,8 @@ from ...fu.single.Alu    import Alu
 
 class FlexibleFu( Component ):
 
-  def construct( s, FuList, DataType, CtrlType, num_inports, num_outports,
-                 data_mem_size ):
+  def construct( s, DataType, CtrlType, num_inports, num_outports,
+                 data_mem_size, FuList ):
 
     # Constant
 

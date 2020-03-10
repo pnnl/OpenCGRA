@@ -2,30 +2,25 @@
 ==========================================================================
 CGRA_test.py
 ==========================================================================
-Translation for CGRAs with different configurations.
+Test cases for CGRAs with different configurations.
 
 Author : Cheng Tan
-  Date : Mar 2, 2019
+  Date : Dec 15, 2019
 
 """
 
 from pymtl3 import *
-from pymtl3.stdlib.test             import TestSinkCL
-from pymtl3.stdlib.test.test_srcs   import TestSrcRTL
+from pymtl3.stdlib.test           import TestSinkCL
+from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ...lib.opt_type                import *
-from ...lib.messages                import *
+from ...lib.opt_type              import *
+from ...lib.messages              import *
 
-from ...fu.flexible.FlexibleFu      import FlexibleFu
-from ...fu.single.Alu               import Alu
-from ...fu.single.MemUnit           import MemUnit
-from ...fu.single.Mul               import Mul
-from ...fu.single.Shifter           import Shifter
-from ...fu.single.Logic             import Logic
-from ...fu.single.Phi               import Phi
-from ...fu.single.Comp              import Comp
-from ...fu.single.Branch            import Branch
-from ..CGRA                         import CGRA
+from ...fu.flexible.FlexibleFu    import FlexibleFu
+from ...fu.single.Alu             import Alu
+from ...fu.single.Shifter         import Shifter
+from ...fu.single.MemUnit         import MemUnit
+from ..CGRA                       import CGRA
 
 from pymtl3.passes.backends.verilog import TranslationImportPass
 
@@ -48,8 +43,8 @@ class TestHarness( Component ):
                       for i in range( s.num_tiles ) ]
 
     s.dut = DUT( DataType, CtrlType, width, height,
-                 ctrl_mem_size, data_mem_size, len( src_opt[0] ),
-                 FunctionUnit, FuList, )
+                 ctrl_mem_size, data_mem_size,
+                 len( src_opt[0] ), FunctionUnit, FuList )
 
     for i in range( s.num_tiles ):
       connect( s.src_opt[i].send,     s.dut.recv_wopt[i]  )
@@ -66,11 +61,13 @@ class TestHarness( Component ):
   def line_trace( s ):
     return s.dut.line_trace()
 
-def run_sim( test_harness, max_cycles=10 ):
+def run_sim( test_harness, max_cycles=100 ):
   test_harness.elaborate()
+
   test_harness.dut.verilog_translate_import = True
-  test_harness.dut.config_verilog_import = VerilatorImportConfigs(vl_Wno_list             =         ['UNSIGNED', 'UNOPTFLAT', 'WIDTH', 'WIDTHCONCAT', 'ALWCOMBORDER'])
+  test_harness.dut.config_verilog_import = VerilatorImportConfigs(vl_Wno_list             =         ['UNSIGNED',            'UNOPTFLAT', 'WIDTH', 'WIDTHCONCAT', 'ALWCOMBORDER'])
   test_harness = TranslationImportPass()(test_harness)
+
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
@@ -92,12 +89,7 @@ def run_sim( test_harness, max_cycles=10 ):
   test_harness.tick()
   test_harness.tick()
 
-import platform
-import pytest
-
-@pytest.mark.skipif('Linux' not in platform.platform(),
-                    reason="requires linux (gcc)")
-def test_cgra_universal():
+def test_hetero_2x2():
   num_tile_inports  = 4
   num_tile_outports = 4
   num_xbar_inports  = 6
@@ -111,7 +103,7 @@ def test_cgra_universal():
   data_mem_size = 8
   DUT          = CGRA
   FunctionUnit = FlexibleFu
-  FuList       = [ Alu, Mul, Logic, Shifter, Phi, Comp, Branch, MemUnit ]
+  FuList      = [MemUnit, Alu]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   src_opt      = [ [ CtrlType( OPT_INC, [
@@ -138,5 +130,6 @@ def test_cgra_universal():
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, ctrl_waddr )
+  th.set_param("top.dut.tile[1].construct", FuList=[Shifter])
   run_sim( th )
 

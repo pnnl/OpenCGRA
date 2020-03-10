@@ -48,8 +48,8 @@ class TestHarness( Component ):
     s.sink_out  = [ TestSinkCL( DataType, sink_out[i] )
                   for i in range( num_tile_outports ) ]
 
-    s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType,
-                 ctrl_mem_size, data_mem_size, len(src_opt) )
+    s.dut = DUT( DataType, CtrlType, ctrl_mem_size, data_mem_size,
+                 len(src_opt), FunctionUnit, FuList )
 
     connect( s.src_opt.send,   s.dut.recv_wopt  )
     connect( s.opt_waddr.send, s.dut.recv_waddr )
@@ -110,6 +110,11 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
   test_harness.tick()
 
+import platform
+import pytest
+
+@pytest.mark.skipif('Linux' not in platform.platform(),
+                    reason="requires linux (gcc)")
 def test_tile_alu():
   num_tile_inports  = 4
   num_tile_outports = 4

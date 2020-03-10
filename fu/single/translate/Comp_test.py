@@ -83,6 +83,11 @@ def run_sim( test_harness, max_cycles=5 ):
   test_harness.tick()
   test_harness.tick()
 
+import platform
+import pytest
+
+@pytest.mark.skipif('Linux' not in platform.platform(),
+                    reason="requires linux (gcc)")
 def test_Comp():
   FU = Comp
   DataType   = mk_data( 32, 1 )

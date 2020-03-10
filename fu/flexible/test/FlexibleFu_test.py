@@ -45,8 +45,8 @@ class TestHarness( Component ):
     s.sink_out0 = TestSinkCL( DataType, sink0_msgs )
     s.sink_out1 = TestSinkCL( DataType, sink1_msgs )
 
-    s.dut = FunctionUnit( FuList, DataType, CtrlType, num_inports,
-                          num_outports, data_mem_size )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports,
+                          num_outports, data_mem_size, FuList )
 
     connect( s.src_const.send,  s.dut.recv_const )
     connect( s.src_in0.send,    s.dut.recv_in[0] )

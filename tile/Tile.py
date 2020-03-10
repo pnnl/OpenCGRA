@@ -53,8 +53,8 @@ class Tile( Component ):
 
     # Components
 
-    s.element  = FlexibleFu( FuList, DataType, CtrlType, num_fu_inports,
-                             num_fu_outports, data_mem_size )
+    s.element  = FlexibleFu( DataType, CtrlType, num_fu_inports,
+                             num_fu_outports, data_mem_size, FuList )
     s.crossbar = Crossbar( DataType, CtrlType, num_xbar_inports,
                            num_xbar_outports )
     s.ctrl_mem = CtrlMem( CtrlType, ctrl_mem_size, num_ctrl )

@@ -44,17 +44,17 @@ class TestHarness( Component ):
     s.src_const = TestSrcRTL( DataType, src1_msgs  )
     s.src_opt   = TestSrcRTL( CtrlType, ctrl_msgs  )
     s.sink_out0 = TestSinkRTL( DataType, sink0_msgs )
-    s.sink_out1 = TestSinkRTL( DataType, sink1_msgs )
+    #s.sink_out1 = TestSinkRTL( DataType, sink1_msgs )
 
-    s.dut = FunctionUnit( FuList, DataType, CtrlType, num_inports,
-                          num_outports, data_mem_size )
+    s.dut = FunctionUnit( DataType, CtrlType, num_inports,
+                          num_outports, data_mem_size, FuList )
 
     connect( s.src_const.send,  s.dut.recv_const )
     connect( s.src_in0.send,    s.dut.recv_in[0] )
     connect( s.src_in1.send,    s.dut.recv_in[1] )
     connect( s.src_opt.send,    s.dut.recv_opt   )
     connect( s.dut.send_out[0], s.sink_out0.recv )
-    connect( s.dut.send_out[1], s.sink_out1.recv )
+    #connect( s.dut.send_out[1], s.sink_out1.recv )
 
     AddrType = mk_bits( clog2( data_mem_size ) )
     s.to_mem_raddr   = [ TestSinkRTL( AddrType, [] ) for _ in FuList ]
@@ -70,8 +70,8 @@ class TestHarness( Component ):
 
   def done( s ):
     return s.src_in0.done()   and s.src_in1.done()   and\
-           s.src_opt.done()   and s.sink_out0.done() and\
-           s.sink_out1.done()
+           s.src_opt.done()   and s.sink_out0.done() #and\
+#           s.sink_out1.done()
 
   def line_trace( s ):
     return s.dut.line_trace()
@@ -119,6 +119,11 @@ def run_sim( test_harness, max_cycles=100 ):
 #                    src_opt, sink_out, sink_out )
 #  run_sim( th )
 
+import platform
+import pytest
+
+@pytest.mark.skipif('Linux' not in platform.platform(),
+                    reason="requires linux (gcc)")
 def test_flexible_mul():
   FU = FlexibleFu
   FuList = [Alu, Mul]
