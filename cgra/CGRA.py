@@ -41,7 +41,8 @@ class CGRA( Component ):
     # Components
 
     s.tile = [ Tile( DataType, CtrlType, ctrl_mem_size, data_mem_size,
-               num_ctrl ) for _ in range( s.num_tiles ) ]
+               num_ctrl, 4, 2, s.num_mesh_ports, s.num_mesh_ports )
+               for _ in range( s.num_tiles ) ]
     s.data_mem = DataMem( DataType, data_mem_size, height, height )
 
     # Connections
@@ -96,7 +97,7 @@ class CGRA( Component ):
 
   # Line trace
   def line_trace( s ):
-    str = "||".join([ x.element.line_trace() for x in s.tile ]) 
+    str = "||".join([ x.element.line_trace() for x in s.tile ])
     str += " :: [" + s.data_mem.line_trace() + "]"
     return str
 

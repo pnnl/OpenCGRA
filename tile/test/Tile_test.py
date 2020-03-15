@@ -17,6 +17,7 @@ from ..Tile                          import Tile
 from ...lib.opt_type                 import *
 from ...lib.messages                 import *
 from ...fu.single.Alu                import Alu
+from ...fu.single.Mul                import Mul
 from ...fu.single.MemUnit            import MemUnit
 from ...fu.triple.ThreeMulAluShifter import ThreeMulAluShifter
 from ...fu.flexible.FlexibleFu       import FlexibleFu
@@ -30,30 +31,31 @@ class TestHarness( Component ):
 
   def construct( s, DUT, FunctionUnit, FuList, DataType, CtrlType,
                  ctrl_mem_size, data_mem_size,
-                 num_tile_inports, num_tile_outports,
+                 num_fu_inports, num_fu_outports,
                  src_data, src_opt, opt_waddr, sink_out ):
 
-    s.num_tile_inports  = num_tile_inports
-    s.num_tile_outports = num_tile_outports
+#    s.num_tile_inports  = num_tile_inports
+#    s.num_tile_outports = num_tile_outports
 
     AddrType    = mk_bits( clog2( ctrl_mem_size ) )
 
     s.src_opt   = TestSrcRTL( CtrlType, src_opt )
     s.opt_waddr = TestSrcRTL( AddrType, opt_waddr )
     s.src_data  = [ TestSrcRTL( DataType, src_data[i]  )
-                  for i in range( num_tile_inports  ) ]
+                  for i in range( 4 ) ]#num_tile_inports  ) ]
     s.sink_out  = [ TestSinkCL( DataType, sink_out[i] )
-                  for i in range( num_tile_outports ) ]
+                  for i in range( 4 ) ]#num_tile_outports ) ]
 
     s.dut = DUT( DataType, CtrlType, ctrl_mem_size, data_mem_size,
-                 len(src_opt), FunctionUnit, FuList )
+                 len(src_opt), num_fu_inports, num_fu_outports,
+                 4, 4, FunctionUnit, FuList )
 
     connect( s.src_opt.send,   s.dut.recv_wopt  )
     connect( s.opt_waddr.send, s.dut.recv_waddr )
 
-    for i in range( num_tile_inports ):
+    for i in range( 4 ):#num_tile_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
-    for i in range( num_tile_outports ):
+    for i in range( 4 ):#num_tile_outports ):
       connect( s.dut.send_data[i],  s.sink_out[i].recv )
 
 #    is_memory_unit = False
@@ -70,7 +72,7 @@ class TestHarness( Component ):
 
   def done( s ):
     done = True
-    for i in range( s.num_tile_outports ):
+    for i in range( 4 ):#s.num_tile_outports ):
       if not s.sink_out[i].done():# and not s.src_data[i].done():
         done = False
         break
@@ -103,17 +105,23 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
 
 def test_tile_alu():
-  num_tile_inports  = 4
-  num_tile_outports = 4
-  num_xbar_inports  = 6
-  num_xbar_outports = 8
+  num_connect_inports  = 4
+  num_connect_outports = 4
+  num_fu_inports    = 2
+  num_fu_outports   = 1
+  num_xbar_inports  = num_fu_outports + num_connect_inports
+  num_xbar_outports = num_fu_inports + num_connect_outports
   ctrl_mem_size     = 3
   data_mem_size     = 8
+#    num_xbar_inports  = 6
+#    num_xbar_outports = 8
+#    num_mesh_ports    = 4
   RouteType    = mk_bits( clog2( num_xbar_inports + 1 ) )
   AddrType     = mk_bits( clog2( ctrl_mem_size ) )
   DUT          = Tile
   FunctionUnit = FlexibleFu
-  FuList      = [Alu, MemUnit]
+  FuList      = [Alu, Mul, MemUnit]
+#, ThreeMulAluShifter]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   opt_waddr    = [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ]
@@ -136,7 +144,7 @@ def test_tile_alu():
                    [DataType(2, 1), DataType( 9, 1)] ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     ctrl_mem_size, data_mem_size,
-                    num_tile_inports, num_tile_outports,
+                    num_fu_inports, num_fu_outports,
                     src_data, src_opt, opt_waddr, sink_out )
   run_sim( th )
 

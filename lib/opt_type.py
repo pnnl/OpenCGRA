@@ -21,6 +21,7 @@ OPT_SUB   = Bits5( 4  )
 OPT_LLS   = Bits5( 5  )
 OPT_LRS   = Bits5( 6  )
 OPT_MUL   = Bits5( 7  )
+OPT_DIV   = Bits5( 26  )
 OPT_OR    = Bits5( 8  )
 OPT_XOR   = Bits5( 9  )
 OPT_AND   = Bits5( 10 )
@@ -49,6 +50,7 @@ OPT_SYMBOL_DICT = {
   OPT_LLS   : "(<<)",
   OPT_LRS   : "(>>)",
   OPT_MUL   : "(x)",
+  OPT_DIV   : "(/)",
   OPT_OR    : "(|)",
   OPT_XOR   : "(^)",
   OPT_AND   : "(&)",

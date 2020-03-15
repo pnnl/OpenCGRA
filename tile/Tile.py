@@ -20,22 +20,24 @@ class Tile( Component ):
 
   def construct( s, DataType, CtrlType, ctrl_mem_size,
                  data_mem_size, num_ctrl,
+                 num_fu_inports, num_fu_outports,
+                 num_connect_inports, num_connect_outports,
                  Fu=FlexibleFu, FuList=[MemUnit,Alu] ):
 
     # Constant
 
-    num_xbar_inports  = 6
-    num_xbar_outports = 8
-    num_fu_inports    = 4
-    num_fu_outports   = 2
-    num_mesh_ports    = 4
+    num_xbar_inports  = num_fu_outports + num_connect_inports
+    num_xbar_outports = num_fu_inports + num_connect_outports
+#    num_fu_inports    = 4
+#    num_fu_outports   = 2
+#    num_mesh_ports    = 4
 
     CtrlAddrType = mk_bits( clog2( ctrl_mem_size ) )
     DataAddrType = mk_bits( clog2( data_mem_size ) )
 
     # Interfaces
-    s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
-    s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_mesh_ports ) ]
+    s.recv_data    = [ RecvIfcRTL( DataType ) for _ in range ( num_connect_inports ) ]
+    s.send_data    = [ SendIfcRTL( DataType ) for _ in range ( num_connect_outports ) ]
 
     # Ctrl
     s.recv_waddr = RecvIfcRTL( CtrlAddrType )
@@ -86,20 +88,20 @@ class Tile( Component ):
         s.element.to_mem_wdata[i].rdy   //= 0
 
 
-    for i in range( num_mesh_ports ):
+    for i in range( num_connect_inports ):
       s.recv_data[i] //= s.crossbar.recv_data[i]
 
     for i in range( num_xbar_outports ):
       s.crossbar.send_data[i] //= s.channel[i].recv
 
-    for i in range( num_mesh_ports ):
+    for i in range( num_connect_outports ):
       s.channel[i].send //= s.send_data[i]
 
     for i in range( num_fu_inports ):
-      s.channel[num_mesh_ports+i].send //= s.element.recv_in[i]
+      s.channel[num_connect_inports+i].send //= s.element.recv_in[i]
 
     for i in range( num_fu_outports ):
-      s.element.send_out[i] //= s.crossbar.recv_data[num_mesh_ports+i]
+      s.element.send_out[i] //= s.crossbar.recv_data[num_connect_outports+i]
 
     @s.update
     def update_opt():
