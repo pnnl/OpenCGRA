@@ -26,6 +26,11 @@ from ...single.MemUnit            import MemUnit
 from ...single.Comp               import Comp
 from ...single.Branch             import Branch
 
+from ..FuFL                       import *
+
+import hypothesis
+from hypothesis import strategies as st
+
 #from pymtl3.passes.backends.verilog import TranslationImportPass
 
 #-------------------------------------------------------------------------
@@ -34,16 +39,18 @@ from ...single.Branch             import Branch
 
 class TestHarness( Component ):
 
-  def construct( s, FunctionUnit, FuList, DataType, CtrlType, data_mem_size,
-                 num_inports, num_outports, src0_msgs, src1_msgs,
-                 ctrl_msgs, sink0_msgs, sink1_msgs ):
+  def construct( s, FunctionUnit, FuList, DataType, CtrlType, 
+                 src0_msgs, src1_msgs, ctrl_msgs, sink0_msgs ):
+    data_mem_size = 8
+    num_inports   = 2
+    num_outports  = 2
 
     s.src_in0   = TestSrcRTL( DataType, src0_msgs  )
     s.src_in1   = TestSrcRTL( DataType, src1_msgs  )
     s.src_const = TestSrcRTL( DataType, src1_msgs  )
     s.src_opt   = TestSrcRTL( CtrlType, ctrl_msgs  )
     s.sink_out0 = TestSinkCL( DataType, sink0_msgs )
-    s.sink_out1 = TestSinkCL( DataType, sink1_msgs )
+#    s.sink_out1 = TestSinkCL( DataType, sink1_msgs )
 
     s.dut = FunctionUnit( DataType, CtrlType, num_inports,
                           num_outports, data_mem_size, FuList )
@@ -97,55 +104,48 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
   test_harness.tick()
 
-def test_flexible_alu():
-  FU = FlexibleFu
-  FuList = [Alu]
-  DataType = mk_data( 16, 1 )
-  CtrlType = mk_ctrl()
-  data_mem_size = 8
-  num_inports   = 2
-  num_outports  = 2
-  src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
-  src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
-  sink_out = [ DataType(3, 1), DataType(5, 1), DataType(8, 1) ]
-  src_opt  = [ CtrlType(OPT_ADD), CtrlType(OPT_ADD), CtrlType(OPT_SUB) ]
-  th = TestHarness( FU, FuList, DataType, CtrlType, data_mem_size,
-                    num_inports, num_outports, src_in0, src_in1,
-                    src_opt, sink_out, sink_out )
-  run_sim( th )
 
-def test_flexible_mul():
-  FU = FlexibleFu
-  FuList = [Alu, Mul]
-  DataType = mk_data( 16, 1 )
-  CtrlType = mk_ctrl()
-  data_mem_size = 8
-  num_inports   = 2
-  num_outports  = 2
-  src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
-  src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(2, 1) ]
-  sink_out = [ DataType(2, 1), DataType(6, 1), DataType(18, 1) ]
-  src_opt  = [ CtrlType(OPT_MUL), CtrlType(OPT_MUL), CtrlType(OPT_MUL) ]
-  th = TestHarness( FU, FuList, DataType, CtrlType, data_mem_size,
-                    num_inports, num_outports, src_in0, src_in1,
-                    src_opt, sink_out, sink_out )
-  run_sim( th )
+func_opt = {Alu: OPT_ADD,
+            Mul: OPT_MUL }
 
-def test_flexible_universal():
+#@st.composite
+#def input_strat( draw, functions ):
+#  input_a  = draw( st.integers(0, 8), label="input_a" )
+#  input_b  = draw( st.integers(0, 8), label="input_b" )
+##  opt_list = []
+##  for func in function:
+##    if not set(func_opt[func]).issubset(set(opt_list)):
+##      opt_list += func_opt[func]
+#  opt = draw( st.sampled_from( func_opt[func] for func in functions ) )
+#  return input_a, input_b, opt
+
+@st.composite
+def inputs_strat( draw, functions ):
+  input_a  = draw( st.integers(0, 8), label="input_a" )
+  input_b  = draw( st.integers(0, 8), label="input_b" )
+  opt = draw( st.sampled_from( [ func_opt[function] for function in functions ] ) )
+  return input_a, input_b, opt
+
+#@hypothesis.settings( deadline=None, max_examples=5 )
+@hypothesis.given(
+  functions = st.sampled_from( [ [Alu], [ Alu, Mul ]] ),
+  inputs = st.data(),
+)
+def test_hypothesis( functions, inputs ):
   FU = FlexibleFu
-  FuList = [Alu, Mul, Logic, Shifter, Phi, Comp, Branch, MemUnit]
+  input_list = inputs.draw(
+    st.lists( inputs_strat(functions), max_size=4 ),
+    label = "functions"
+  )
+  src_a, src_b, src_opt  = [], [], []
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
-  data_mem_size = 8
-  num_inports   = 2
-  num_outports  = 2
-  src_in0   = [ DataType(2, 1), DataType(2, 1), DataType(3, 0) ]
-  src_in1   = [ DataType(2, 1), DataType(0, 1), DataType(2, 1) ]
-  sink_out0 = [ DataType(1, 1), DataType(2, 1), DataType(2, 1) ]
-  sink_out1 = [ DataType(0, 0), DataType(2, 0), DataType(0, 0) ]
-  src_opt   = [ CtrlType(OPT_EQ), CtrlType(OPT_BRH), CtrlType(OPT_PHI) ]
-  th = TestHarness( FU, FuList, DataType, CtrlType, data_mem_size,
-                    num_inports, num_outports, src_in0, src_in1,
-                    src_opt, sink_out0, sink_out1 )
+  for value in input_list:
+    src_a.append  ( DataType(value[0]) )
+    src_b.append  ( DataType(value[1]) )
+    src_opt.append( CtrlType(value[2]) )
+  sink_out = FuFL( DataType, src_a, src_b, src_opt )
+  th = TestHarness( FU, functions, DataType, CtrlType,
+                    src_a, src_b, src_opt, sink_out )
   run_sim( th )
 

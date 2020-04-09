@@ -67,25 +67,25 @@ def run_sim( test_harness, max_cycles=10 ):
   test_harness.tick()
   test_harness.tick()
 
-#def test_acc():
-#  target_json = "dfg_fir.json"
-#  script_dir  = os.path.dirname(__file__)
-#  file_path   = os.path.join( script_dir, target_json )
-#  DataType = mk_data( 16, 1 )
-#  CtrlType = mk_ctrl()
-#  const_data = [ DataType( 1, 1  ),
-#                 DataType( 0, 1  ),
-#                 DataType( 1, 1  ),
-#                 DataType( 0, 1  ),
-#                 DataType( 9, 1  ),
-#                 DataType( 10, 1 ) ]
-#  data_spm = [ 1 ] * 100
-#  fu_dfg = DFG( file_path, const_data, data_spm )
-#
-#  print( "----------------- FL test ------------------" )
-#  # FL golden reference
-#  acc_fl( fu_dfg, DataType, CtrlType, const_data, data_spm )
-#  print()
+def test_acc():
+  target_json = "dfg_fir.json"
+  script_dir  = os.path.dirname(__file__)
+  file_path   = os.path.join( script_dir, target_json )
+  DataType = mk_data( 16, 1 )
+  CtrlType = mk_ctrl()
+  const_data = [ DataType( 1, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 1, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 9, 1  ),
+                 DataType( 10, 1 ) ]
+  data_spm = [ 1 ] * 100
+  fu_dfg = DFG( file_path, const_data, data_spm )
+
+  print( "----------------- FL test ------------------" )
+  # FL golden reference
+  acc_fl( fu_dfg, DataType, CtrlType, const_data )#, data_spm )
+  print()
 #
 #  print( "----------------- RTL test ------------------" )
 #  DUT      = AccRTL

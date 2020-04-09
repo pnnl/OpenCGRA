@@ -18,10 +18,11 @@ from ..lib.messages import *
 #------------------------------------------------------------------------
 # Assuming that the elements in FuDFG are already ordered well.
 #------------------------------------------------------------------------
-def acc_fl( FuDFG, DataType, CtrlType, src_const, data_spm ):
+def acc_fl( FuDFG, DataType, CtrlType, src_const ):#, data_spm ):
 
   live_out = DataType( 0, 0 )
 
+  data_spm = [ 1 ] * 100
   print("data SPM: ", data_spm)
 
   while live_out.predicate == Bits1( 0 ):
