@@ -67,6 +67,17 @@ class MemUnit( Component ):
         s.from_mem_rdata.rdy = s.send_out[0].rdy
         s.send_out[0].msg    = s.from_mem_rdata.msg
 
+      elif s.recv_opt.msg.ctrl == OPT_LD_CONST:
+        for i in range( num_inports):
+          s.recv_in[i].rdy = b1( 0 )
+        s.send_out[0].en     = b1( 1 )#s.from_mem_rdata.en or s.recv_const.en
+        s.recv_const.rdy     = s.to_mem_raddr.rdy
+        #s.recv_in[1].rdy     = s.from_mem_rdata.rdy
+        s.to_mem_raddr.msg   = AddrType( s.recv_const.msg.payload )
+        s.to_mem_raddr.en    = s.recv_const.en
+        s.from_mem_rdata.rdy = s.send_out[0].rdy
+        s.send_out[0].msg    = s.from_mem_rdata.msg
+
       elif s.recv_opt.msg.ctrl == OPT_STR:
         s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en
         s.recv_in[0].rdy   = s.to_mem_waddr.rdy

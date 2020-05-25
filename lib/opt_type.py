@@ -32,7 +32,8 @@ OPT_EQ    = Bits5( 14 )
 OPT_LE    = Bits5( 15 )
 OPT_BRH   = Bits5( 16 )
 OPT_PHI   = Bits5( 17 )
-OPT_SEL   = Bits5( 26 )
+OPT_SEL   = Bits5( 27 )
+OPT_LD_CONST = Bits5( 28 )
 OPT_MUL_ADD = Bits5( 18 )
 OPT_MUL_SUB = Bits5( 19 )
 OPT_MUL_LLS = Bits5( 20 )
@@ -62,6 +63,8 @@ OPT_SYMBOL_DICT = {
   OPT_LE    : "(?<)",
   OPT_BRH   : "(br)",
   OPT_PHI   : "(ph)",
+  OPT_SEL   : "(sel)",
+  OPT_LD_CONST : "(ldcst)",
   OPT_MUL_ADD : "(x +)",
   OPT_MUL_SUB : "(x -)",
   OPT_MUL_LLS : "(x <<)",
