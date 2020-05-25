@@ -16,19 +16,22 @@ from pymtl3 import *
 # Generic data message
 #=========================================================================
 
-def mk_data( payload_nbits=16, predicate_nbits=1, prefix="CGRAData" ):
+def mk_data( payload_nbits=16, predicate_nbits=1, bypass_nbits=1,
+             prefix="CGRAData" ):
 
   PayloadType   = mk_bits( payload_nbits   )
   PredicateType = mk_bits( predicate_nbits )
+  BypassType    = mk_bits( bypass_nbits )
 
-  new_name = f"{prefix}_{payload_nbits}_{predicate_nbits}"
+  new_name = f"{prefix}_{payload_nbits}_{predicate_nbits}_{bypass_nbits}"
 
   def str_func( s ):
-    return f"{s.payload}.{s.predicate}"
+    return f"{s.payload}.{s.predicate}.{s.bypass}"
 
   return mk_bitstruct( new_name, {
       'payload'  : PayloadType,
       'predicate': PredicateType,
+      'bypass'   : BypassType,
     },
     namespace = { '__str__': str_func }
   )

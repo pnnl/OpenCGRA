@@ -36,7 +36,7 @@ class TestHarness( Component ):
     s.sink_out     = [ TestSinkCL( DataType, sink_out[i] )
                      for i in range( num_outports ) ]
 
-    s.dut = CrossbarUnit( DataType, CtrlType, num_inports, num_outports )
+    s.dut = CrossbarUnit( DataType, CtrlType, num_inports, num_outports, num_inports-1 )
 
     for i in range( num_inports ):
       connect( s.src_data[i].send, s.dut.recv_data[i] )
@@ -90,7 +90,7 @@ def test_crossbar():
   RouteType    = mk_bits( clog2( num_inports + 1 ) )
   src_opt      = [ CtrlType( OPT_ADD, [RouteType(2), RouteType(3), RouteType(1)]) ]
   src_data     = [ [DataType(3, 1)], [DataType(2, 1)], [DataType(9, 1)] ]
-  sink_out     = [ [DataType(2, 1)], [DataType(9, 1)], [DataType(3, 1)] ]
+  sink_out     = [ [DataType(2, 1)], [DataType(9, 1, 1)], [DataType(3, 1)] ]
   th = TestHarness( FU, DataType, CtrlType, num_outports, num_inports,
                     src_data, src_opt, sink_out )
   run_sim( th )

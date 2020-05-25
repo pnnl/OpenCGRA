@@ -15,9 +15,10 @@ from ..lib.opt_type     import *
 class Crossbar( Component ):
 
   def construct( s, DataType, CtrlType,
-                 num_inports = 5, num_outports = 5 ):
+                 num_inports=5, num_outports=5, bypass_point=4 ):
 
     OutType     = mk_bits( clog2( num_inports + 1 ) )
+    s.bypass_point = bypass_point
 
     # Interface
 
@@ -34,6 +35,7 @@ class Crossbar( Component ):
       out_rdy = b1( 0 )
       if s.recv_opt.msg.ctrl != OPT_START:
         for i in range( num_outports ):
+#          print("in crossbar... s.recv_opt.msg.outport[", i, "]: ", s.recv_opt.msg.outport[i])
           in_dir  = s.recv_opt.msg.outport[i]
           out_rdy = out_rdy | s.send_data[i].rdy
           if in_dir > OutType( 0 ):
@@ -41,6 +43,16 @@ class Crossbar( Component ):
             s.recv_data[in_dir].rdy = s.send_data[i].rdy
             s.send_data[i].en       = s.recv_data[in_dir].en
             s.send_data[i].msg      = s.recv_data[in_dir].msg
+            if in_dir >= OutType( s.bypass_point ):
+              s.send_data[i].msg.bypass = b1( 1 ) 
+            else:
+              s.send_data[i].msg.bypass = b1( 0 ) 
+#            print("in crossbar if... s.send_data[", i, "].msg: ", s.send_data[i].msg, "; recv.rdy: ", s.recv_data[in_dir].rdy)
+          else:
+            s.send_data[i].en  = b1( 0 )
+            #s.send_data[i].msg = b1( 0 )
+#            print("in crossbar else... s.send_data[", i, "].msg: ", s.send_data[i].msg)
+
       else:
         for i in range( num_outports ):
           s.send_data[i].en = b1( 0 )

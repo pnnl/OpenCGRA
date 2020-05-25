@@ -112,23 +112,23 @@ def test_tile_alu():
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
   src_opt      = [ CtrlType( OPT_NAH, [
-                   RouteType(4), RouteType(3), RouteType(2), RouteType(1),
-                   RouteType(4), RouteType(3), RouteType(2), RouteType(1)] ),
+                   RouteType(0), RouteType(0), RouteType(0), RouteType(0),
+                   RouteType(4), RouteType(3), RouteType(0), RouteType(0)] ),
                    CtrlType( OPT_ADD, [
-                   RouteType(3), RouteType(3), RouteType(3), RouteType(5),
-                   RouteType(4), RouteType(1), RouteType(1), RouteType(1)] ),
+                   RouteType(0), RouteType(0), RouteType(0), RouteType(5),
+                   RouteType(4), RouteType(1), RouteType(0), RouteType(0)] ),
                    CtrlType( OPT_SUB, [
-                   RouteType(5), RouteType(5), RouteType(2), RouteType(2),
-                   RouteType(1), RouteType(1), RouteType(1), RouteType(1)] ) ]
-  src_data     = [ [DataType(2, 1), DataType( 3, 1)],
-                   [DataType(3, 1), DataType( 4, 1)],
-                   [DataType(4, 1), DataType( 5, 1)],
-                   [DataType(5, 1), DataType( 6, 1)] ]
+                   RouteType(5), RouteType(0), RouteType(0), RouteType(5),
+                   RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ) ]
+  src_data     = [ [DataType(2, 1)],# DataType( 3, 1)],
+                   [],#DataType(3, 1), DataType( 4, 1)],
+                   [DataType(4, 1)],# DataType( 5, 1)],
+                   [DataType(5, 1), DataType( 7, 1)] ]
   src_const    = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
-  sink_out     = [ [DataType(5, 1), DataType( 5, 1), DataType( 3, 1)],
-                   [DataType(4, 1), DataType( 5, 1), DataType( 3, 1)],
-                   [DataType(3, 1), DataType( 5, 1)],
-                   [DataType(2, 1), DataType( 9, 1)] ]
+  sink_out     = [ [DataType(5, 1, 1)],# DataType( 4, 1)],
+                   [],
+                   [],
+                   [DataType(9, 1, 1), DataType( 5, 1, 1)]]#, DataType(4, 1)] ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     ctrl_mem_size, data_mem_size,
                     num_tile_inports, num_tile_outports,

@@ -13,6 +13,7 @@ from pymtl3.stdlib.test.test_srcs  import TestSrcRTL
 from pymtl3.stdlib.test.test_sinks import TestSinkRTL
 from pymtl3.stdlib.test            import TestVectorSimulator
 from ..Channel                     import Channel
+from ...lib.messages               import *
 
 #-------------------------------------------------------------------------
 # TestHarness
@@ -70,8 +71,9 @@ def run_sim( test_harness, max_cycles=100 ):
 # Test cases
 #-------------------------------------------------------------------------
 
-test_msgs = [ b16(4), b16(1), b16(2), b16(3) ]
+DataType  = mk_data( 16, 1 )
+test_msgs = [ DataType(7,1,1), DataType(4,1), DataType(1,1), DataType(2,1), DataType(3,1) ]
 
 def test_simple():
-  th = TestHarness( Bits16, test_msgs, test_msgs)
+  th = TestHarness( DataType, test_msgs, test_msgs)
   run_sim( th )

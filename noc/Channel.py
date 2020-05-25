@@ -9,7 +9,7 @@
 
 from pymtl3 import *
 from pymtl3.stdlib.ifcs import RecvIfcRTL, SendIfcRTL
-from pymtl3.stdlib.rtl.queues import NormalQueueRTL
+from pymtl3.stdlib.rtl.queues import NormalQueueRTL, PipeQueueRTL
 
 
 class Channel( Component ):
@@ -31,24 +31,31 @@ class Channel( Component ):
 
     # Connections
 
-    s.recv.rdy //= s.queues[0].enq.rdy
+#    s.recv.rdy //= s.queues[0].enq.rdy
 
     @s.update
     def process():
-      s.queues[0].enq.msg = s.recv.msg
-      s.queues[0].enq.en  = s.recv.en and s.queues[0].enq.rdy
-      for i in range(s.latency - 1):
-        s.queues[i+1].enq.msg = s.queues[i].deq.ret
-        s.queues[i+1].enq.en  = s.queues[i].deq.rdy and s.queues[i+1].enq.rdy
-        s.queues[i].deq.en    = s.queues[i+1].enq.en
-
-      s.send.msg  = s.queues[s.latency-1].deq.ret
-      s.send.en   = s.send.rdy and s.queues[s.latency-1].deq.rdy
-      s.queues[s.latency-1].deq.en   = s.send.en
+      if s.recv.msg.bypass == b1( 0 ):
+        s.recv.rdy = s.queues[0].enq.rdy
+        s.queues[0].enq.msg = s.recv.msg
+        s.queues[0].enq.en  = s.recv.en and s.queues[0].enq.rdy
+        for i in range(s.latency - 1):
+          s.queues[i+1].enq.msg = s.queues[i].deq.ret
+          s.queues[i+1].enq.en  = s.queues[i].deq.rdy and s.queues[i+1].enq.rdy
+          s.queues[i].deq.en    = s.queues[i+1].enq.en
+  
+        s.send.msg  = s.queues[s.latency-1].deq.ret
+        s.send.en   = s.send.rdy and s.queues[s.latency-1].deq.rdy
+        s.queues[s.latency-1].deq.en   = s.send.en
+      else:
+        s.send.msg = s.recv.msg
+#        s.send.msg.bypass = b1( 0 )
+        s.send.en = s.send.rdy and s.recv.en
+        s.recv.rdy = s.send.rdy
 
   def line_trace( s ):
     trace = '>'
     for i in range( s.latency ):
       trace += s.queues[i].line_trace() + '>'
-    return f"{s.recv.msg}({trace}){s.send.msg}"
+    return f"{s.recv.msg}({trace}){s.send.msg} ## "
 

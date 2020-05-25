@@ -28,6 +28,7 @@ class PseudoTile( Component ):
     num_fu_inports    = 4
     num_fu_outports   = 2
     num_mesh_ports    = 4
+    bypass_point      = 4
 
     CtrlAddrType = mk_bits( clog2( ctrl_mem_size ) )
     DataAddrType = mk_bits( clog2( data_mem_size ) )
@@ -49,7 +50,7 @@ class PseudoTile( Component ):
                              num_fu_outports, data_mem_size, FuList )
     s.const_queue = ConstQueue( DataType, const_list )
     s.crossbar = Crossbar( DataType, CtrlType, num_xbar_inports,
-                           num_xbar_outports )
+                           num_xbar_outports, bypass_point )
     s.ctrl_mem = PseudoCtrlMem( CtrlType, ctrl_mem_size, num_ctrl, opt_list )
     s.channel  = [ Channel ( DataType ) for _ in range( num_xbar_outports ) ]
 
@@ -104,7 +105,9 @@ class PseudoTile( Component ):
     recv_str    = "|".join([ str(x.msg) for x in s.recv_data ])
     channel_recv_str = "|".join([ str(x.recv.msg) for x in s.channel ])
     channel_send_str = "|".join([ str(x.send.msg) for x in s.channel ])
+    channel_str = "|".join([ str(x.line_trace()) for x in s.channel ])
 #    out_str  = "|".join([ x.line_trace() for x in s.send_data ])
     out_str  = "|".join([ "("+str(x.msg.payload)+","+str(x.msg.predicate)+")" for x in s.send_data ])
-    return f"\n{recv_str} => [{s.crossbar.recv_opt.msg}] ({s.element.line_trace()}) => {channel_recv_str} => {channel_send_str} => {out_str} |||"
+#    return f"\n{recv_str} => [{s.crossbar.recv_opt.msg}] ({s.element.line_trace()}) => {channel_recv_str} => {channel_send_str} => {out_str} |||"
+    return f"\n{recv_str} => [crossbar: {s.crossbar.line_trace()}] (element: {s.element.line_trace()}) => {channel_str} => {out_str} |||"
 
