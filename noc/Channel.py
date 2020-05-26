@@ -18,6 +18,7 @@ class Channel( Component ):
     # Constant
     s.latency     = latency
     s.num_entries = 2
+    s.data = DataType(0, 0)
 
     # Interface
     s.recv  = RecvIfcRTL( DataType )
@@ -48,8 +49,10 @@ class Channel( Component ):
         s.send.en   = s.send.rdy and s.queues[s.latency-1].deq.rdy
         s.queues[s.latency-1].deq.en   = s.send.en
       else:
-        s.send.msg = s.recv.msg
-#        s.send.msg.bypass = b1( 0 )
+        s.send.msg = s.data
+        s.send.msg.payload = s.recv.msg.payload
+        s.send.msg.predicate = s.recv.msg.predicate
+        s.send.msg.bypass = b1( 0 )
         s.send.en = s.send.rdy and s.recv.en
         s.recv.rdy = s.send.rdy
 

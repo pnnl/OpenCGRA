@@ -30,6 +30,8 @@ class SystolicCL( Component ):
     s.num_mesh_ports = 4
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
+    s.send_data = [ SendIfcRTL( DataType ) for _ in range ( height-1 ) ]
+
     # Components
 
     s.tile = [ PseudoTile( FunctionUnit, FuList, DataType, CtrlType,
@@ -71,9 +73,14 @@ class SystolicCL( Component ):
         s.tile[i].recv_data[WEST].msg  //= DataType( 0, 0 )
 
       if i % width == width - 1:
-        s.tile[i].send_data[EAST].rdy  //= 0
-        s.tile[i].recv_data[EAST].en   //= 0
-        s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
+        if i // width != 0:
+          s.tile[i].send_data[EAST] //= s.send_data[i//width-1]
+          s.tile[i].recv_data[EAST].en   //= 0
+          s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
+        else:
+          s.tile[i].send_data[EAST].rdy  //= 0
+          s.tile[i].recv_data[EAST].en   //= 0
+          s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
 
       if i // width == 0:
         s.tile[i].to_mem_raddr   //= s.data_mem.recv_raddr[i % width]

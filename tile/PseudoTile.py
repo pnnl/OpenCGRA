@@ -61,7 +61,7 @@ class PseudoTile( Component ):
 #    s.from_mem_rdata     //= s.element.from_mem_rdata
 #    s.to_mem_waddr       //= s.element.to_mem_waddr
 #    s.to_mem_wdata       //= s.element.to_mem_wdata
-#    s.element.recv_const //=  s.const_queue.send_const
+    s.element.recv_const //=  s.const_queue.send_const
 
     for i in range( len( FuList ) ):
       if FuList[i] == MemUnit:

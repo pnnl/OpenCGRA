@@ -28,11 +28,12 @@ class TestHarness( Component ):
                  data_mem_size, src0_msgs, src1_msgs, src2_msgs,
                  ctrl_msgs, sink_msgs ):
 
-    s.src_in0  = TestSrcRTL( DataType, src0_msgs )
-    s.src_in1  = TestSrcRTL( DataType, src1_msgs )
-    s.src_in2  = TestSrcRTL( DataType, src2_msgs )
-    s.src_opt  = TestSrcRTL( CtrlType, ctrl_msgs )
-    s.sink_out = TestSinkCL( DataType, sink_msgs )
+    s.src_in0   = TestSrcRTL( DataType, src0_msgs )
+    s.src_in1   = TestSrcRTL( DataType, src1_msgs )
+    s.src_in2   = TestSrcRTL( DataType, src2_msgs )
+    s.src_const = TestSrcRTL( DataType, src2_msgs )
+    s.src_opt   = TestSrcRTL( CtrlType, ctrl_msgs )
+    s.sink_out  = TestSinkCL( DataType, sink_msgs )
 
     s.dut = FunctionUnit( DataType, CtrlType, num_inports, num_outports,
                           data_mem_size )
@@ -40,6 +41,7 @@ class TestHarness( Component ):
     connect( s.src_in0.send,    s.dut.recv_in[0] )
     connect( s.src_in1.send,    s.dut.recv_in[1] )
     connect( s.src_in2.send,    s.dut.recv_in[2] )
+    connect( s.src_const.send,  s.dut.recv_const )
     connect( s.src_opt.send,    s.dut.recv_opt   )
     connect( s.dut.send_out[0], s.sink_out.recv  )
 

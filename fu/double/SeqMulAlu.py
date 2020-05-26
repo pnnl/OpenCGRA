@@ -29,6 +29,12 @@ class SeqMulAlu( TwoSeqCombo ):
       if s.recv_opt.msg.ctrl == OPT_MUL_ADD:
         s.Fu0.recv_opt.msg = CtrlType( OPT_MUL )
         s.Fu1.recv_opt.msg = CtrlType( OPT_ADD )
+      elif s.recv_opt.msg.ctrl == OPT_MUL_CONST_ADD:
+        s.Fu0.recv_opt.msg = CtrlType( OPT_MUL_CONST )
+        s.Fu1.recv_opt.msg = CtrlType( OPT_ADD )
+      elif s.recv_opt.msg.ctrl == OPT_MUL_CONST:
+        s.Fu0.recv_opt.msg = CtrlType( OPT_MUL_CONST )
+        s.Fu1.recv_opt.msg = CtrlType( OPT_PAS )
       elif s.recv_opt.msg.ctrl == OPT_MUL_SUB:
         s.Fu0.recv_opt.msg = CtrlType( OPT_MUL )
         s.Fu1.recv_opt.msg = CtrlType( OPT_SUB )

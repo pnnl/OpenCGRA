@@ -59,8 +59,9 @@ class TwoSeqCombo( Component ):
       s.Fu0.recv_opt.en = s.recv_opt.en
       s.Fu1.recv_opt.en = s.recv_opt.en
       s.recv_opt.rdy    = s.send_out[0].rdy
-      s.send_out[0].en  = s.recv_in[0].en and s.recv_in[1].en and\
-                          s.recv_in[2].en and s.recv_opt.en
+#      s.send_out[0].en  = s.recv_in[0].en and s.recv_in[1].en and\
+#                          s.recv_in[2].en and s.recv_opt.en
+      s.send_out[0].en  = s.recv_in[0].en and s.recv_opt.en
 
     @s.update
     def update_mem():

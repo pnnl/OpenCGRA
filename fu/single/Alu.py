@@ -32,12 +32,17 @@ class Alu( Fu ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_ADD:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload + s.recv_in[1].msg.payload
+#        print("in adder: in1: ", s.recv_in[0].msg, "; in2: ", s.recv_in[1].msg, "; out: ", s.send_out[0].msg, "; s.recv_opt.en: ", s.recv_opt.en, "; send[0].en: ", s.send_out[0].en)
       elif s.recv_opt.msg.ctrl == OPT_ADD_CONST:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload + s.recv_const.msg.payload
+        s.send_out[0].msg.predicate = s.recv_in[0].msg.predicate
       elif s.recv_opt.msg.ctrl == OPT_INC:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload + s.const_one.payload
       elif s.recv_opt.msg.ctrl == OPT_SUB:
         s.send_out[0].msg.payload = s.recv_in[0].msg.payload - s.recv_in[1].msg.payload
+      elif s.recv_opt.msg.ctrl == OPT_PAS:
+        s.send_out[0].msg.payload = s.recv_in[0].msg.payload
+        s.send_out[0].msg.predicate = s.recv_in[0].msg.predicate
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )

@@ -91,10 +91,12 @@ class FlexibleFu( Component ):
             s.send_out[j].msg = s.fu[i].send_out[j].msg
             s.send_out[j].en  = s.fu[i].send_out[j].en
           s.fu[i].send_out[j].rdy = s.send_out[j].rdy
+#      print("in flexible s.fu[2].recv_opt.en: ", s.fu[2].recv_opt.en, "; s.recv_opt.rdy: ", s.recv_opt.rdy, "; s.fu[2].recv_in[0].en: ", s.fu[2].recv_in[0].en, "; s.recv_in[0].rdy: ", s.recv_in[0].rdy, "; s.recv_in[1].rdy: ", s.recv_in[1].rdy, "; ", s)
 
   def line_trace( s ):
     opt_str = " #"
     if s.recv_opt.en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
-    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}]'
+    out_str = ",".join([str(x.msg) for x in s.send_out])
+    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}] (s.recv_opt.rdy: {s.recv_opt.rdy}, {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]}, send[0].en: {s.send_out[0].en})'
 

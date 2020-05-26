@@ -70,7 +70,10 @@ class MemUnit( Component ):
       elif s.recv_opt.msg.ctrl == OPT_LD_CONST:
         for i in range( num_inports):
           s.recv_in[i].rdy = b1( 0 )
-        s.send_out[0].en     = b1( 1 )#s.from_mem_rdata.en or s.recv_const.en
+#        s.send_out[0].en     = b1( 1 )
+        s.send_out[0].en     = s.send_out[0].rdy
+#from_mem_rdata.en and s.recv_const.en
+#        print("in OPT_LD_CONST: mem_r_en: ", s.from_mem_rdata.en, "; s.recv_const.en: ", s.recv_const.en, s.from_mem_rdata.msg, s.send_out[0].rdy, "; self: ", s)
         s.recv_const.rdy     = s.to_mem_raddr.rdy
         #s.recv_in[1].rdy     = s.from_mem_rdata.rdy
         s.to_mem_raddr.msg   = AddrType( s.recv_const.msg.payload )

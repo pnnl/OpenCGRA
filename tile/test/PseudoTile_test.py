@@ -125,10 +125,10 @@ def test_tile_alu():
                    [DataType(4, 1)],# DataType( 5, 1)],
                    [DataType(5, 1), DataType( 7, 1)] ]
   src_const    = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
-  sink_out     = [ [DataType(5, 1, 1)],# DataType( 4, 1)],
+  sink_out     = [ [DataType(5, 1, 0)],# DataType( 4, 1)],
                    [],
                    [],
-                   [DataType(9, 1, 1), DataType( 5, 1, 1)]]#, DataType(4, 1)] ]
+                   [DataType(9, 1, 0), DataType( 5, 1, 0)]]#, DataType(4, 1)] ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     ctrl_mem_size, data_mem_size,
                     num_tile_inports, num_tile_outports,
