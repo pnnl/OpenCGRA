@@ -1,27 +1,28 @@
 <pre>
-=======================================
-    ____        ________________  ___ 
-   / __ \__  __/ ____/ ____/ __ \/   |
-  / /_/ / / / / /   / / __/ /_/ / /| |
- / ____/ /_/ / /___/ /_/ / _, _/ ___ |
-/_/    \__, /\____/\____/_/ |_/_/  |_|
-      /____/                          
-=======================================
+==========================================
+
+  ____                _____________  ___ 
+ / __ \___  ___ ___  / ___/ ___/ _ \/ _ |
+/ /_/ / _ \/ -_) _ \/ /__/ (_ / , _/ __ |
+\____/ .__/\__/_//_/\___/\___/_/|_/_/ |_|
+    /_/                                  
+
+==========================================
 </pre>
 
-PyCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable Architecture) generator to generate synthesizable Verilog for different CGRAs based on user-specified configurations (e.g., CGRA size, type of the computing units in each tile, communication connection, etc.). PyCGRA uses modular design and standardized interfaces between modules. The configurability and extensibility are maximized by its parametrization system to fit in various research and industrial needs.
+OpenCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable Architecture) generator to generate synthesizable Verilog for different CGRAs based on user-specified configurations (e.g., CGRA size, type of the computing units in each tile, communication connection, etc.). OpenCGRA uses modular design and standardized interfaces between modules. The configurability and extensibility are maximized by its parametrization system to fit in various research and industrial needs.
 
 Installation
 --------------------------------------------------------
 
-PyCGRA requires Python3.7 and has the following additional prerequisites:
+OpenCGRA requires Python3.7 and has the following additional prerequisites:
 
  - graphviz, verilator
  - git, Python headers, and libffi
  - virtualenv
  - PyMTL3
 
-The steps for installing these prerequisites and PyCGRA on a fresh Ubuntu
+The steps for installing these prerequisites and OpenCGRA on a fresh Ubuntu
 distribution are shown below. They have been tested with Ubuntu Trusty
 14.04.
 
@@ -40,7 +41,7 @@ distribution are shown below. They have been tested with Ubuntu Trusty
 ### Install Verilator
 
 [Verilator][4] is an open-source toolchain for compiling Verilog RTL
-models into C++ simulators. PyCGRA uses Verilator for Verilog import.
+models into C++ simulators. OpenCGRA uses Verilator for Verilog import.
 
 ```
  % wget https://github.com/cornell-brg/verilator-travisci-cache/raw/master/verilator-travis-4.008.tar.gz
@@ -88,14 +89,14 @@ commands will create and activate the virtual environment:
  % pip list
 ```
 
-### Clone PyCGRA repo
+### Clone OpenCGRA repo
 
-We can now use git to clone the PyCGRA repo.
+We can now use git to clone the OpenCGRA repo.
 
 ```
  % mkdir -p ${HOME}/cgra
  % cd ${HOME}/cgra
- % git clone --depth=50 https://github.com/tancheng/PyCGRA.git
+ % git clone --depth=50 https://github.com/tancheng/OpenCGRA.git
 ```
 
 When you're done testing/developing, you can deactivate the virtualenv::
