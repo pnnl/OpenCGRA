@@ -95,23 +95,23 @@ def test_systolic_2x2():
   num_xbar_inports  = 6
   num_xbar_outports = 8
   ctrl_mem_size     = 8
-  width  = 2
-  height = 3
-  RouteType     = mk_bits( clog2( num_xbar_inports + 1 ) )
-  AddrType      = mk_bits( clog2( ctrl_mem_size ) )
-  num_tiles     = width * height
-  ctrl_mem_size = 4
-  data_mem_size = 1
-  DUT           = SystolicCL
-  FunctionUnit  = FlexibleFu
-  FuList        = [Alu, MemUnit, SeqMulAlu]
-  DataType      = mk_data( 16, 1 )
-  CtrlType      = mk_ctrl( num_xbar_inports, num_xbar_outports )
-#  src_opt = [[CtrlType( OPT_LD_CONST, [
-#                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
-#                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] )],[],[],[],[],[]]
+  width             = 2
+  height            = 3
+  RouteType         = mk_bits( clog2( num_xbar_inports + 1 ) )
+  AddrType          = mk_bits( clog2( ctrl_mem_size ) )
+  num_tiles         = width * height
+  ctrl_mem_size     = 8
+  data_mem_size     = 1
+  DUT               = SystolicCL
+  FunctionUnit      = FlexibleFu
+  FuList            = [Alu, MemUnit, SeqMulAlu]
+  DataType          = mk_data( 16, 1 )
+  CtrlType          = mk_ctrl( num_xbar_inports, num_xbar_outports )
   
   src_opt       = [[CtrlType( OPT_LD_CONST, [ 
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_LD_CONST, [
                     RouteType(5), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
                     CtrlType( OPT_LD_CONST, [
@@ -130,9 +130,15 @@ def test_systolic_2x2():
                     CtrlType( OPT_LD_CONST, [
                     RouteType(5), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_LD_CONST, [
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
                    ],
                    [CtrlType( OPT_NAH, [ 
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_MUL_CONST, [
+                    RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
                     CtrlType( OPT_MUL_CONST, [
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
@@ -150,12 +156,18 @@ def test_systolic_2x2():
                     CtrlType( OPT_MUL_CONST_ADD, [ 
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
+                    CtrlType( OPT_MUL_CONST_ADD, [ 
+                    RouteType(2), RouteType(0), RouteType(0), RouteType(5),
+                    RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
                    ],
                    [CtrlType( OPT_NAH, [ 
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
                     CtrlType( OPT_NAH, [ 
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_MUL_CONST, [ 
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
                     CtrlType( OPT_MUL_CONST, [ 
                     RouteType(0), RouteType(0), RouteType(0), RouteType(5),
@@ -173,17 +185,24 @@ def test_systolic_2x2():
                     CtrlType( OPT_MUL_CONST_ADD, [ 
                     RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
+                    CtrlType( OPT_MUL_CONST_ADD, [ 
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(5),
+                    RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
                    ]
                   ]
-  preload_data  = [DataType(3, 1)]
-  preload_const = [[DataType(0, 1)], [DataType(1, 1)],
+  preload_mem  = [DataType(1, 1), DataType(2, 1), DataType(3, 1), DataType(4, 1)]
+  preload_const = [[DataType(0, 1), DataType(1, 1)], [DataType(2, 1), DataType(3, 1)],
                    [DataType(2, 1)], [DataType(4, 1)],
                    [DataType(6, 1)], [DataType(8, 1)]] 
-
-  sink_out = [[DataType(18, 1)], [DataType(42, 1)]]
+  """
+  2 4      1 2     14 20
+       x        =  
+  6 8      3 4     30 44
+  """
+  sink_out = [[DataType(14, 1), DataType(20, 1)], [DataType(30, 1), DataType(44, 1)]]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
-                    width, height, ctrl_mem_size, data_mem_size,
-                    src_opt, preload_data, preload_const, sink_out )
+                    width, height, ctrl_mem_size, len(preload_mem),
+                    src_opt, preload_mem, preload_const, sink_out )
   run_sim( th )
 
 
