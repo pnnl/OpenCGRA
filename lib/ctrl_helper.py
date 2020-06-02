@@ -59,7 +59,7 @@ class CGRACtrl:
         route = [] 
         for i in range( num_outports ):
           out = ctrl['out_'+str(i)]
-          out = RouteType( out + 1 ) if out != "none" else RouteType( 0 )
+          out = RouteType( int(out) + 1 ) if out != "none" else RouteType( 0 )
           route.append( out )
         tile.update_ctrl( ctrl['cycle']%II, CtrlType( opt_map[ ctrl['opt'] ], route ) )
 #        print( tile.ctrl )
