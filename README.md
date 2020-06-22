@@ -84,9 +84,8 @@ commands will create and activate the virtual environment:
 ### Install PyMTL3 and Python requirements
 
 ```
- % pip install pymtl3
+ % pip install git+https://github.com/cornell-brg/pymtl3.git@76e1ef87b2d7b6202abebea5b507398505910948#egg=pymtl3
  % pip install --upgrade pip setuptools twine
- % pip install --requirement requirements.txt
  % pip list
 ```
 
@@ -97,7 +96,7 @@ We can now use git to clone the OpenCGRA repo.
 ```
  % mkdir -p ${HOME}/cgra
  % cd ${HOME}/cgra
- % git clone --depth=50 https://github.com/tancheng/OpenCGRA.git
+ % git clone https://github.com/tancheng/OpenCGRA.git
 ```
 
 When you're done testing/developing, you can deactivate the virtualenv::
