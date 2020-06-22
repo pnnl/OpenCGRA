@@ -9,6 +9,7 @@
 
 ==========================================
 </pre>
+[![Build Status](https://travis-ci.com/tancheng/OpenCGRA.svg?token=yazoBFLC1ynpzdD4wAEP&branch=master)](https://travis-ci.com/github/tancheng/OpenCGRA)
 
 OpenCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable Architecture) generator to generate synthesizable Verilog for different CGRAs based on user-specified configurations (e.g., CGRA size, type of the computing units in each tile, communication connection, etc.). OpenCGRA uses modular design and standardized interfaces between modules. The configurability and extensibility are maximized by its parametrization system to fit in various research and industrial needs.
 
