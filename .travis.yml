@@ -34,6 +34,7 @@ install:
 
  # Install PyMTL3
  - pip install git+https://github.com/cornell-brg/pymtl3.git@6d2cda6370fae74c82f69a1e65e641fab28d6958#egg=pymtl3
+ - pip install hypothesis
  - pip list
 
 #------------------------------------------------------------------------
