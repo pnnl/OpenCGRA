@@ -22,7 +22,6 @@ class Comp( Fu ):
     super( Comp, s ).construct( DataType, ConfigType, num_inports, num_outports,
            data_mem_size )
 
-    s.const_zero = DataType(0, 0)
     s.const_one  = DataType(1, 0)
 
     # data:      s.recv_in[0]
