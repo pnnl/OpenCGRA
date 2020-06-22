@@ -1,0 +1,4 @@
+# Explicit constraints to workaround dependency resolution of pip
+# Currently only required for CI
+pytest>=4.4.0
+attrs>=19.2.0
