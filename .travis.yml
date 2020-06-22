@@ -10,7 +10,7 @@ dist: xenial
 language: python
 
 python:
- - "3.7"
+ - "3.7.7"
 
 env:
  - CONFIG="-v --tb=short"
