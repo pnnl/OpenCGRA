@@ -13,7 +13,7 @@ python:
  - "3.7"
 
 env:
- - CONFIG="-v --tb=short"
+ - CONFIG="-v --tb=short --cov=./"
 
 #------------------------------------------------------------------------
 # install dependencies
@@ -36,6 +36,7 @@ install:
  - pip install git+https://github.com/cornell-brg/pymtl3.git@6d2cda6370fae74c82f69a1e65e641fab28d6958#egg=pymtl3
  - pip install hypothesis
  - pip install codecov
+ - pip pytest-cov
  - pip list
 
 #------------------------------------------------------------------------
