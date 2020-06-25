@@ -70,3 +70,6 @@ class CGRACtrl:
       ctrls.append( tile.ctrl )
     return ctrls
 
+def wrap_ctrl_signals(CtrlType, raw_ctrls):
+  pass
+
