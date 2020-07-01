@@ -1,4 +1,5 @@
 build*/
+acc/
 autom4te.cache/
 __pycache__/
 *.py[cod]
