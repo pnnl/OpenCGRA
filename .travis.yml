@@ -13,7 +13,7 @@ python:
  - "3.7"
 
 env:
- - CONFIG="-v --tb=short --cov=./"
+ - CONFIG="-v --tb=short --cov=./ --cov-report xml"
 
 #------------------------------------------------------------------------
 # install dependencies
@@ -53,4 +53,4 @@ script:
 #-------------------------------------------------------------------------
 
 after_success:
- - codecov -t e272db07-2305-4eea-bbf4-e52d284529ea
+ - codecov 
