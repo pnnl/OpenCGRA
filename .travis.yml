@@ -54,4 +54,4 @@ script:
 
 after_success:
  - codecov 
- - bash <(curl -s https://codecov.io/bash)
+ - bash <(curl -s https://codecov.io/bash) -t e272db07-2305-4eea-bbf4-e52d284529ea
