@@ -27,7 +27,7 @@ install:
  # Install verilator
  - wget http://www.veripool.org/ftp/verilator-4.036.tgz
  - tar -C ${HOME} -xzf verilator-4.036.tgz
- - cd verilator-4.036
+ - cd ${HOME}/verilator-4.036
  - ./configure
  - make
  - sudo make install
