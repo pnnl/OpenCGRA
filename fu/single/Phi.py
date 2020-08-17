@@ -49,7 +49,8 @@ class Phi( Fu ):
       #        And prevent the from consuming the value in the 'holding'
       #        reg.
       for j in range( 1, num_outports ):
-        s.send_out[j].msg = s.recv_in[j+1].msg
+        if j+1 < num_inports:
+          s.send_out[j].msg = s.recv_in[j+1].msg
 
   def line_trace( s ):
     symbol0 = "#"
