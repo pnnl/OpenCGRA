@@ -46,8 +46,8 @@ distribution are shown below. They have been tested with Ubuntu Trusty
 models into C++ simulators. OpenCGRA uses Verilator for Verilog import.
 
 ```
- % wget https://github.com/cornell-brg/verilator-travisci-cache/raw/master/verilator-travis-4.008.tar.gz
- % tar -C ${HOME} -xzf verilator-travis-4.008.tar.gz
+ % wget http://www.veripool.org/ftp/verilator-4.036.tgz
+ % tar -C ${HOME} -xzf verilator-4.036.tgz
  % export VERILATOR_ROOT=${HOME}/verilator
  % export PATH=${VERILATOR_ROOT}/bin:${PATH}
  % export PYMTL_VERILATOR_INCLUDE_DIR=${VERILATOR_ROOT}/share/verilator/include

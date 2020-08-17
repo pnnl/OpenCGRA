@@ -67,7 +67,7 @@ class MemUnit( Component ):
         s.send_out[0].msg    = s.from_mem_rdata.msg
 #        s.send_out[0].en     = s.from_mem_rdata.en and s.recv_in[0].en
         s.send_out[0].en     = s.recv_opt.en#s.from_mem_rdata.en and s.recv_in[0].en
-        print("[cheng] MEM send_out.msg: ", s.send_out[0].msg, "; send_out.en: ", s.send_out[0].en, "; s.recv_in[0].en: ", s.recv_in[0].en, "; s.recv_in[1].en: ", s.recv_in[1].en, "; s.send_out[0].rdy: ", s.send_out[0].rdy, "; s.recv_opt.msg.ctrl: ", s.recv_opt.msg.ctrl, "; from_mem_rdata.rdy: ", s.from_mem_rdata.rdy)
+#        print("[cheng] MEM send_out.msg: ", s.send_out[0].msg, "; send_out.en: ", s.send_out[0].en, "; s.recv_in[0].en: ", s.recv_in[0].en, "; s.recv_in[1].en: ", s.recv_in[1].en, "; s.send_out[0].rdy: ", s.send_out[0].rdy, "; s.recv_opt.msg.ctrl: ", s.recv_opt.msg.ctrl, "; from_mem_rdata.rdy: ", s.from_mem_rdata.rdy)
 
       elif s.recv_opt.msg.ctrl == OPT_LD_CONST:
         for i in range( num_inports):
