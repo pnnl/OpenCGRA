@@ -44,8 +44,9 @@ class Phi( Fu ):
         #        which requires another dimension in our control signals.
         #        And prevent the from consuming the value in the 'holding'
         #        reg.
-        s.send_out[1].msg = s.recv_in[2].msg
-        s.send_out[1].msg.predicate = Bits1( 1 )
+        if num_inports > 2 and num_outports > 1:
+          s.send_out[1].msg = s.recv_in[2].msg
+          s.send_out[1].msg.predicate = Bits1( 1 )
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )

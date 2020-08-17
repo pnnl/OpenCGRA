@@ -40,7 +40,6 @@ class PseudoDataMem( Component ):
     def load():
       for i in range( rd_ports ):
         s.send_rdata[i].msg = s.sram[ s.recv_raddr[i].msg ]
-      print("[tan] should already load data: rd[0]: ", s.send_rdata[0].msg, "rd[1]: ", s.send_rdata[1].msg)
 
     @s.update
     def store():

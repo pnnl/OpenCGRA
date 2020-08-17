@@ -100,5 +100,6 @@ class FlexibleFu( Component ):
     if s.recv_opt.en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
     out_str = ",".join([str(x.msg) for x in s.send_out])
-    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}] (s.recv_opt.rdy: {s.recv_opt.rdy}, {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]}, send[0].en: {s.send_out[0].en}) (recv: {s.recv_in[0].msg}, {s.recv_in[1].msg}, {s.recv_in[2].msg}, {s.recv_in[3].msg})'
+    recv_str = ",".join([str(x.msg) for x in s.recv_in])
+    return f'[recv: {recv_str}] {opt_str} (const: {s.recv_const.msg}) ] = [out: {out_str}] (s.recv_opt.rdy: {s.recv_opt.rdy}, {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]}, send[0].en: {s.send_out[0].en}) '
 
