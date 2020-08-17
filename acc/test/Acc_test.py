@@ -77,9 +77,9 @@ def test_acc():
                  DataType( 0, 1  ),
                  DataType( 1, 1  ),
                  DataType( 0, 1  ),
-                 DataType( 9, 1  ),
-                 DataType( 10, 1 ) ]
-  data_spm = [ 1 ] * 100
+                 DataType( 1, 1  ),
+                 DataType( 2, 1 ) ]
+  data_spm = [ 3 for _ in range(100) ]
   fu_dfg = DFG( file_path, const_data, data_spm )
 
   print( "----------------- FL test ------------------" )

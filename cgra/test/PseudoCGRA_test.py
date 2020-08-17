@@ -115,7 +115,7 @@ def test_cgra_2x2_universal():
                     src_opt, preload_data, preload_const )
   run_sim( th )
 
-def test_cgra_2x2_universal_fir():
+def test_cgra_4x4_universal_fir():
   target_json = "config_fir.json"
   script_dir  = os.path.dirname(__file__)
   file_path   = os.path.join( script_dir, target_json )

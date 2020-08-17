@@ -76,10 +76,10 @@ class PseudoCGRA( Component ):
         s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
 
       if i % width == 0:
-        s.tile[i].to_mem_raddr   //= s.data_mem.recv_raddr[i//width]
-        s.tile[i].from_mem_rdata //= s.data_mem.send_rdata[i//width]
-        s.tile[i].to_mem_waddr   //= s.data_mem.recv_waddr[i//width]
-        s.tile[i].to_mem_wdata   //= s.data_mem.recv_wdata[i//width]
+        s.tile[i].to_mem_raddr   //= s.data_mem.recv_raddr[i // width]
+        s.tile[i].from_mem_rdata //= s.data_mem.send_rdata[i // width]
+        s.tile[i].to_mem_waddr   //= s.data_mem.recv_waddr[i // width]
+        s.tile[i].to_mem_wdata   //= s.data_mem.recv_wdata[i // width]
       else:
         s.tile[i].to_mem_raddr.rdy //= 0
         s.tile[i].from_mem_rdata.en //= 0
@@ -89,8 +89,8 @@ class PseudoCGRA( Component ):
 
   # Line trace
   def line_trace( s ):
-    str = "||".join([ (x.element.line_trace() + x.ctrl_mem.line_trace())
+    str = "||\n".join([ (x.element.line_trace() + x.ctrl_mem.line_trace())
                       for x in s.tile ]) 
-    str += " :: [" + s.data_mem.line_trace() + "]    "
+    str += "\n :: [" + s.data_mem.line_trace() + "]    \n"
     return str
 

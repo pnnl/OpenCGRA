@@ -59,19 +59,20 @@ class MemUnit( Component ):
       s.to_mem_waddr.en = b1( 0 )
       s.to_mem_wdata.en = b1( 0 )
       if s.recv_opt.msg.ctrl == OPT_LD:
-        s.send_out[0].en     = s.from_mem_rdata.en and s.recv_in[0].en
         s.recv_in[0].rdy     = s.to_mem_raddr.rdy
         s.recv_in[1].rdy     = s.from_mem_rdata.rdy
         s.to_mem_raddr.msg   = AddrType( s.recv_in[0].msg.payload )
         s.to_mem_raddr.en    = s.recv_in[0].en
         s.from_mem_rdata.rdy = s.send_out[0].rdy
         s.send_out[0].msg    = s.from_mem_rdata.msg
+#        s.send_out[0].en     = s.from_mem_rdata.en and s.recv_in[0].en
+        s.send_out[0].en     = s.recv_opt.en#s.from_mem_rdata.en and s.recv_in[0].en
+        print("[cheng] MEM send_out.msg: ", s.send_out[0].msg, "; send_out.en: ", s.send_out[0].en, "; s.recv_in[0].en: ", s.recv_in[0].en, "; s.recv_in[1].en: ", s.recv_in[1].en, "; s.send_out[0].rdy: ", s.send_out[0].rdy, "; s.recv_opt.msg.ctrl: ", s.recv_opt.msg.ctrl, "; from_mem_rdata.rdy: ", s.from_mem_rdata.rdy)
 
       elif s.recv_opt.msg.ctrl == OPT_LD_CONST:
         for i in range( num_inports):
           s.recv_in[i].rdy = b1( 0 )
 #        s.send_out[0].en     = b1( 1 )
-        s.send_out[0].en     = s.send_out[0].rdy
 #from_mem_rdata.en and s.recv_const.en
 #        print("in OPT_LD_CONST: mem_r_en: ", s.from_mem_rdata.en, "; s.recv_const.en: ", s.recv_const.en, s.from_mem_rdata.msg, s.send_out[0].rdy, "; self: ", s)
         s.recv_const.rdy     = s.to_mem_raddr.rdy
@@ -80,6 +81,8 @@ class MemUnit( Component ):
         s.to_mem_raddr.en    = s.recv_const.en
         s.from_mem_rdata.rdy = s.send_out[0].rdy
         s.send_out[0].msg    = s.from_mem_rdata.msg
+#        s.send_out[0].en     = send_out[0].rdy
+        s.send_out[0].en     = s.recv_opt.en#send_out[0].rdy
 
       elif s.recv_opt.msg.ctrl == OPT_STR:
         s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[0].en and s.recv_in[1].en

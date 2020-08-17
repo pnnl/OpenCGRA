@@ -51,7 +51,7 @@
     "out_2"     : "none",
     "out_3"     : "4",
     "out_4"     : "1",
-    "out_5"     : "none",
+    "out_5"     : "5",
     "out_6"     : "3",
     "out_7"     : "none"
   },
@@ -317,8 +317,8 @@
     "out_2"     : "none",
     "out_3"     : "none",
     "out_4"     : "none",
-    "out_5"     : "2",
-    "out_6"     : "none",
+    "out_5"     : "none",
+    "out_6"     : "2",
     "out_7"     : "none"
   },
   {
@@ -401,7 +401,7 @@
     "out_2"     : "none",
     "out_3"     : "4",
     "out_4"     : "1",
-    "out_5"     : "none",
+    "out_5"     : "5",
     "out_6"     : "3",
     "out_7"     : "none"
   },

@@ -21,6 +21,7 @@ def mk_data( payload_nbits=16, predicate_nbits=1, bypass_nbits=1,
 
   PayloadType   = mk_bits( payload_nbits   )
   PredicateType = mk_bits( predicate_nbits )
+  # Actually, bypass type is not necessary.
   BypassType    = mk_bits( bypass_nbits )
 
   new_name = f"{prefix}_{payload_nbits}_{predicate_nbits}_{bypass_nbits}"

@@ -22,14 +22,14 @@ def acc_fl( FuDFG, DataType, CtrlType, src_const ):#, data_spm ):
 
   live_out = DataType( 0, 0 )
 
-  data_spm = [ 1 ] * 100
+  data_spm = FuDFG.data_spm
   print("data SPM: ", data_spm)
 
   while live_out.predicate == Bits1( 0 ):
     const_index = 0
     for node in FuDFG.nodes:
       current_input = []
-      print("id: ", node.id, " node.num_const: ", node.num_const, "; node.num_input: ", node.num_input)
+#      print("id: ", node.id, " node.num_const: ", node.num_const, "; node.num_input: ", node.num_input)
       # Assume const goes in first, then the output from predecessor.
       if node.num_const != 0:
         for _ in range( node.num_const ):
@@ -75,6 +75,8 @@ def acc_fl( FuDFG, DataType, CtrlType, src_const ):#, data_spm ):
             result[1].predicate = Bits1( 0 )
           else:
             result[1].predicate = Bits1( 1 )
+
+        # Currently, treat BRH node as the exit node that could contain live_out
         if node.live_out != 0:
           live_out = DataType( 0, 0 )
           live_out.payload = current_input[0].payload
@@ -84,12 +86,12 @@ def acc_fl( FuDFG, DataType, CtrlType, src_const ):#, data_spm ):
             live_out.predicate = Bits1( 1 )
   
       for i in range( len( node.num_output ) ):
-        print( "see node.num_output[i]: ", node.num_output[i] )
+#        print( "see node.num_output[i]: ", node.num_output[i] )
         for j in range( node.num_output[i] ):
           node.updateOutput( i, j, result[i] )
           FuDFG.nodes[node.output_node[i][j]].updateInput( result[i] )
   
-      print( "id: ", node.id, " current result: ", result )
+      print( "id: ", node.id, " current output: ", result )
 
     print( "current iteration live_out: ", live_out )
     print( "--------------------------------------" )

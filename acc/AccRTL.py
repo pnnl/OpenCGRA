@@ -1,6 +1,8 @@
 """
 =========================================================================
 AccRTL.py
+This is not a CGRA related module. This module initially attempts to
+implement a data flow accelerator, which is future work.
 =========================================================================
 
 Author : Cheng Tan

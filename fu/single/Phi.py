@@ -26,6 +26,7 @@ class Phi( Fu ):
     def comb_logic():
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en
+#      s.send_out[0].en = s.recv_opt.en
       if s.recv_opt.msg.ctrl == OPT_PHI:
         if s.recv_in[0].msg.predicate == Bits1( 1 ):
           s.send_out[0].msg = s.recv_in[0].msg
@@ -34,6 +35,17 @@ class Phi( Fu ):
         else:
           s.send_out[0].msg = s.recv_in[0].msg
           s.send_out[0].msg.predicate = Bits1( 1 )
+        # FIXME: This is used for walk around.
+        #        When a value comes earlier but need to be computed later,
+        #        it should be stored inside reg2 or reg3, and then go into
+        #        reg0 or reg1 at the next cycle for computation.
+        # TODO:  But an ideal solution is to make these FU take arbitory
+        #        input regs (say, reg1&reg3 or reg0&reg2) for computation,
+        #        which requires another dimension in our control signals.
+        #        And prevent the from consuming the value in the 'holding'
+        #        reg.
+        s.send_out[1].msg = s.recv_in[2].msg
+        s.send_out[1].msg.predicate = Bits1( 1 )
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )

@@ -32,6 +32,8 @@ class FlexibleFu( Component ):
     s.recv_opt   = RecvIfcRTL( CtrlType )
     s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_outports ) ]
 
+    print("check fu recv num: ", num_inports)
+
     s.to_mem_raddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
     s.from_mem_rdata = [ RecvIfcRTL( DataType ) for _ in range( s.fu_list_size ) ]
     s.to_mem_waddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
@@ -98,5 +100,5 @@ class FlexibleFu( Component ):
     if s.recv_opt.en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
     out_str = ",".join([str(x.msg) for x in s.send_out])
-    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}] (s.recv_opt.rdy: {s.recv_opt.rdy}, {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]}, send[0].en: {s.send_out[0].en})'
+    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}] (s.recv_opt.rdy: {s.recv_opt.rdy}, {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]}, send[0].en: {s.send_out[0].en}) (recv: {s.recv_in[0].msg}, {s.recv_in[1].msg}, {s.recv_in[2].msg}, {s.recv_in[3].msg})'
 

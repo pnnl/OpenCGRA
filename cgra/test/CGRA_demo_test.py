@@ -1,6 +1,6 @@
 """
 ==========================================================================
-PseudoCGRA_test.py
+CGRA_demo_test.py
 ==========================================================================
 Test cases for CGRAs with pseudo data/config memory.
 
@@ -19,6 +19,12 @@ from ...lib.ctrl_helper           import *
 
 from ...fu.flexible.FlexibleFu    import FlexibleFu
 from ...fu.single.Alu             import Alu
+from ...fu.single.Mul             import Mul
+from ...fu.single.Logic           import Logic
+from ...fu.single.Comp            import Comp
+from ...fu.single.Branch          import Branch
+from ...fu.single.Phi             import Phi
+from ...fu.single.Shifter         import Shifter
 from ...fu.single.MemUnit         import MemUnit
 from ..PseudoCGRA                 import PseudoCGRA
 
@@ -98,7 +104,7 @@ def test_CGRA_4x4_fir():
   data_mem_size     = 10
   DUT               = PseudoCGRA
   FunctionUnit      = FlexibleFu
-  FuList            = [Alu, MemUnit]
+  FuList            = [Alu, Mul, MemUnit, Shifter, Logic, Phi, Comp, Branch]
   DataType          = mk_data( 16, 1 )
   CtrlType          = mk_ctrl( num_xbar_inports, num_xbar_outports )
 
@@ -106,7 +112,7 @@ def test_CGRA_4x4_fir():
                                 num_xbar_outports, II )
   src_opt           = cgra_ctrl.get_ctrl()
 #  print( src_opt )
-  preload_data  = [ DataType( 1, 1 ) ] * data_mem_size
+  preload_data  = [ DataType( 3, 1 ) ] * data_mem_size
   preload_const = [ [ DataType( 1, 1 ) ] * II ] * num_tiles
 
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,

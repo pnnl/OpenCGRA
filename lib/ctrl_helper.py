@@ -48,8 +48,9 @@ class CGRACtrl:
   def __init__( s, json_file_name, CtrlType, RouteType, width, height,
                 num_outports, II ):
     s.tiles = []
-    for x in range( width ):
-      for y in range( height ):
+    # X is the horizontal axis while Y is the vertical axis
+    for y in range( height ):
+      for x in range( width ):
         s.tiles.append( TileCtrl( FlexibleFu, CtrlType, RouteType,
                                   x, y, num_outports, II ) )
     with open( json_file_name ) as json_file:
@@ -62,7 +63,7 @@ class CGRACtrl:
           out = RouteType( int(out) + 1 ) if out != "none" else RouteType( 0 )
           route.append( out )
         tile.update_ctrl( ctrl['cycle']%II, CtrlType( opt_map[ ctrl['opt'] ], route ) )
-#        print( tile.ctrl )
+#          print( tile.ctrl )
 
   def get_ctrl( s ):
     ctrls = []
