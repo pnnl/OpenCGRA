@@ -35,21 +35,21 @@ class Phi( Fu ):
         else:
           s.send_out[0].msg = s.recv_in[0].msg
           s.send_out[0].msg.predicate = Bits1( 1 )
-        # FIXME: This is used for walk around.
-        #        When a value comes earlier but need to be computed later,
-        #        it should be stored inside reg2 or reg3, and then go into
-        #        reg0 or reg1 at the next cycle for computation.
-        # TODO:  But an ideal solution is to make these FU take arbitory
-        #        input regs (say, reg1&reg3 or reg0&reg2) for computation,
-        #        which requires another dimension in our control signals.
-        #        And prevent the from consuming the value in the 'holding'
-        #        reg.
-        if num_inports > 2 and num_outports > 1:
-          s.send_out[1].msg = s.recv_in[2].msg
-          s.send_out[1].msg.predicate = Bits1( 1 )
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )
+
+      # FIXME: This is used for walk around.
+      #        When a value comes earlier but need to be computed later,
+      #        it should be stored inside reg2 or reg3, and then go into
+      #        reg0 or reg1 at the next cycle for computation.
+      # TODO:  But an ideal solution is to make these FU take arbitory
+      #        input regs (say, reg1&reg3 or reg0&reg2) for computation,
+      #        which requires another dimension in our control signals.
+      #        And prevent the from consuming the value in the 'holding'
+      #        reg.
+      for j in range( 1, num_outports ):
+        s.send_out[j].msg = s.recv_in[j+1].msg
 
   def line_trace( s ):
     symbol0 = "#"

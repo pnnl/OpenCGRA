@@ -32,8 +32,6 @@ class FlexibleFu( Component ):
     s.recv_opt   = RecvIfcRTL( CtrlType )
     s.send_out   = [ SendIfcRTL( DataType ) for _ in range( num_outports ) ]
 
-    print("check fu recv num: ", num_inports)
-
     s.to_mem_raddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
     s.from_mem_rdata = [ RecvIfcRTL( DataType ) for _ in range( s.fu_list_size ) ]
     s.to_mem_waddr   = [ SendIfcRTL( AddrType ) for _ in range( s.fu_list_size ) ]
