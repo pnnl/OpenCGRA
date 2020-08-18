@@ -22,19 +22,33 @@ class Comp( Fu ):
     super( Comp, s ).construct( DataType, ConfigType, num_inports, num_outports,
            data_mem_size )
 
+    FuInType = mk_bits( clog2( num_inports + 1 ) )
     s.const_one  = DataType(1, 0)
 
     # data:      s.recv_in[0]
     # reference: s.recv_in[1]
 
+    # For pick input register, basic FU normally has 2 inputs,
+    # if more inputs are required, they should be added inside
+    # specific inherit module.
+    in0 = FuInType( 0 )
+    in1 = FuInType( 0 ) 
+
     @s.update
-    def comb_logic():
-      predicate = s.recv_in[s.in0].msg.predicate & s.recv_in[s.in1].msg.predicate
+    def read_reg():
+
+      if s.recv_opt.en:
+        in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+        in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+        s.recv_in[in0].rdy = b1( 1 )
+        s.recv_in[in1].rdy = b1( 1 )
+
+      predicate = s.recv_in[in0].msg.predicate & s.recv_in[in1].msg.predicate
       s.send_out[0].msg = s.const_one
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_EQ:
-        if s.recv_in[0].msg.payload == s.recv_in[s.in1].msg.payload:
+        if s.recv_in[0].msg.payload == s.recv_in[in1].msg.payload:
 #          s.send_out[0].msg = DataType( 1, predicate )
           s.send_out[0].msg = s.const_one
           s.send_out[0].msg.predicate = predicate
@@ -43,7 +57,7 @@ class Comp( Fu ):
           s.send_out[0].msg.predicate = predicate
 #          s.send_out[0].msg = DataType( 0, predicate )
       elif s.recv_opt.msg.ctrl == OPT_LE:
-        if s.recv_in[0].msg.payload < s.recv_in[s.in1].msg.payload:
+        if s.recv_in[0].msg.payload < s.recv_in[in1].msg.payload:
           s.send_out[0].msg = s.const_one
           s.send_out[0].msg.predicate = predicate
 #          s.send_out[0].msg = DataType( 1, predicate )
