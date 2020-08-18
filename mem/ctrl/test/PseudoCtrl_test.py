@@ -79,11 +79,17 @@ def test_PseudoCtrl():
   CtrlType  = mk_ctrl()
   ctrl_mem_size = 8
   data_mem_size = 8
+  num_inports = 2
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   AddrType  = mk_bits( clog2( ctrl_mem_size ) )
-  src_data0 = [DataType(1,1),DataType(5,1),DataType(7,1),DataType(6,1)]
-  src_data1 = [DataType(6,1),DataType(1,1),DataType(2,1),DataType(3,1)]
-  src_wdata = [CtrlType(OPT_ADD),CtrlType(OPT_SUB),CtrlType(OPT_SUB),CtrlType(OPT_ADD)]
-  sink_out  = [DataType(7,1),DataType(4,1),DataType(5,1),DataType(9,1)]
+  src_data0 = [ DataType(1,1), DataType(5,1), DataType(7,1), DataType(6,1) ]
+  src_data1 = [ DataType(6,1), DataType(1,1), DataType(2,1), DataType(3,1) ]
+  src_wdata = [ CtrlType( OPT_ADD, pickRegister ),
+                CtrlType( OPT_SUB, pickRegister ),
+                CtrlType( OPT_SUB, pickRegister ),
+                CtrlType( OPT_ADD, pickRegister ) ]
+  sink_out  = [ DataType(7,1),DataType(4,1),DataType(5,1),DataType(9,1)]
   th = TestHarness( MemUnit, DataType, CtrlType, ctrl_mem_size, data_mem_size,
                     src_data0, src_data1, src_wdata, sink_out )
   run_sim( th )

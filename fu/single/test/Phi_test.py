@@ -71,7 +71,7 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_Phi():
   FU = Phi
-  DataType = mk_data( 16, 1 )
+  DataType = mk_data( 16, 1, 1)
   CtrlType = mk_ctrl()
   num_inports   = 2
   num_outports  = 1
@@ -84,7 +84,6 @@ def test_Phi():
                CtrlType( OPT_PHI, pickRegister ),
                CtrlType( OPT_PHI, pickRegister ) ]
   sink_out = [ DataType(1, 1), DataType(3, 1), DataType(2, 1) ]
-  print("check input: ", src_in0, src_in1)
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )

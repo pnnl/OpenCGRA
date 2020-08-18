@@ -113,25 +113,29 @@ def test_tile_alu():
   num_xbar_outports = num_fu_inports + num_connect_outports
   ctrl_mem_size     = 3
   data_mem_size     = 8
+  # number of inputs of FU is fixed inside the tile
+  num_fu_in         = 4
 #    num_xbar_inports  = 6
 #    num_xbar_outports = 8
 #    num_mesh_ports    = 4
   RouteType    = mk_bits( clog2( num_xbar_inports + 1 ) )
   AddrType     = mk_bits( clog2( ctrl_mem_size ) )
+  FuInType     = mk_bits( clog2( num_fu_in + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
   DUT          = Tile
   FunctionUnit = FlexibleFu
   FuList      = [Alu, Mul, MemUnit]
 #, ThreeMulAluShifter]
   DataType     = mk_data( 16, 1 )
-  CtrlType     = mk_ctrl( num_xbar_inports, num_xbar_outports )
+  CtrlType     = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
   opt_waddr    = [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ) ]
-  src_opt      = [ CtrlType( OPT_NAH, [
+  src_opt      = [ CtrlType( OPT_NAH, pickRegister, [
                    RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                    RouteType(4), RouteType(3), RouteType(0), RouteType(0)] ),
-                   CtrlType( OPT_ADD, [
+                   CtrlType( OPT_ADD, pickRegister, [
                    RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                    RouteType(4), RouteType(1), RouteType(0), RouteType(0)] ),
-                   CtrlType( OPT_SUB, [
+                   CtrlType( OPT_SUB, pickRegister, [
                    RouteType(5), RouteType(0), RouteType(0), RouteType(5),
                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ) ]
   src_data     = [ [DataType(2, 1)],# DataType( 3, 1)],

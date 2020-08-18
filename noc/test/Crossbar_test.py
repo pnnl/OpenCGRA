@@ -83,29 +83,35 @@ def run_sim( test_harness, max_cycles=100 ):
 
 def test_crossbar():
   FU = Crossbar
+  num_fu_in    = 3
   num_inports  = 3
   num_outports = 3
   DataType     = mk_data( 16, 1 )
-  CtrlType     = mk_ctrl( num_inports, num_outports )
+  CtrlType     = mk_ctrl( num_fu_in, num_inports, num_outports )
+  FuInType     = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   RouteType    = mk_bits( clog2( num_inports + 1 ) )
-  src_opt      = [ CtrlType( OPT_ADD, [RouteType(2), RouteType(3), RouteType(1)]) ]
+  src_opt      = [ CtrlType( OPT_ADD, pickRegister, [RouteType(2), RouteType(3), RouteType(1)]) ]
   src_data     = [ [DataType(3, 1)], [DataType(2, 1)], [DataType(9, 1)] ]
   sink_out     = [ [DataType(2, 1)], [DataType(9, 1, 1)], [DataType(3, 1)] ]
-  th = TestHarness( FU, DataType, CtrlType, num_outports, num_inports,
+  th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     src_data, src_opt, sink_out )
   run_sim( th )
 
 def test_multi():
   FU = Crossbar
+  num_fu_in    = 3
   num_inports  = 3
   num_outports = 3
   DataType     = mk_data( 16, 1 )
-  CtrlType     = mk_ctrl( num_inports, num_outports )
+  CtrlType     = mk_ctrl( num_fu_in, num_inports, num_outports )
+  FuInType     = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   RouteType    = mk_bits( clog2( num_inports + 1 ) )
-  src_opt      = [ CtrlType( OPT_ADD, [RouteType(2), RouteType(1), RouteType(1)]) ]
+  src_opt      = [ CtrlType( OPT_ADD, pickRegister, [RouteType(2), RouteType(1), RouteType(1)]) ]
   src_data     = [ [DataType(3, 1)], [DataType(2, 1)], [DataType(9, 1)] ]
   sink_out     = [ [DataType(2, 1)], [DataType(3, 1)], [DataType(3, 1)] ]
-  th = TestHarness( FU, DataType, CtrlType, num_outports, num_inports,
+  th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     src_data, src_opt, sink_out )
   run_sim( th )
 

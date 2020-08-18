@@ -96,8 +96,8 @@ class SystolicCL( Component ):
 
   # Line trace
   def line_trace( s ):
-    str = "||".join([ (x.line_trace() + x.ctrl_mem.line_trace())
+    str = "||\n".join([ (x.line_trace() + x.ctrl_mem.line_trace())
                       for x in s.tile ]) 
-    str += " :: [" + s.data_mem.line_trace() + "]    "
+    str += "\n[data] :: [" + s.data_mem.line_trace() + "]\n"
     return str
 

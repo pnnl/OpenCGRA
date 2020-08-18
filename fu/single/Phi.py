@@ -30,7 +30,7 @@ class Phi( Fu ):
       # For pick input register
       in0 = FuInType( 0 )
       in1 = FuInType( 0 )
-      if s.recv_opt.en:
+      if s.recv_opt.en and s.recv_opt.msg.fu_in[0] != FuInType( 0 ) and s.recv_opt.msg.fu_in[1] != FuInType( 0 ):
         in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
         in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
         s.recv_in[in0].rdy = b1( 1 )
@@ -41,11 +41,13 @@ class Phi( Fu ):
 #      s.send_out[0].en = s.recv_opt.en
       if s.recv_opt.msg.ctrl == OPT_PHI:
         if s.recv_in[in0].msg.predicate == Bits1( 1 ):
-          s.send_out[0].msg = s.recv_in[in0].msg
+          s.send_out[0].msg.payload   = s.recv_in[in0].msg.payload
+          s.send_out[0].msg.predicate = Bits1( 1 )
         elif s.recv_in[in1].msg.predicate == Bits1( 1 ):
-          s.send_out[0].msg = s.recv_in[in1].msg
+          s.send_out[0].msg.payload   = s.recv_in[in1].msg.payload
+          s.send_out[0].msg.predicate = Bits1( 1 )
         else:
-          s.send_out[0].msg = s.recv_in[in0].msg
+          s.send_out[0].msg.payload   = s.recv_in[in0].msg.payload
           s.send_out[0].msg.predicate = Bits1( 1 )
       else:
         for j in range( num_outports ):

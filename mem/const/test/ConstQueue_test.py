@@ -70,13 +70,16 @@ def run_sim( test_harness, max_cycles=10 ):
 
 def test_const_queue():
   DataType     = mk_data( 16, 1 )
-  ConfigType   = mk_ctrl()
+  num_inports = 2
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
+  ConfigType   = mk_ctrl(num_inports)
   src_in0      = [ DataType(1,  1), DataType(3,  1), DataType(9, 1) ]
   src_const    = [ DataType(9,  1), DataType(8,  1), DataType(7, 1) ]
   sink_out     = [ DataType(10, 1), DataType(11, 1), DataType(2, 1) ]
-  src_opt      = [ ConfigType( OPT_ADD ),
-                   ConfigType( OPT_ADD ),
-                   ConfigType( OPT_SUB ) ]
+  src_opt      = [ ConfigType( OPT_ADD, pickRegister ),
+                   ConfigType( OPT_ADD, pickRegister ),
+                   ConfigType( OPT_SUB, pickRegister ) ]
   th = TestHarness( DataType, ConfigType, src_in0, src_const,
                     src_opt, sink_out )
   run_sim( th )

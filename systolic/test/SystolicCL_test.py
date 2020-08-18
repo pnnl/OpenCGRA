@@ -101,99 +101,107 @@ def test_systolic_2x2():
   AddrType          = mk_bits( clog2( ctrl_mem_size ) )
   num_tiles         = width * height
   ctrl_mem_size     = 8
-  data_mem_size     = 1
+  data_mem_size     = 2
+  # number of inputs of FU is fixed inside the tile
+  num_fu_in         = 4
+
   DUT               = SystolicCL
   FunctionUnit      = FlexibleFu
   FuList            = [Alu, MemUnit, SeqMulAlu]
   DataType          = mk_data( 16, 1 )
-  CtrlType          = mk_ctrl( num_xbar_inports, num_xbar_outports )
+  CtrlType          = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
+  FuInType          = mk_bits( clog2( num_fu_in + 1 ) )
+  pickRegister      = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
   
-  src_opt       = [[CtrlType( OPT_LD_CONST, [ 
+  src_opt       = [[CtrlType( OPT_LD_CONST, pickRegister, [ 
                     RouteType(5), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_LD_CONST, [
+                    CtrlType( OPT_LD_CONST, pickRegister, [
                     RouteType(5), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_LD_CONST, [
+                    CtrlType( OPT_LD_CONST, pickRegister, [
                     RouteType(5), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_LD_CONST, [
-                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
-                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                   ],
-                   [CtrlType( OPT_LD_CONST, [ 
-                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
-                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_LD_CONST, [
-                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
-                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_LD_CONST, [
-                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
-                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_LD_CONST, [
+                    CtrlType( OPT_LD_CONST, pickRegister, [
                     RouteType(5), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
                    ],
-                   [CtrlType( OPT_NAH, [ 
+                   [CtrlType( OPT_NAH, pickRegister, [ 
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_LD_CONST, pickRegister, [ 
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_LD_CONST, pickRegister, [
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_LD_CONST, pickRegister, [
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                    CtrlType( OPT_LD_CONST, pickRegister, [
+                    RouteType(5), RouteType(0), RouteType(0), RouteType(0),
+                    RouteType(0), RouteType(0), RouteType(0), RouteType(0)] ),
+                   ],
+                   [CtrlType( OPT_NAH, pickRegister, [ 
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST, [
+                    CtrlType( OPT_MUL_CONST, pickRegister, [
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST, [
+                    CtrlType( OPT_MUL_CONST, pickRegister, [
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST, [
+                    CtrlType( OPT_MUL_CONST, pickRegister, [
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
                    ],
-                   [CtrlType( OPT_NAH, [ 
+                   [CtrlType( OPT_NAH, pickRegister, [ 
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_NAH, [ 
+                    CtrlType( OPT_NAH, pickRegister, [ 
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST_ADD, [ 
+                    CtrlType( OPT_MUL_CONST_ADD, pickRegister, [ 
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST_ADD, [ 
+                    CtrlType( OPT_MUL_CONST_ADD, pickRegister, [
                     RouteType(2), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
                    ],
-                   [CtrlType( OPT_NAH, [ 
+                   [CtrlType( OPT_NAH, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_NAH, [ 
+                    CtrlType( OPT_NAH, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST, [ 
+                    CtrlType( OPT_MUL_CONST, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST, [ 
+                    CtrlType( OPT_MUL_CONST, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(0), RouteType(0)] ),
                    ],
-                   [CtrlType( OPT_NAH, [ 
+                   [CtrlType( OPT_NAH, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
-                    CtrlType( OPT_NAH, [ 
+                    CtrlType( OPT_NAH, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
-                    CtrlType( OPT_NAH, [ 
+                    CtrlType( OPT_NAH, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(0),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST_ADD, [ 
+                    CtrlType( OPT_MUL_CONST_ADD, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
-                    CtrlType( OPT_MUL_CONST_ADD, [ 
+                    CtrlType( OPT_MUL_CONST_ADD, pickRegister, [
                     RouteType(0), RouteType(0), RouteType(0), RouteType(5),
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
                    ]
                   ]
   preload_mem  = [DataType(1, 1), DataType(2, 1), DataType(3, 1), DataType(4, 1)]
-  preload_const = [[DataType(0, 1), DataType(1, 1)], [DataType(2, 1), DataType(3, 1)],
-                   [DataType(2, 1)], [DataType(4, 1)],
-                   [DataType(6, 1)], [DataType(8, 1)]] 
+  preload_const = [[DataType(0, 1), DataType(1, 1)], [DataType(0, 0), DataType(2, 1), DataType(3, 1)], # offset address used for loading
+                   [DataType(2, 1)], [DataType(4, 1)], # offset address used for MM
+                   [DataType(6, 1)], [DataType(8, 1)]] # offset address used for MM
   """
   2 4      1 2     14 20
        x        =  
