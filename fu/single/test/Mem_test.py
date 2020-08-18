@@ -86,13 +86,15 @@ def test_Mem():
   data_mem_size = 8
   num_inports  = 2
   num_outports = 1
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0  = [ DataType(1, 1), DataType(3, 1), DataType(3, 1), DataType(3, 1) ]
   src_in1  = [ DataType(9, 1), DataType(6, 1), DataType(2, 1), DataType(7, 1) ]
   sink_out = [ DataType(0, 0), DataType(6, 1), DataType(6, 1) ]
-  src_opt  = [ ConfigType( OPT_LD  ),
-               ConfigType( OPT_STR ),
-               ConfigType( OPT_LD  ),
-               ConfigType( OPT_LD  ) ]
+  src_opt  = [ ConfigType( OPT_LD , pickRegister ),
+               ConfigType( OPT_STR, pickRegister ),
+               ConfigType( OPT_LD , pickRegister ),
+               ConfigType( OPT_LD , pickRegister ) ]
   th = TestHarness( FU, DataUnit, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )
@@ -105,14 +107,16 @@ def test_PseudoMem():
   data_mem_size = 8
   num_inports  = 2
   num_outports = 1
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0  = [ DataType(1, 1), DataType(0, 1), DataType(0, 1) ]
   src_in1  = [ DataType(9, 1), DataType(6, 1), DataType(7, 1) ]
   sink_out = [ DataType(0, 0), DataType(6, 1), DataType(6, 1), DataType(6, 1) ]
-  src_opt  = [ ConfigType( OPT_LD  ),
-               ConfigType( OPT_STR ),
-               ConfigType( OPT_LD_CONST  ),
-               ConfigType( OPT_LD),
-               ConfigType( OPT_LD_CONST  ) ]
+  src_opt  = [ ConfigType( OPT_LD      , pickRegister ),
+               ConfigType( OPT_STR     , pickRegister ),
+               ConfigType( OPT_LD_CONST, pickRegister ),
+               ConfigType( OPT_LD      , pickRegister ),
+               ConfigType( OPT_LD_CONST, pickRegister ) ]
   th = TestHarness( FU, DataUnit, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_opt, sink_out )
   run_sim( th )

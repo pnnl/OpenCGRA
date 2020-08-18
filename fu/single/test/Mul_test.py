@@ -39,6 +39,7 @@ class TestHarness( Component ):
 
     s.src_in0  = TestSrcRTL( DataType,   src0_msgs )
     s.src_in1  = TestSrcRTL( DataType,   src1_msgs )
+    s.src_in2  = TestSrcRTL( DataType,   src1_msgs )
     s.src_opt  = TestSrcRTL( ConfigType, ctrl_msgs )
     s.sink_out = TestSinkCL( DataType,   sink_msgs )
 
@@ -48,6 +49,7 @@ class TestHarness( Component ):
 
     connect( s.src_in0.send,    s.dut.recv_in[0] )
     connect( s.src_in1.send,    s.dut.recv_in[1] )
+    connect( s.src_in2.send,    s.dut.recv_in[2] )
     connect( s.dut.recv_const,  s.const_queue.send_const )
     connect( s.src_opt.send,    s.dut.recv_opt   )
     connect( s.dut.send_out[0], s.sink_out.recv  )
@@ -84,14 +86,16 @@ def run_sim( test_harness, max_cycles=100 ):
 
 @pytest.mark.parametrize(
   'input_a, input_b',
-  product( range( 1, 2 ), range( 1, 2 ) )
+  product( range( 3, 4 ), range( 2, 3 ) )
 )
 def test_mul0( input_a, input_b ):
   FU = Mul
   DataType = mk_data( 32, 1 )
-  ConfigType = mk_ctrl()
-  num_inports  = 2
+#  ConfigType = mk_ctrl(5, 5, 2)
+  num_inports  = 4
   num_outports = 1
+  ConfigType = mk_ctrl(num_inports)
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
   data_mem_size = 8
 #  src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(4, 1)  ]
 #  src_in1   = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]
@@ -101,7 +105,7 @@ def test_mul0( input_a, input_b ):
   src_const  = [ DataType( 0, 1) ]
   sink_out = [ DataType( input_a * input_b, 1 ) ]
 #  sink_out  = [ DataType(2, 1), DataType(6, 1), DataType(12, 1) ]
-  src_opt = [ ConfigType( OPT_MUL ) ]
+  src_opt = [ ConfigType( OPT_MUL, [FuInType(1), FuInType(3), FuInType(0), FuInType(0)] ) ]
 #  src_opt   = [ ConfigType( OPT_MUL ),
 #                ConfigType( OPT_MUL ),
 #                ConfigType( OPT_MUL ) ]

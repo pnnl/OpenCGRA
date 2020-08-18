@@ -84,11 +84,13 @@ def test_Comp():
   num_inports   = 2
   num_outports  = 1
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_data   = [ DataType(9, 1), DataType(3, 1), DataType(3, 1) ]
   src_ref    = [ DataType(9, 1), DataType(5, 1), DataType(2, 1) ]
-  src_opt    = [ CtrlType( OPT_EQ ),
-                 CtrlType( OPT_LE ),
-                 CtrlType( OPT_EQ ) ]
+  src_opt    = [ CtrlType( OPT_EQ, pickRegister ),
+                 CtrlType( OPT_LE, pickRegister ),
+                 CtrlType( OPT_EQ, pickRegister ) ]
   sink_out   = [ DataType(1, 1), DataType(1, 1), DataType(0, 1) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_data, src_ref, src_opt, sink_out )

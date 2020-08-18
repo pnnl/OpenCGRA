@@ -76,11 +76,13 @@ def test_Phi():
   num_inports   = 2
   num_outports  = 1
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0  = [ DataType(1, 0), DataType(3, 1), DataType(3, 0) ]
   src_in1  = [ DataType(0, 0), DataType(5, 0), DataType(2, 1) ]
-  src_opt  = [ CtrlType( OPT_PHI ),
-               CtrlType( OPT_PHI ),
-               CtrlType( OPT_PHI ) ]
+  src_opt  = [ CtrlType( OPT_PHI, pickRegister ),
+               CtrlType( OPT_PHI, pickRegister ),
+               CtrlType( OPT_PHI, pickRegister ) ]
   sink_out = [ DataType(1, 1), DataType(3, 1), DataType(2, 1) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_opt, sink_out )

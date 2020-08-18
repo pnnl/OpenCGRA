@@ -19,6 +19,7 @@ class Fu( Component ):
 
     AddrType = mk_bits( clog2( data_mem_size ) )
     s.const_zero = DataType(0, 0)
+    FuInType = mk_bits( clog2( num_inports + 1 ) )
 
     # Interface
 
@@ -33,11 +34,24 @@ class Fu( Component ):
     s.to_mem_waddr   = SendIfcRTL( AddrType )
     s.to_mem_wdata   = SendIfcRTL( DataType )
 
+    # For pick input register, basic FU normally has 2 inputs,
+    # if more inputs are required, they should be added inside
+    # specific inherit module.
+    s.in0 = FuInType( 0 )
+    s.in1 = FuInType( 0 )
+
     @s.update
     def update_signal():
-      for i in range( num_inports ):
-        for j in range( num_outports ):
-          s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
+      if s.recv_opt.en:
+        s.in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+        s.in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+        s.recv_in[s.in0].rdy = b1( 1 )
+        s.recv_in[s.in1].rdy = b1( 1 )
+
+#      for i in range( num_inports ):
+#        s.recv_in[i].rdy = b1( 1 ) if s.recv_opt.msg.fu_in[i] > FuInType( 0 ) else b1( 0 )
+#        for j in range( num_outports ):
+#          s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
 
       for j in range( num_outports ):
         s.recv_const.rdy = s.send_out[j].rdy or s.recv_const.rdy
@@ -55,6 +69,11 @@ class Fu( Component ):
 
   def line_trace( s ):
     opt_str = " #"
-    if s.send_out[0].en:
+#    if s.send_out[0].en:
+#      opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
+#    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}]'
+    if s.recv_opt.en:
       opt_str = OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]
-    return f'[{s.recv_in[0].msg}] {opt_str} [{s.recv_in[1].msg} ({s.recv_const.msg}) ] = [{s.send_out[0].msg}]'
+    out_str = ",".join([str(x.msg) for x in s.send_out])
+    recv_str = ",".join([str(x.msg) for x in s.recv_in])
+    return f'[recv: {recv_str}] {opt_str} (const: {s.recv_const.msg}) ] = [out: {out_str}] (s.recv_opt.rdy: {s.recv_opt.rdy}, {OPT_SYMBOL_DICT[s.recv_opt.msg.ctrl]}, send[0].en: {s.send_out[0].en}) '

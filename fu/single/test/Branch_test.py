@@ -78,11 +78,12 @@ def test_Branch():
   num_inports   = 2
   num_outports  = 2
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
   src_data  = [ DataType(7, 1), DataType(3, 1), DataType(9, 1) ]
   src_comp  = [ DataType(0, 1), DataType(1, 1), DataType(0, 1) ]
-  src_opt   = [ CtrlType( OPT_BRH ),
-                CtrlType( OPT_BRH ),
-                CtrlType( OPT_BRH ) ]
+  src_opt   = [ CtrlType( OPT_BRH, [FuInType(1), FuInType(2)] ),
+                CtrlType( OPT_BRH, [FuInType(1), FuInType(2)] ),
+                CtrlType( OPT_BRH, [FuInType(1), FuInType(2)] ) ]
   sink_if   = [ DataType(7, 1), DataType(3, 0), DataType(9, 1) ]
   sink_else = [ DataType(7, 0), DataType(3, 1), DataType(9, 0) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,

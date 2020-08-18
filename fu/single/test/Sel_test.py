@@ -85,16 +85,19 @@ def run_sim( test_harness, max_cycles=100 ):
 def test_Select():
   FU = Sel
   DataType   = mk_data( 32, 1 )
-  CtrlType = mk_ctrl()
+  # Selector needs more than 2 inputs
+  CtrlType = mk_ctrl(num_fu_in = 4)
   num_inports   = 4
   num_outports  = 1
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_data1  = [ DataType(9, 1), DataType(3, 1), DataType(4, 1) ]
   src_data2  = [ DataType(2, 1), DataType(7, 1), DataType(5, 1) ]
   src_ref0   = [ DataType(1, 1), DataType(0, 1), DataType(1, 1) ]
-  src_opt    = [ CtrlType( OPT_SEL ),
-                 CtrlType( OPT_SEL ),
-                 CtrlType( OPT_SEL ) ]
+  src_opt    = [ CtrlType( OPT_SEL, pickRegister ),
+                 CtrlType( OPT_SEL, pickRegister ),
+                 CtrlType( OPT_SEL, pickRegister ) ]
   sink_out   = [ DataType(9, 1), DataType(7, 1), DataType(4, 1) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_data1, src_data2, src_ref0,

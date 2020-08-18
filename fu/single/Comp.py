@@ -29,12 +29,12 @@ class Comp( Fu ):
 
     @s.update
     def comb_logic():
-      predicate = s.recv_in[0].msg.predicate & s.recv_in[1].msg.predicate
+      predicate = s.recv_in[s.in0].msg.predicate & s.recv_in[s.in1].msg.predicate
       s.send_out[0].msg = s.const_one
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en and s.recv_in[1].en
       if s.recv_opt.msg.ctrl == OPT_EQ:
-        if s.recv_in[0].msg.payload == s.recv_in[1].msg.payload:
+        if s.recv_in[0].msg.payload == s.recv_in[s.in1].msg.payload:
 #          s.send_out[0].msg = DataType( 1, predicate )
           s.send_out[0].msg = s.const_one
           s.send_out[0].msg.predicate = predicate
@@ -43,7 +43,7 @@ class Comp( Fu ):
           s.send_out[0].msg.predicate = predicate
 #          s.send_out[0].msg = DataType( 0, predicate )
       elif s.recv_opt.msg.ctrl == OPT_LE:
-        if s.recv_in[0].msg.payload < s.recv_in[1].msg.payload:
+        if s.recv_in[0].msg.payload < s.recv_in[s.in1].msg.payload:
           s.send_out[0].msg = s.const_one
           s.send_out[0].msg.predicate = predicate
 #          s.send_out[0].msg = DataType( 1, predicate )

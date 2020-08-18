@@ -83,13 +83,15 @@ def test_alu():
   data_mem_size = 8
   num_inports  = 2
   num_outports = 1
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0      = [ DataType(1, 1), DataType(7, 1), DataType(4, 1) ]
   src_in1      = [ DataType(2, 1), DataType(3, 1), DataType(1, 1) ]
   src_const    = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
   sink_out     = [ DataType(6, 1), DataType(4, 1), DataType(11, 1) ]
-  src_opt      = [ ConfigType( OPT_ADD_CONST ),
-                   ConfigType( OPT_SUB ),
-                   ConfigType( OPT_ADD_CONST ) ]
+  src_opt      = [ ConfigType( OPT_ADD_CONST, pickRegister ),
+                   ConfigType( OPT_SUB,       pickRegister ),
+                   ConfigType( OPT_ADD_CONST, pickRegister ) ]
   th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_const, src_opt, sink_out )
   run_sim( th )
@@ -101,12 +103,16 @@ def test_logic():
   num_inports  = 2
   num_outports = 1
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(4, 1), DataType(1, 1)  ]
   src_in1   = [ DataType(2, 1), DataType(3, 1), DataType(3, 1), DataType(2, 1)  ]
   src_const = [ DataType(5, 1), DataType(0, 0), DataType(7, 1) ]
   sink_out  = [ DataType(3, 1), DataType(2, 1), DataType(0xfffb, 1), DataType(3, 1) ]
-  src_opt   = [ ConfigType( OPT_OR  ), ConfigType( OPT_AND ),
-                ConfigType( OPT_NOT ), ConfigType( OPT_XOR ) ]
+  src_opt   = [ ConfigType( OPT_OR , pickRegister ),
+                ConfigType( OPT_AND, pickRegister ),
+                ConfigType( OPT_NOT, pickRegister ),
+                ConfigType( OPT_XOR, pickRegister ) ]
   th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_const, src_opt, sink_out )
   run_sim( th )
@@ -118,13 +124,15 @@ def test_shifter():
   num_inports  = 2
   num_outports = 1
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0   = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1   = [ DataType(2, 1), DataType(3, 1),  DataType(1, 1) ]
   src_const = [ DataType(2, 1), DataType(3, 1),  DataType(1, 1) ]
   sink_out  = [ DataType(4, 1), DataType(16, 1), DataType(2, 1) ]
-  src_opt   = [ ConfigType( OPT_LLS ),
-               ConfigType( OPT_LLS ),
-               ConfigType( OPT_LRS ) ]
+  src_opt   = [ ConfigType( OPT_LLS, pickRegister ),
+                ConfigType( OPT_LLS, pickRegister ),
+                ConfigType( OPT_LRS, pickRegister ) ]
   th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_const, src_opt, sink_out )
   run_sim( th )
@@ -136,13 +144,15 @@ def test_mul():
   num_inports  = 2
   num_outports = 1
   data_mem_size = 8
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0   = [ DataType(1, 1), DataType(2, 1), DataType(4, 1)  ]
   src_in1   = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]
   src_const = [ DataType(2, 1), DataType(3, 1), DataType(3, 1)  ]
   sink_out  = [ DataType(2, 1), DataType(6, 1), DataType(12, 1) ]
-  src_opt   = [ ConfigType( OPT_MUL ),
-                ConfigType( OPT_MUL ),
-                ConfigType( OPT_MUL ) ]
+  src_opt   = [ ConfigType( OPT_MUL, pickRegister ),
+                ConfigType( OPT_MUL, pickRegister ),
+                ConfigType( OPT_MUL, pickRegister ) ]
   th = TestHarness( FU, DataType, ConfigType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_const, src_opt, sink_out )
   run_sim( th )
