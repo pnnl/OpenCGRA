@@ -22,20 +22,19 @@ class Comp( Fu ):
     super( Comp, s ).construct( DataType, ConfigType, num_inports, num_outports,
            data_mem_size )
 
-    FuInType = mk_bits( clog2( num_inports + 1 ) )
     s.const_one  = DataType(1, 0)
+    FuInType = mk_bits( clog2( num_inports + 1 ) )
 
     # data:      s.recv_in[0]
     # reference: s.recv_in[1]
 
-    # For pick input register, basic FU normally has 2 inputs,
-    # if more inputs are required, they should be added inside
-    # specific inherit module.
-    in0 = FuInType( 0 )
-    in1 = FuInType( 0 ) 
 
     @s.update
     def read_reg():
+
+      # For pick input register
+      in0 = FuInType( 0 )
+      in1 = FuInType( 0 ) 
 
       if s.recv_opt.en:
         in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )

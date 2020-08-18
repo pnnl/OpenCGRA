@@ -132,10 +132,14 @@ def test_flexible_mul():
   data_mem_size = 8
   num_inports   = 2
   num_outports  = 2
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   src_in0  = [ DataType(1, 1), DataType(2, 1), DataType(9, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1), DataType(2, 1) ]
   sink_out = [ DataType(2, 1), DataType(6, 1), DataType(18, 1) ]
-  src_opt  = [ CtrlType(OPT_MUL), CtrlType(OPT_MUL), CtrlType(OPT_MUL) ]
+  src_opt  = [ CtrlType( OPT_MUL, pickRegister ),
+               CtrlType( OPT_MUL, pickRegister ),
+               CtrlType( OPT_MUL, pickRegister ) ]
   th = TestHarness( FU, FuList, DataType, CtrlType, data_mem_size,
                     num_inports, num_outports, src_in0, src_in1,
                     src_opt, sink_out, sink_out )

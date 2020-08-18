@@ -38,18 +38,17 @@ class MemUnit( Component ):
     s.to_mem_waddr   = SendIfcRTL( AddrType )
     s.to_mem_wdata   = SendIfcRTL( DataType )
 
-    # For pick input register
-    s.in0 = FuInType( 0 )
-    s.in1 = FuInType( 0 )
-
     @s.update
     def comb_logic():
 
+      # For pick input register
+      in0 = FuInType( 0 )
+      in1 = FuInType( 0 )
       if s.recv_opt.en:
-        s.in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
-        s.in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
-        s.recv_in[s.in0].rdy = b1( 1 )
-        s.recv_in[s.in1].rdy = b1( 1 )
+        in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+        in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+        s.recv_in[in0].rdy = b1( 1 )
+        s.recv_in[in1].rdy = b1( 1 )
 
 #      for i in range( 2, num_inports ):
 #        s.recv_in[i].rdy = b1( 1 ) if s.recv_opt.msg.fu_in[i] > FuInType( 0 ) else b1( 0 )
@@ -78,10 +77,10 @@ class MemUnit( Component ):
       s.to_mem_waddr.en = b1( 0 )
       s.to_mem_wdata.en = b1( 0 )
       if s.recv_opt.msg.ctrl == OPT_LD:
-        s.recv_in[s.in0].rdy     = s.to_mem_raddr.rdy
-        s.recv_in[s.in1].rdy     = s.from_mem_rdata.rdy
-        s.to_mem_raddr.msg   = AddrType( s.recv_in[s.in0].msg.payload )
-        s.to_mem_raddr.en    = s.recv_in[s.in0].en
+        s.recv_in[in0].rdy     = s.to_mem_raddr.rdy
+        s.recv_in[in1].rdy     = s.from_mem_rdata.rdy
+        s.to_mem_raddr.msg   = AddrType( s.recv_in[in0].msg.payload )
+        s.to_mem_raddr.en    = s.recv_in[in0].en
         s.from_mem_rdata.rdy = s.send_out[0].rdy
         s.send_out[0].msg    = s.from_mem_rdata.msg
 #        s.send_out[0].en     = s.from_mem_rdata.en and s.recv_in[0].en
@@ -104,13 +103,13 @@ class MemUnit( Component ):
         s.send_out[0].en     = s.recv_opt.en#send_out[0].rdy
 
       elif s.recv_opt.msg.ctrl == OPT_STR:
-        s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[s.in0].en and s.recv_in[s.in1].en
-        s.recv_in[s.in0].rdy   = s.to_mem_waddr.rdy
-        s.recv_in[s.in1].rdy   = s.to_mem_wdata.rdy
+        s.send_out[0].en   = s.from_mem_rdata.en and s.recv_in[in0].en and s.recv_in[in1].en
+        s.recv_in[in0].rdy   = s.to_mem_waddr.rdy
+        s.recv_in[in1].rdy   = s.to_mem_wdata.rdy
         s.to_mem_waddr.msg = AddrType( s.recv_in[0].msg.payload )
-        s.to_mem_waddr.en  = s.recv_in[s.in0].en
-        s.to_mem_wdata.msg = s.recv_in[s.in1].msg
-        s.to_mem_wdata.en  = s.recv_in[s.in1].en
+        s.to_mem_waddr.en  = s.recv_in[in0].en
+        s.to_mem_wdata.msg = s.recv_in[in1].msg
+        s.to_mem_wdata.en  = s.recv_in[in1].en
         s.send_out[0].en   = b1( 0 )
         s.send_out[0].msg  = s.from_mem_rdata.msg
       else:

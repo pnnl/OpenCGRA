@@ -83,14 +83,18 @@ def test_mul_alu_shifter():
   num_inports   = 4
   num_outports  = 2
   data_mem_size = 8
+
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
+
   src_in0  = [ DataType(1, 1), DataType(2, 1),  DataType(4, 1) ]
   src_in1  = [ DataType(2, 1), DataType(3, 1),  DataType(3, 1) ]
   src_in2  = [ DataType(1, 1), DataType(3, 1),  DataType(3, 1) ]
   src_in3  = [ DataType(1, 1), DataType(2, 1),  DataType(2, 1) ]
   sink_out = [ DataType(8, 1), DataType(12, 1), DataType(6, 1) ]
-  src_opt  = [ CtrlType( OPT_MUL_ADD_LLS ), 
-               CtrlType( OPT_MUL_SUB_LLS ), 
-               CtrlType( OPT_MUL_SUB_LRS ) ]
+  src_opt  = [ CtrlType( OPT_MUL_ADD_LLS, pickRegister ), 
+               CtrlType( OPT_MUL_SUB_LLS, pickRegister ), 
+               CtrlType( OPT_MUL_SUB_LRS, pickRegister ) ]
   th = TestHarness( FU, DataType, CtrlType, num_inports, num_outports,
                     data_mem_size, src_in0, src_in1, src_in2, src_in3,
                     src_opt, sink_out )

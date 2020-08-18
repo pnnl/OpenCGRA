@@ -22,18 +22,30 @@ class Phi( Fu ):
     super( Phi, s ).construct( DataType, ConfigType, num_inports, num_outports,
            data_mem_size )
 
+    FuInType = mk_bits( clog2( num_inports + 1 ) )
+
     @s.update
     def comb_logic():
+
+      # For pick input register
+      in0 = FuInType( 0 )
+      in1 = FuInType( 0 )
+      if s.recv_opt.en:
+        in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+        in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+        s.recv_in[in0].rdy = b1( 1 )
+        s.recv_in[in1].rdy = b1( 1 )
+
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en
 #      s.send_out[0].en = s.recv_opt.en
       if s.recv_opt.msg.ctrl == OPT_PHI:
-        if s.recv_in[s.in0].msg.predicate == Bits1( 1 ):
-          s.send_out[0].msg = s.recv_in[s.in0].msg
-        elif s.recv_in[s.in1].msg.predicate == Bits1( 1 ):
-          s.send_out[0].msg = s.recv_in[s.in1].msg
+        if s.recv_in[in0].msg.predicate == Bits1( 1 ):
+          s.send_out[0].msg = s.recv_in[in0].msg
+        elif s.recv_in[in1].msg.predicate == Bits1( 1 ):
+          s.send_out[0].msg = s.recv_in[in1].msg
         else:
-          s.send_out[0].msg = s.recv_in[s.in0].msg
+          s.send_out[0].msg = s.recv_in[in0].msg
           s.send_out[0].msg.predicate = Bits1( 1 )
       else:
         for j in range( num_outports ):

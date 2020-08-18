@@ -140,10 +140,13 @@ def test_hypothesis( functions, inputs ):
   src_a, src_b, src_opt  = [], [], []
   DataType = mk_data( 16, 1 )
   CtrlType = mk_ctrl()
+  num_inports = 2
+  FuInType = mk_bits( clog2( num_inports + 1 ) )
+  pickRegister = [ FuInType( x+1 ) for x in range( num_inports ) ]
   for value in input_list:
     src_a.append  ( DataType(value[0]) )
     src_b.append  ( DataType(value[1]) )
-    src_opt.append( CtrlType(value[2]) )
+    src_opt.append( CtrlType(value[2], pickRegister) )
   sink_out = FuFL( DataType, src_a, src_b, src_opt )
   th = TestHarness( FU, functions, DataType, CtrlType,
                     src_a, src_b, src_opt, sink_out )

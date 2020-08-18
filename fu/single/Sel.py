@@ -36,31 +36,8 @@ class Sel( Component ):
     s.to_mem_waddr   = SendIfcRTL( AddrType )
     s.to_mem_wdata   = SendIfcRTL( DataType )
 
-    # For pick input register, basic FU normally has 2 inputs,
-    # if more inputs are required, they should be added inside
-    # specific inherit module.
-    s.in0 = FuInType( 0 )
-    s.in1 = FuInType( 0 )
-    s.in2 = FuInType( 0 )
-
-    @s.update
-    def update_signal():
-      if s.recv_opt.en:
-        s.in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
-        s.in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
-        s.in2 = s.recv_opt.msg.fu_in[2] - FuInType( 1 )
-        s.recv_in[s.in0].rdy = b1( 1 )
-        s.recv_in[s.in1].rdy = b1( 1 )
-        s.recv_in[s.in2].rdy = b1( 1 )
-
-#      for i in range( num_inports ):
-#        s.recv_in[i].rdy = b1( 1 ) if s.recv_opt.msg.fu_in[i] > FuInType( 0 ) else b1( 0 )
-#        for j in range( num_outports ):
-#          s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
-
-      for j in range( num_outports ):
-        s.recv_const.rdy = s.send_out[j].rdy or s.recv_const.rdy
-        s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
+#    @s.update
+#    def update_signal():
 
     @s.update
     def update_mem():
@@ -74,13 +51,36 @@ class Sel( Component ):
 
     @s.update
     def comb_logic():
+
+      # For pick input register, Selector needs at least 3 inputs
+      in0 = FuInType( 0 )
+      in1 = FuInType( 0 )
+      in2 = FuInType( 0 )
+      if s.recv_opt.en:
+        in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+        in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+        in2 = s.recv_opt.msg.fu_in[2] - FuInType( 1 )
+        s.recv_in[in0].rdy = b1( 1 )
+        s.recv_in[in1].rdy = b1( 1 )
+        s.recv_in[in2].rdy = b1( 1 )
+
+#      for i in range( num_inports ):
+#        s.recv_in[i].rdy = b1( 1 ) if s.recv_opt.msg.fu_in[i] > FuInType( 0 ) else b1( 0 )
+#        for j in range( num_outports ):
+#          s.recv_in[i].rdy = s.send_out[j].rdy or s.recv_in[i].rdy
+
+      for j in range( num_outports ):
+        s.recv_const.rdy = s.send_out[j].rdy or s.recv_const.rdy
+        s.recv_opt.rdy = s.send_out[j].rdy or s.recv_opt.rdy
+
+
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en
       if s.recv_opt.msg.ctrl == OPT_SEL:
-        if s.recv_in[s.in0].msg.payload == s.true.payload:
-          s.send_out[0].msg = s.recv_in[s.in1].msg
+        if s.recv_in[in0].msg.payload == s.true.payload:
+          s.send_out[0].msg = s.recv_in[in1].msg
         else:
-          s.send_out[0].msg = s.recv_in[s.in2].msg
+          s.send_out[0].msg = s.recv_in[in2].msg
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )

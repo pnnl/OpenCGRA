@@ -27,12 +27,21 @@ class ThreeMulAluShifter( ThreeCombo ):
 
     @s.update
     def update_opt():
+
       s.send_out[0].en  = s.recv_in[0].en  and s.recv_in[1].en  and\
                           s.recv_in[2].en  and s.recv_in[3].en  and\
                           s.recv_opt.en
       s.send_out[1].en  = s.recv_in[0].en  and s.recv_in[1].en  and\
                           s.recv_in[2].en  and s.recv_in[3].en  and\
                           s.recv_opt.en
+
+      s.Fu0.recv_opt.msg.fu_in[0] = Bits2(1)
+      s.Fu0.recv_opt.msg.fu_in[1] = Bits2(2)
+      s.Fu1.recv_opt.msg.fu_in[0] = Bits2(1)
+      s.Fu1.recv_opt.msg.fu_in[1] = Bits2(2)
+      s.Fu2.recv_opt.msg.fu_in[0] = Bits2(1)
+      s.Fu2.recv_opt.msg.fu_in[1] = Bits2(2)
+
       if s.recv_opt.msg.ctrl == OPT_MUL_ADD_LLS:
         s.Fu0.recv_opt.msg.ctrl = OPT_MUL
         s.Fu1.recv_opt.msg.ctrl = OPT_ADD

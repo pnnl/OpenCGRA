@@ -60,7 +60,6 @@ class FlexibleFu( Component ):
       s.to_mem_waddr[i]   //= s.fu[i].to_mem_waddr
       s.to_mem_wdata[i]   //= s.fu[i].to_mem_wdata
 
-
     @s.update
     def comb_logic():
 
