@@ -117,7 +117,8 @@ def test_CGRA_4x4_fir():
   preload_data  = [ DataType( 3, 1 ) ] * data_mem_size
   preload_const = [ [ DataType( 1, 1 ) ] * II ] * num_tiles
 
-
+  th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
+                    width, height, ctrl_mem_size, data_mem_size,
                     src_opt, preload_data, preload_const )
   run_sim( th )
 
