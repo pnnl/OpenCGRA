@@ -1,15 +1,15 @@
 """
 ==========================================================================
-PseudoCGRA_test.py
+SystolicCL_test.py
 ==========================================================================
-Test cases for CGRAs with pseudo data/config memory.
+Test cases for Systolic Array with CL data/config memory.
 
 Author : Cheng Tan
   Date : Dec 28, 2019
 
 """
 
-from pymtl3 import *
+from pymtl3                       import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
@@ -17,10 +17,10 @@ from ...lib.opt_type              import *
 from ...lib.messages              import *
 from ...lib.ctrl_helper           import *
 
-from ...fu.flexible.FlexibleFu    import FlexibleFu
-from ...fu.single.Alu             import Alu
-from ...fu.single.MemUnit         import MemUnit
-from ...fu.double.SeqMulAlu       import SeqMulAlu
+from ...fu.flexible.FlexibleFuRTL import FlexibleFuRTL
+from ...fu.single.AdderRTL        import AdderRTL
+from ...fu.single.MemUnitRTL      import MemUnitRTL
+from ...fu.double.SeqMulAdderRTL  import SeqMulAdderRTL
 from ..SystolicCL                 import SystolicCL
 
 import os
@@ -48,14 +48,6 @@ class TestHarness( Component ):
     for i in range( height-1 ):
       connect( s.dut.send_data[i],  s.sink_out[i].recv )
 
-#  def done( s ):
-#    done = True
-#    for i in range( s.num_tiles  ):
-#      if not s.src_opt[i].done():
-#        done = False
-#        break
-#    return done
-
   def line_trace( s ):
     return s.dut.line_trace()
 
@@ -65,7 +57,6 @@ def run_sim( test_harness, max_cycles=6 ):
   test_harness.sim_reset()
 
   # Run simulation
-
   ncycles = 0
   print()
   print( "{}:{}".format( ncycles, test_harness.line_trace() ))
@@ -76,12 +67,12 @@ def run_sim( test_harness, max_cycles=6 ):
     print( "{}:{}".format( ncycles, test_harness.line_trace() ))
 
   # Check timeout
-
 #  assert ncycles < max_cycles
 
   test_harness.tick()
   test_harness.tick()
   test_harness.tick()
+
 # ------------------------------------------------------------------
 # To emulate systolic array
 # left bottom is 0, 0
@@ -106,8 +97,8 @@ def test_systolic_2x2():
   num_fu_in         = 4
 
   DUT               = SystolicCL
-  FunctionUnit      = FlexibleFu
-  FuList            = [Alu, MemUnit, SeqMulAlu]
+  FunctionUnit      = FlexibleFuRTL
+  FuList            = [AdderRTL, MemUnitRTL, SeqMulAdderRTL]
   DataType          = mk_data( 16, 1 )
   CtrlType          = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
   FuInType          = mk_bits( clog2( num_fu_in + 1 ) )
@@ -198,7 +189,7 @@ def test_systolic_2x2():
                     RouteType(2), RouteType(0), RouteType(3), RouteType(0)] ),
                    ]
                   ]
-  preload_mem  = [DataType(1, 1), DataType(2, 1), DataType(3, 1), DataType(4, 1)]
+  preload_mem   = [DataType(1, 1), DataType(2, 1), DataType(3, 1), DataType(4, 1)]
   preload_const = [[DataType(0, 1), DataType(1, 1)], [DataType(0, 0), DataType(2, 1), DataType(3, 1)], # offset address used for loading
                    [DataType(2, 1)], [DataType(4, 1)], # offset address used for MM
                    [DataType(6, 1)], [DataType(8, 1)]] # offset address used for MM

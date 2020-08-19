@@ -9,7 +9,7 @@ Author : Cheng Tan
 
 """
 
-from pymtl3 import *
+from pymtl3             import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
 

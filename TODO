@@ -1,3 +1,0 @@
-TODO list in this PR:
-1. Include register id in control signal.
-2. Appropriately enabling recv.rdy in FlexibleFU based on control signal.

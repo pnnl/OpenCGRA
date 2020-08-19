@@ -1,6 +1,6 @@
 """
 ==========================================================================
-Multicaster_test.py
+MulticasterRTL_test.py
 ==========================================================================
 Test cases for Multicaster.
 
@@ -9,11 +9,11 @@ Author : Cheng Tan
 
 """
 
-from pymtl3 import *
+from pymtl3                       import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Multicaster                import Multicaster
+from ..MulticasterRTL             import MulticasterRTL
 from ...lib.opt_type              import *
 from ...lib.messages              import *
 
@@ -72,7 +72,7 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
 
 def test_Multicaster():
-  FU = Multicaster
+  FU = MulticasterRTL
   num_outports = 3
   DataType     = mk_data( 16, 1 )
   src_data     = [ DataType(3, 1), DataType(2, 1), DataType(9, 1) ]

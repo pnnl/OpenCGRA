@@ -1,6 +1,6 @@
 """
 ==========================================================================
-AccFL_test.py
+CGRAFL_test.py
 ==========================================================================
 Test cases for HLS in terms of accelerator design.
 
@@ -14,8 +14,7 @@ from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
 from ...lib.messages              import *
-from ..AccFL                      import AccFL
-#from ..AccRTL                     import AccRTL
+from ..CGRAFL                     import CGRAFL
 from ...lib.dfg_helper            import *
 
 import os
@@ -76,7 +75,7 @@ def test_acc():
 
   print( "----------------- FL test ------------------" )
   # FL golden reference
-  AccFL( fu_dfg, DataType, CtrlType, const_data )#, data_spm )
+  CGRAFL( fu_dfg, DataType, CtrlType, const_data )#, data_spm )
   print()
 #
 #  print( "----------------- RTL test ------------------" )

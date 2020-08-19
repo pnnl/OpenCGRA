@@ -1,6 +1,6 @@
 """
 ==========================================================================
-Crossbar_test.py
+CrossbarRTL_test.py
 ==========================================================================
 Test cases for Crossbar.
 
@@ -9,11 +9,11 @@ Author : Cheng Tan
 
 """
 
-from pymtl3 import *
+from pymtl3                       import *
 from pymtl3.stdlib.test           import TestSinkCL
 from pymtl3.stdlib.test.test_srcs import TestSrcRTL
 
-from ..Crossbar                   import Crossbar
+from ..CrossbarRTL                import CrossbarRTL
 from ...lib.opt_type              import *
 from ...lib.messages              import *
 
@@ -64,7 +64,6 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.sim_reset()
 
   # Run simulation
-
   ncycles = 0
   print()
   print( "{}:{}".format( ncycles, test_harness.line_trace() ))
@@ -82,7 +81,7 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.tick()
 
 def test_crossbar():
-  FU = Crossbar
+  FU = CrossbarRTL
   num_fu_in    = 3
   num_inports  = 3
   num_outports = 3
@@ -99,7 +98,7 @@ def test_crossbar():
   run_sim( th )
 
 def test_multi():
-  FU = Crossbar
+  FU = CrossbarRTL
   num_fu_in    = 3
   num_inports  = 3
   num_outports = 3

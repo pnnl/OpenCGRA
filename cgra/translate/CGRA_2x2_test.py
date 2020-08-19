@@ -16,16 +16,16 @@ from pymtl3.stdlib.test.test_srcs   import TestSrcRTL
 from ...lib.opt_type                import *
 from ...lib.messages                import *
 
-from ...fu.flexible.FlexibleFu      import FlexibleFu
-from ...fu.single.Alu               import Alu
-from ...fu.single.MemUnit           import MemUnit
-from ...fu.single.Mul               import Mul
-from ...fu.single.Shifter           import Shifter
-from ...fu.single.Logic             import Logic
-from ...fu.single.Phi               import Phi
-from ...fu.single.Comp              import Comp
-from ...fu.single.Branch            import Branch
-from ..CGRA                         import CGRA
+from ...fu.flexible.FlexibleFuRTL   import FlexibleFuRTL
+from ...fu.single.AdderRTL          import AdderRTL
+from ...fu.single.MemUnitRTL        import MemUnitRTL
+from ...fu.single.MulRTL            import MulRTL
+from ...fu.single.ShifterRTL        import ShifterRTL
+from ...fu.single.LogicRTL          import LogicRTL
+from ...fu.single.PhiRTL            import PhiRTL
+from ...fu.single.CompRTL           import CompRTL
+from ...fu.single.BranchRTL         import BranchRTL
+from ..CGRARTL                      import CGRARTL
 
 from pymtl3.passes.backends.verilog import TranslationImportPass
 
@@ -75,7 +75,6 @@ def run_sim( test_harness, max_cycles=10 ):
   test_harness.sim_reset()
 
   # Run simulation
-
   ncycles = 0
   print()
   print( "{}:{}".format( ncycles, test_harness.line_trace() ))
@@ -85,7 +84,6 @@ def run_sim( test_harness, max_cycles=10 ):
     print( "{}:{}".format( ncycles, test_harness.line_trace() ))
 
   # Check timeout
-
   assert ncycles < max_cycles
 
   test_harness.tick()
@@ -110,9 +108,9 @@ def test_cgra_universal():
   num_tiles    = width * height
   data_mem_size = 8
   num_fu_in     = 4
-  DUT          = CGRA
-  FunctionUnit = FlexibleFu
-  FuList       = [ Alu, Mul, Logic, Shifter, Phi, Comp, Branch, MemUnit ]
+  DUT          = CGRARTL
+  FunctionUnit = FlexibleFuRTL
+  FuList       = [ AdderRTL, MulRTL, LogicRTL, ShifterRTL, PhiRTL, CompRTL, BranchRTL, MemUnitRTL ]
   DataType     = mk_data( 16, 1 )
   CtrlType     = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
   FuInType      = mk_bits( clog2( num_fu_in + 1 ) )

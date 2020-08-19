@@ -10,9 +10,9 @@ Author : Cheng Tan
 
 """
 
-from .messages                import *
-from .map_helper              import *
-from ..fu.flexible.FlexibleFu import FlexibleFu
+from .messages                   import *
+from .map_helper                 import *
+from ..fu.flexible.FlexibleFuRTL import FlexibleFuRTL
 
 import json
 
@@ -55,7 +55,7 @@ class CGRACtrl:
     # X is the horizontal axis while Y is the vertical axis
     for y in range( height ):
       for x in range( width ):
-        s.tiles.append( TileCtrl( FlexibleFu, CtrlType, RouteType,
+        s.tiles.append( TileCtrl( FlexibleFuRTL, CtrlType, RouteType,
                                   x, y, num_fu_in, num_outports, II ) )
 
     FuInType     = mk_bits( clog2( num_fu_in + 1 ) )

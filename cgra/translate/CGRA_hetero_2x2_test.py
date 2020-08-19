@@ -1,26 +1,26 @@
 """
 ==========================================================================
-CGRA_test.py
+CGRARTL_heterogeneous_test.py
 ==========================================================================
-Test cases for CGRAs with different configurations.
+Test cases for heterogeneous CGRAs.
 
 Author : Cheng Tan
   Date : Dec 15, 2019
 
 """
 
-from pymtl3 import *
-from pymtl3.stdlib.test           import TestSinkCL
-from pymtl3.stdlib.test.test_srcs import TestSrcRTL
+from pymtl3                         import *
+from pymtl3.stdlib.test             import TestSinkCL
+from pymtl3.stdlib.test.test_srcs   import TestSrcRTL
 
-from ...lib.opt_type              import *
-from ...lib.messages              import *
+from ...lib.opt_type                import *
+from ...lib.messages                import *
 
-from ...fu.flexible.FlexibleFu    import FlexibleFu
-from ...fu.single.Alu             import Alu
-from ...fu.single.Shifter         import Shifter
-from ...fu.single.MemUnit         import MemUnit
-from ..CGRA                       import CGRA
+from ...fu.flexible.FlexibleFuRTL   import FlexibleFuRTL
+from ...fu.single.AdderRTL          import AdderRTL
+from ...fu.single.ShifterRTL        import ShifterRTL
+from ...fu.single.MemUnitRTL        import MemUnitRTL
+from ..CGRARTL                      import CGRARTL
 
 from pymtl3.passes.backends.verilog import TranslationImportPass
 
@@ -72,7 +72,6 @@ def run_sim( test_harness, max_cycles=100 ):
   test_harness.sim_reset()
 
   # Run simulation
-
   ncycles = 0
   print()
   print( "{}:{}".format( ncycles, test_harness.line_trace() ))
@@ -82,7 +81,6 @@ def run_sim( test_harness, max_cycles=100 ):
     print( "{}:{}".format( ncycles, test_harness.line_trace() ))
 
   # Check timeout
-
   assert ncycles < max_cycles
 
   test_harness.tick()
@@ -100,41 +98,41 @@ def test_hetero_2x2():
   num_xbar_inports  = 6
   num_xbar_outports = 8
   ctrl_mem_size     = 6
-  width  = 2
-  height = 2
-  RouteType = mk_bits( clog2( num_xbar_inports + 1 ) )
-  AddrType = mk_bits( clog2( ctrl_mem_size ) )
-  num_tiles    = width * height
-  data_mem_size = 8
-  DUT          = CGRA
-  num_fu_in = 4
-  FunctionUnit = FlexibleFu
-  FuList      = [MemUnit, Alu]
-  DataType     = mk_data( 16, 1 )
-  CtrlType     = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
-  FuInType      = mk_bits( clog2( num_fu_in + 1 ) )
-  pickRegister  = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
-  src_opt      = [ [ CtrlType( OPT_INC, pickRegister, [
-                     RouteType(4), RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
-                     CtrlType( OPT_INC, pickRegister, [
-                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
-                     CtrlType( OPT_ADD, pickRegister, [
-                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
-                     CtrlType( OPT_STR, pickRegister, [
-                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
-                     CtrlType( OPT_ADD, pickRegister, [
-                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
-                     CtrlType( OPT_ADD, pickRegister, [
-                     RouteType(4),RouteType(3), RouteType(2), RouteType(1),
-                     RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ]
-                     for _ in range( num_tiles ) ]
-  ctrl_waddr   = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
-                     AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
+  width             = 2
+  height            = 2
+  RouteType         = mk_bits( clog2( num_xbar_inports + 1 ) )
+  AddrType          = mk_bits( clog2( ctrl_mem_size ) )
+  num_tiles         = width * height
+  data_mem_size     = 8
+  DUT               = CGRARTL
+  num_fu_in         = 4
+  FunctionUnit      = FlexibleFuRTL
+  FuList            = [MemUnitRTL, AdderRTL]
+  DataType          = mk_data( 16, 1 )
+  CtrlType          = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
+  FuInType          = mk_bits( clog2( num_fu_in + 1 ) )
+  pickRegister      = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
+  src_opt           = [ [ CtrlType( OPT_INC, pickRegister, [
+                          RouteType(4), RouteType(3), RouteType(2), RouteType(1),
+                          RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                          CtrlType( OPT_INC, pickRegister, [
+                          RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                          RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                          CtrlType( OPT_ADD, pickRegister, [
+                          RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                          RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                          CtrlType( OPT_STR, pickRegister, [
+                          RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                          RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                          CtrlType( OPT_ADD, pickRegister, [
+                          RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                          RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ),
+                          CtrlType( OPT_ADD, pickRegister, [
+                          RouteType(4),RouteType(3), RouteType(2), RouteType(1),
+                          RouteType(5), RouteType(5), RouteType(5), RouteType(5)] ) ]
+                          for _ in range( num_tiles ) ]
+  ctrl_waddr        = [ [ AddrType( 0 ), AddrType( 1 ), AddrType( 2 ), AddrType( 3 ),
+                          AddrType( 4 ), AddrType( 5 ) ] for _ in range( num_tiles ) ]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, ctrl_waddr )

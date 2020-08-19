@@ -1,21 +1,21 @@
 """
 =========================================================================
-SystolicCL.py
+CGRACL.py
 =========================================================================
 
 Author : Cheng Tan
-  Date : May 24, 2020
+  Date : Dec 28, 2019
 """
 
-from pymtl3                   import *
-from pymtl3.stdlib.ifcs       import SendIfcRTL, RecvIfcRTL
-from ..noc.CrossbarRTL        import CrossbarRTL
-from ..noc.ChannelRTL         import ChannelRTL
-from ..tile.TileCL            import TileCL
-from ..lib.opt_type           import *
-from ..mem.data.DataMemCL     import DataMemCL
+from pymtl3               import *
+from pymtl3.stdlib.ifcs   import SendIfcRTL, RecvIfcRTL
+from ..noc.CrossbarRTL    import CrossbarRTL
+from ..noc.ChannelRTL     import ChannelRTL
+from ..tile.TileCL        import TileCL
+from ..lib.opt_type       import *
+from ..mem.data.DataMemCL import DataMemCL
 
-class SystolicCL( Component ):
+class CGRACL( Component ):
 
   def construct( s, FunctionUnit, FuList, DataType, CtrlType,
                  width, height, ctrl_mem_size, data_mem_size,
@@ -30,9 +30,8 @@ class SystolicCL( Component ):
     s.num_mesh_ports = 4
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
-    s.send_data = [ SendIfcRTL( DataType ) for _ in range ( height-1 ) ]
-
     # Components
+
     s.tile = [ TileCL( FunctionUnit, FuList, DataType, CtrlType,
                ctrl_mem_size, data_mem_size, num_ctrl,
                preload_const[i], preload_ctrl[i] )
@@ -72,20 +71,15 @@ class SystolicCL( Component ):
         s.tile[i].recv_data[WEST].msg  //= DataType( 0, 0 )
 
       if i % width == width - 1:
-        if i // width != 0:
-          s.tile[i].send_data[EAST] //= s.send_data[i//width-1]
-          s.tile[i].recv_data[EAST].en   //= 0
-          s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
-        else:
-          s.tile[i].send_data[EAST].rdy  //= 0
-          s.tile[i].recv_data[EAST].en   //= 0
-          s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
+        s.tile[i].send_data[EAST].rdy  //= 0
+        s.tile[i].recv_data[EAST].en   //= 0
+        s.tile[i].recv_data[EAST].msg  //= DataType( 0, 0 )
 
-      if i // width == 0:
-        s.tile[i].to_mem_raddr   //= s.data_mem.recv_raddr[i % width]
-        s.tile[i].from_mem_rdata //= s.data_mem.send_rdata[i % width]
-        s.tile[i].to_mem_waddr   //= s.data_mem.recv_waddr[i % width]
-        s.tile[i].to_mem_wdata   //= s.data_mem.recv_wdata[i % width]
+      if i % width == 0:
+        s.tile[i].to_mem_raddr   //= s.data_mem.recv_raddr[i // width]
+        s.tile[i].from_mem_rdata //= s.data_mem.send_rdata[i // width]
+        s.tile[i].to_mem_waddr   //= s.data_mem.recv_waddr[i // width]
+        s.tile[i].to_mem_wdata   //= s.data_mem.recv_wdata[i // width]
       else:
         s.tile[i].to_mem_raddr.rdy //= 0
         s.tile[i].from_mem_rdata.en //= 0
@@ -95,8 +89,8 @@ class SystolicCL( Component ):
 
   # Line trace
   def line_trace( s ):
-    str = "||\n".join([ (x.line_trace() + x.ctrl_mem.line_trace())
+    str = "||\n".join([ (x.element.line_trace() + x.ctrl_mem.line_trace())
                       for x in s.tile ]) 
-    str += "\n[data] :: [" + s.data_mem.line_trace() + "]\n"
+    str += "\n :: [" + s.data_mem.line_trace() + "]    \n"
     return str
 

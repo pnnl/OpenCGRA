@@ -1,10 +1,8 @@
 """
 =========================================================================
-AccFL.py
+CGRAFL.py
 =========================================================================
-A accelerator implemented in functional level for verification of the CL
-and RTL designs. It takes the DFG as input, generate the outputs (live-in),
-and write values into a list (mimic the scratchpad).
+CGRAFL -- running DFG nodes one by one.
 
 Author : Cheng Tan
   Date : Feb 13, 2020
@@ -18,7 +16,7 @@ from ..lib.messages import *
 #------------------------------------------------------------------------
 # Assuming that the elements in FuDFG are already ordered well.
 #------------------------------------------------------------------------
-def AccFL( FuDFG, DataType, CtrlType, src_const ):#, data_spm ):
+def CGRAFL( FuDFG, DataType, CtrlType, src_const ):#, data_spm ):
 
   live_out = DataType( 0, 0 )
 

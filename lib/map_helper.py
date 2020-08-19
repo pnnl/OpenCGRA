@@ -9,28 +9,28 @@ Author : Cheng Tan
 
 """
 
-from .opt_type           import *
-from ..fu.single.Alu     import Alu
-from ..fu.single.Shifter import Shifter
-from ..fu.single.Logic   import Logic
-from ..fu.single.Mul     import Mul
-from ..fu.single.MemUnit import MemUnit
-from ..fu.single.Comp    import Comp
-from ..fu.single.Phi     import Phi
-from ..fu.single.Branch  import Branch
+from .opt_type              import *
+from ..fu.single.AdderRTL   import AdderRTL
+from ..fu.single.ShifterRTL import ShifterRTL
+from ..fu.single.LogicRTL   import LogicRTL
+from ..fu.single.MulRTL     import MulRTL
+from ..fu.single.MemUnitRTL import MemUnitRTL
+from ..fu.single.CompRTL    import CompRTL
+from ..fu.single.PhiRTL     import PhiRTL
+from ..fu.single.BranchRTL  import BranchRTL
 
 # -----------------------------------------------------------------------
 # Global dictionary for UnitType and OptType
 # -----------------------------------------------------------------------
 
-unit_map = { "Alu"             : Alu,
-             "Mul"             : Mul,
-             "Phi"             : Phi,
-             "Comp"            : Comp,
-             "Branch"          : Branch,
-             "Logic"           : Logic,
-             "Shifter"         : Shifter,
-             "MemUnit"         : MemUnit }
+unit_map = { "Adder"           : AdderRTL,
+             "Mul"             : MulRTL,
+             "Phi"             : PhiRTL,
+             "Comp"            : CompRTL,
+             "Branch"          : BranchRTL,
+             "Logic"           : LogicRTL,
+             "Shifter"         : ShifterRTL,
+             "MemUnit"         : MemUnitRTL }
 
 opt_map  = { "OPT_START"       : OPT_START,
              "OPT_NAH"         : OPT_NAH,
