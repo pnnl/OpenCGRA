@@ -136,6 +136,6 @@ def test_hetero_2x2():
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, ctrl_waddr )
-  th.set_param("top.dut.tile[1].construct", FuList=[Shifter])
+  th.set_param("top.dut.tile[1].construct", FuList=[ShifterRTL])
   run_sim( th )
 
