@@ -42,7 +42,7 @@ def mk_data( payload_nbits=16, predicate_nbits=1, bypass_nbits=1,
 
 def mk_ctrl( num_fu_in=2, num_inports=5, num_outports=5, prefix="CGRAConfig" ):
 
-  ctrl_nbits   = 5
+  ctrl_nbits   = 6
   CtrlType     = mk_bits( ctrl_nbits )
   InportsType  = mk_bits( clog2( num_inports  + 1 ) )
   OutportsType = mk_bits( clog2( num_outports + 1 ) )

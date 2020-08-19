@@ -41,6 +41,7 @@ class Phi( Fu ):
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en# and s.send_out[j].rdy and s.recv_in[0].en
 #      s.send_out[0].en = s.recv_opt.en
+
       if s.recv_opt.msg.ctrl == OPT_PHI:
         if s.recv_in[in0].msg.predicate == Bits1( 1 ):
           s.send_out[0].msg.payload   = s.recv_in[in0].msg.payload
@@ -51,6 +52,15 @@ class Phi( Fu ):
         else:
           s.send_out[0].msg.payload   = s.recv_in[in0].msg.payload
           s.send_out[0].msg.predicate = Bits1( 1 )
+
+      elif s.recv_opt.msg.ctrl == OPT_PHI_CONST:
+        if s.recv_in[in0].msg.predicate == Bits1( 1 ):
+          s.send_out[0].msg.payload   = s.recv_in[in0].msg.payload
+          s.send_out[0].msg.predicate = Bits1( 1 )
+        else:
+          s.send_out[0].msg.payload   = s.recv_const.msg.payload
+          s.send_out[0].msg.predicate = Bits1( 1 )
+
       else:
         for j in range( num_outports ):
           s.send_out[j].en = b1( 0 )
