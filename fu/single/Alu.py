@@ -32,10 +32,11 @@ class Alu( Fu ):
       # For pick input register
       in0 = FuInType( 0 )
       in1 = FuInType( 0 )
+      for i in range( num_inports ):
+        s.recv_in[i].rdy = b1( 0 )
       if s.recv_opt.en and s.recv_opt.msg.fu_in[0] != FuInType( 0 ) and s.recv_opt.msg.fu_in[1] != FuInType( 0 ):
         in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
         in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
-        print("alu see: ", in0, in1, num_inports, s.recv_opt.msg)
         s.recv_in[in0].rdy = b1( 1 )
         s.recv_in[in1].rdy = b1( 1 )
 

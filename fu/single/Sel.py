@@ -56,6 +56,8 @@ class Sel( Component ):
       in0 = FuInType( 0 )
       in1 = FuInType( 0 )
       in2 = FuInType( 0 )
+      for i in range( num_inports ):
+        s.recv_in[i].rdy = b1( 0 )
       if s.recv_opt.en and s.recv_opt.msg.fu_in[0] != FuInType( 0 ) and\
                            s.recv_opt.msg.fu_in[1] != FuInType( 0 ) and\
                            s.recv_opt.msg.fu_in[2] != FuInType( 0 ):

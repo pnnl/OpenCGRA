@@ -80,6 +80,8 @@ class FlexibleFu( Component ):
 
         # recv_in connection
         for j in range( num_inports ):
+          s.recv_in[j].rdy = b1( 0 )
+        for j in range( num_inports ):
           s.fu[i].recv_in[j].msg = s.recv_in[j].msg
           s.fu[i].recv_in[j].en  = s.recv_in[j].en
           s.recv_in[j].rdy       = s.fu[i].recv_in[j].rdy or s.recv_in[j].rdy

@@ -93,6 +93,7 @@ def test_CGRA_4x4_fir():
   num_tile_outports = 4
   num_xbar_inports  = 6
   num_xbar_outports = 8
+  num_fu_in         = 4
   ctrl_mem_size     = 8
   width             = 4
   height            = 4
@@ -102,14 +103,15 @@ def test_CGRA_4x4_fir():
   num_tiles         = width * height
   ctrl_mem_size     = II
   data_mem_size     = 10
+  num_fu_in         = 4
   DUT               = PseudoCGRA
   FunctionUnit      = FlexibleFu
-  FuList            = [Alu, Mul, MemUnit, Shifter, Logic, Phi, Comp, Branch]
+#  FuList            = [Alu, Mul, MemUnit, Shifter, Logic, Phi, Comp, Branch]
+  FuList            = [MemUnit, Alu, Mul, Shifter, Logic, Phi, Comp, Branch]
   DataType          = mk_data( 16, 1 )
-  CtrlType          = mk_ctrl( num_xbar_inports, num_xbar_outports )
-
+  CtrlType          = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
   cgra_ctrl         = CGRACtrl( file_path, CtrlType, RouteType, width, height,
-                                num_xbar_outports, II )
+                                num_fu_in, num_xbar_outports, II )
   src_opt           = cgra_ctrl.get_ctrl()
 #  print( src_opt )
   preload_data  = [ DataType( 3, 1 ) ] * data_mem_size

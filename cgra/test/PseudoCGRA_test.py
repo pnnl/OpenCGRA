@@ -89,21 +89,24 @@ def test_cgra_2x2_universal():
   num_tiles     = width * height
   ctrl_mem_size = 8
   data_mem_size = 10
+  num_fu_in     = 4
   DUT           = PseudoCGRA
   FunctionUnit  = FlexibleFu
   FuList        = [Alu, MemUnit]
   DataType      = mk_data( 16, 1 )
-  CtrlType      = mk_ctrl( num_xbar_inports, num_xbar_outports )
-  src_opt       = [[CtrlType( OPT_ADD_CONST, [ 
+  CtrlType      = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
+  FuInType      = mk_bits( clog2( num_fu_in + 1 ) )
+  pickRegister  = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
+  src_opt       = [[CtrlType( OPT_ADD_CONST, pickRegister, [ 
                     RouteType(3), RouteType(2), RouteType(1), RouteType(0),
                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
-                    CtrlType( OPT_ADD, [
+                    CtrlType( OPT_ADD, pickRegister, [
                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ), 
-                    CtrlType( OPT_STR, [
+                    CtrlType( OPT_STR, pickRegister, [
                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ),
-                    CtrlType( OPT_SUB, [
+                    CtrlType( OPT_SUB, pickRegister, [
                     RouteType(3),RouteType(2), RouteType(1), RouteType(0),
                     RouteType(4), RouteType(4), RouteType(4), RouteType(4)] ) ] 
                     for _ in range( num_tiles ) ]
@@ -134,14 +137,15 @@ def test_cgra_4x4_universal_fir():
   num_tiles         = width * height
   ctrl_mem_size     = II
   data_mem_size     = 10
+  num_fu_in         = 4
   DUT               = PseudoCGRA
   FunctionUnit      = FlexibleFu
   FuList            = [Alu, MemUnit]
   DataType          = mk_data( 16, 1 )
-  CtrlType          = mk_ctrl( num_xbar_inports, num_xbar_outports )
+  CtrlType          = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
 
   cgra_ctrl         = CGRACtrl( file_path, CtrlType, RouteType, width, height,
-                                num_xbar_outports, II )
+                                num_fu_in, num_xbar_outports, II )
   src_opt           = cgra_ctrl.get_ctrl()
   print( src_opt )
   preload_data  = [ DataType( 1, 1 ) ] * data_mem_size
