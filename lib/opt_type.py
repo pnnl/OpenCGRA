@@ -30,6 +30,7 @@ OPT_NOT           = Bits6( 11 )
 OPT_LD            = Bits6( 12 )
 OPT_STR           = Bits6( 13 )
 OPT_EQ            = Bits6( 14 )
+OPT_EQ_CONST      = Bits6( 33 )
 OPT_LE            = Bits6( 15 )
 OPT_BRH           = Bits6( 16 )
 OPT_PHI           = Bits6( 17 )
@@ -65,6 +66,7 @@ OPT_SYMBOL_DICT = {
   OPT_LD            : "(ld)",
   OPT_STR           : "(st)",
   OPT_EQ            : "(?=)",
+  OPT_EQ_CONST      : "(?=*)",
   OPT_LE            : "(?<)",
   OPT_BRH           : "(br)",
   OPT_PHI           : "(ph)",

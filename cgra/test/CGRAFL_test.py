@@ -10,55 +10,13 @@ Author : Cheng Tan
 """
 
 from pymtl3                       import *
-from pymtl3.stdlib.test           import TestSinkCL
-from pymtl3.stdlib.test.test_srcs import TestSrcRTL
-
 from ...lib.messages              import *
 from ..CGRAFL                     import CGRAFL
 from ...lib.dfg_helper            import *
 
 import os
 
-#-------------------------------------------------------------------------
-# Test harness
-#-------------------------------------------------------------------------
-
-class TestHarness( Component ):
-
-  def construct( s, DUT, FuDFG, DataType, CtrlType, src_data, sink_out ):
-
-    s.num_liveout = FuDFG.num_liveout
-    s.sink_out  = TestSinkCL( DataType, sink_out )
-    s.dut = DUT( FuDFG, DataType, CtrlType )
-    connect( s.dut.send_data, s.sink_out.recv )
-
-  def done( s ):
-    return s.sink_out.done()
-
-  def line_trace( s ):
-    return s.dut.line_trace()
-
-def run_sim( test_harness, max_cycles=10 ):
-  test_harness.elaborate()
-  test_harness.apply( SimulationPass() )
-  test_harness.sim_reset()
-
-  # Run simulation
-  ncycles = 0
-  print( "{}:{}".format( ncycles, test_harness.line_trace() ))
-  while not test_harness.done() and ncycles < max_cycles:
-    test_harness.tick()
-    ncycles += 1
-    print( "{}:{}".format( ncycles, test_harness.line_trace() ))
-
-  # Check timeout
-  assert ncycles < max_cycles
-
-  test_harness.tick()
-  test_harness.tick()
-  test_harness.tick()
-
-def test_acc():
+def test_fl():
   target_json = "dfg_fir.json"
   script_dir  = os.path.dirname(__file__)
   file_path   = os.path.join( script_dir, target_json )
@@ -77,11 +35,4 @@ def test_acc():
   # FL golden reference
   CGRAFL( fu_dfg, DataType, CtrlType, const_data )#, data_spm )
   print()
-#
-#  print( "----------------- RTL test ------------------" )
-#  DUT      = AccRTL
-#  sink_out = [ DataType( 1, 1 ) ]
-#  th = TestHarness( DUT, fu_dfg, DataType, CtrlType, const_data, sink_out )
-#  run_sim( th )
-
 

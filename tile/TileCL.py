@@ -22,7 +22,6 @@ class TileCL( Component ):
                  data_mem_size, num_ctrl, const_list, opt_list ):
 
     # Constant
-
     num_xbar_inports  = 6
     num_xbar_outports = 8
     num_fu_inports    = 4

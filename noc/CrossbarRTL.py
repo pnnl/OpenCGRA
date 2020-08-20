@@ -38,11 +38,15 @@ class CrossbarRTL( Component ):
           in_dir  = s.recv_opt.msg.outport[i]
           out_rdy = out_rdy | s.send_data[i].rdy
 #          s.send_data[i].msg.bypass = b1( 0 ) 
-          if in_dir > OutType( 0 ):
+          if in_dir > OutType( 0 ) and s.send_data[i].rdy:
             in_dir = in_dir - OutType( 1 )
             s.recv_data[in_dir].rdy = s.send_data[i].rdy
             s.send_data[i].en       = s.recv_data[in_dir].en
-            s.send_data[i].msg      = s.recv_data[in_dir].msg
+            if s.send_data[i].en and s.recv_data[in_dir].rdy:
+              s.send_data[i].msg.payload   = s.recv_data[in_dir].msg.payload
+              s.send_data[i].msg.predicate = s.recv_data[in_dir].msg.predicate
+#              s.send_data[i].msg = s.recv_data[in_dir].msg
+              s.send_data[i].msg.bypass    = s.recv_data[in_dir].msg.bypass
             # The generate one can be send to other tile without buffering,
             # but buffering is still needed when 'other tile' is yourself
             # (i.e., generating output to self input). Here we avoid self 
@@ -68,7 +72,7 @@ class CrossbarRTL( Component ):
 
   # Line trace
   def line_trace( s ):
-    recv_str = "|".join([ str(x.msg.payload) for x in s.recv_data ])
-    out_str  = "|".join([ str(x.msg.payload) for x in s.send_data ])
+    recv_str = "|".join([ str(x.msg) for x in s.recv_data ])
+    out_str  = "|".join([ str(x.msg) for x in s.send_data ])
     return f"{recv_str} [{s.recv_opt.msg}] {out_str}"
 

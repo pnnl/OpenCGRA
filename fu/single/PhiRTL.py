@@ -13,6 +13,7 @@ from pymtl3             import *
 from pymtl3.stdlib.ifcs import SendIfcRTL, RecvIfcRTL
 from ...lib.opt_type    import *
 from ..basic.Fu         import Fu
+import copy
 
 class PhiRTL( Fu ):
 
@@ -32,11 +33,13 @@ class PhiRTL( Fu ):
       in1 = FuInType( 0 )
       for i in range( num_inports ):
         s.recv_in[i].rdy = b1( 0 )
-      if s.recv_opt.en and s.recv_opt.msg.fu_in[0] != FuInType( 0 ) and s.recv_opt.msg.fu_in[1] != FuInType( 0 ):
-        in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
-        in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
-        s.recv_in[in0].rdy = b1( 1 )
-        s.recv_in[in1].rdy = b1( 1 )
+      if s.recv_opt.en:
+        if s.recv_opt.msg.fu_in[0] != FuInType( 0 ):
+          in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+          s.recv_in[in0].rdy = b1( 1 )
+        if s.recv_opt.msg.fu_in[1] != FuInType( 0 ):
+          in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+          s.recv_in[in1].rdy = b1( 1 )
 
       for j in range( num_outports ):
         s.send_out[j].en = s.recv_opt.en

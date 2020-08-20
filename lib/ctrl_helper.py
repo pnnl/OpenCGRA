@@ -28,7 +28,7 @@ class TileCtrl:
 #    s.opts   = [ CtrlType( 0, 0 ) ] * II
 #    s.routes = [ [ RouteType( 0 ) ] * num_outports ] * II
     FuInType     = mk_bits( clog2( num_fu_in + 1 ) )
-    pickRegister = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
+    pickRegister = [ FuInType( 0 ) for x in range( num_fu_in ) ]
 #    pickRegister[2] = FuInType( 0 )
 #    pickRegister[3] = FuInType( 0 )
     s.ctrl   = [ CtrlType( OPT_NAH, pickRegister, [ RouteType( 0 ) ] * num_outports ) ] * II
@@ -65,7 +65,11 @@ class CGRACtrl:
       ctrls = json.load( json_file )
       for ctrl in ctrls:
         tile  = get_tile( ctrl['x'], ctrl['y'], s.tiles )
-        reg = [ FuInType( x+1 ) for x in range( num_fu_in ) ]
+        reg = None
+        reg = [ FuInType( 0 ) for x in range( num_fu_in ) ]
+        if ctrl['opt'] != "OPT_NAH":
+          reg[0] = FuInType( 1 )
+          reg[1] = FuInType( 2 )
         route = []
 #        reg[2] = FuInType( 0 )
 #        reg[3] = FuInType( 0 )

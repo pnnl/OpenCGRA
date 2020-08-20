@@ -19,16 +19,13 @@ class CtrlMemCL( Component ):
   def construct( s, CtrlType, ctrl_mem_size, num_ctrl=4, opt_list=None ):
 
     # Constant
-
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
     TimeType = mk_bits( clog2( num_ctrl+1 ) )
 
     # Interface
-
     s.send_ctrl  = SendIfcRTL( CtrlType )
 
     # Component
-
     s.sram = [ CtrlType( 0 ) for _ in range( ctrl_mem_size ) ]
     for i in range( len( opt_list ) ):
       s.sram[ i ] = opt_list[i]

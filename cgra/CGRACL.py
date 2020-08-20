@@ -89,8 +89,8 @@ class CGRACL( Component ):
 
   # Line trace
   def line_trace( s ):
-    str = "||\n".join([ (x.element.line_trace() + x.ctrl_mem.line_trace())
-                      for x in s.tile ]) 
-    str += "\n :: [" + s.data_mem.line_trace() + "]    \n"
-    return str
+    res = "||\n".join([ (("[tile"+str(i)+"]: ") + x.line_trace() + x.ctrl_mem.line_trace())
+                      for (i,x) in enumerate(s.tile) ]) 
+    res += "\n :: [" + s.data_mem.line_trace() + "]    \n"
+    return res
 

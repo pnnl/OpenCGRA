@@ -28,6 +28,9 @@ from ...fu.single.ShifterRTL      import ShifterRTL
 from ...fu.single.MemUnitRTL      import MemUnitRTL
 from ..CGRACL                     import CGRACL
 
+from ..CGRAFL                     import CGRAFL
+from ...lib.dfg_helper            import *
+
 import os
 
 #-------------------------------------------------------------------------
@@ -44,35 +47,72 @@ class TestHarness( Component ):
     AddrType = mk_bits( clog2( ctrl_mem_size ) )
 
     s.dut = DUT( FunctionUnit, FuList, DataType, CtrlType, width, height,
-                 ctrl_mem_size, data_mem_size, len( src_opt ), src_opt,
+                 ctrl_mem_size, data_mem_size, 100, src_opt,
                  preload_data, preload_const )
 
   def line_trace( s ):
     return s.dut.line_trace()
 
-def run_sim( test_harness, max_cycles=7 ):
+  def output_target_value( s ):
+    NORTH = 0
+    SOUTH = 1
+    WEST  = 2
+    EAST  = 3
+    return s.dut.tile[11].element.send_out[1].msg
+
+
+def run_sim( test_harness, max_cycles=19 ):
   test_harness.elaborate()
   test_harness.apply( SimulationPass() )
   test_harness.sim_reset()
 
   # Run simulation
+  target_value = []
   ncycles = 0
   print()
   print( "{}:{}".format( ncycles, test_harness.line_trace() ))
   while ncycles < max_cycles:
     test_harness.tick()
+    target_value.append(test_harness.output_target_value())
     ncycles += 1
     print( "{}:{}".format( ncycles, test_harness.line_trace() ))
 
   # Check timeout
 #  assert ncycles < max_cycles
 
-  print( '=' * 70 )
-  print( test_harness.dut.data_mem.sram )
+#  print( '=' * 70 )
+#  print( test_harness.dut.data_mem.sram )
 
   test_harness.tick()
   test_harness.tick()
   test_harness.tick()
+
+  print( '=' * 70 )
+  print(target_value)
+  res = None
+  for x in target_value:
+    if x.predicate == b1( 1 ):
+      res = x
+      return res
+
+def run_CGRAFL():
+  target_json = "dfg_fir.json"
+  script_dir  = os.path.dirname(__file__)
+  file_path   = os.path.join( script_dir, target_json )
+  DataType = mk_data( 16, 1 )
+  CtrlType = mk_ctrl()
+  const_data = [ DataType( 0, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 1, 1  ),
+                 DataType( 0, 1  ),
+                 DataType( 1, 1  ),
+                 DataType( 2, 1 ) ]
+  data_spm = [ 3 for _ in range(100) ]
+  fu_dfg = DFG( file_path, const_data, data_spm )
+
+  print( "----------------- FL test ------------------" )
+  # FL golden reference
+  return CGRAFL( fu_dfg, DataType, CtrlType, const_data )#, data_spm )
 
 def test_CGRA_4x4_fir():
   target_json = "config_fir.json"
@@ -93,12 +133,11 @@ def test_CGRA_4x4_fir():
   AddrType          = mk_bits( clog2( ctrl_mem_size ) )
   num_tiles         = width * height
   ctrl_mem_size     = II
-  data_mem_size     = 10
+  data_mem_size     = 100
   num_fu_in         = 4
   DUT               = CGRACL
   FunctionUnit      = FlexibleFuRTL
-#  FuList            = [Alu, Mul, MemUnit, Shifter, Logic, Phi, Comp, Branch]
-  FuList            = [ MemUnitRTL, AdderRTL, MulRTL, ShifterRTL, LogicRTL, PhiRTL, CompRTL, BranchRTL ]
+  FuList            = [ MemUnitRTL, AdderRTL, MulRTL, ShifterRTL, PhiRTL, CompRTL, BranchRTL, LogicRTL ]
   DataType          = mk_data( 16, 1 )
   CtrlType          = mk_ctrl( num_fu_in, num_xbar_inports, num_xbar_outports )
   cgra_ctrl         = CGRACtrl( file_path, CtrlType, RouteType, width, height,
@@ -106,13 +145,19 @@ def test_CGRA_4x4_fir():
   src_opt           = cgra_ctrl.get_ctrl()
 #  print( src_opt )
   preload_data  = [ DataType( 3, 1 ) ] * data_mem_size
-  preload_const = [ [ DataType( 1, 1 ) ] * II ] * num_tiles
+  preload_const = [ [ DataType( 0, 1 ) for _ in range( II ) ] for _ in range( num_tiles ) ]
+  preload_const[6][2] = DataType( 1, 1 )
+  preload_const[6][3] = DataType( 2, 1 )
 
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
                     width, height, ctrl_mem_size, data_mem_size,
                     src_opt, preload_data, preload_const )
-  run_sim( th )
 
+  target = run_sim( th )
+
+  reference = run_CGRAFL()[0]
+
+  assert(target == reference)
 #def test_CGRA():
 #
 #  # Attribute of CGRA

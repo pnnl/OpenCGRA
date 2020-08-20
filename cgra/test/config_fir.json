@@ -25,7 +25,8 @@
     "out_4"     : "4",
     "out_5"     : "4",
     "out_6"     : "2",
-    "out_7"     : "none"
+    "out_7"     : "none",
+    "fu_in_0"   : 3
   },
   {
     "x"         : 3,
@@ -54,8 +55,7 @@
     "out_5"     : "none",
     "out_6"     : "3",
     "out_7"     : "none",
-    "fu_in_0"   : 1,
-    "fu_in_1"   : 2
+    "fu_in_0"   : 3
   },
   {
     "x"         : 2,
@@ -103,7 +103,7 @@
     "x"         : 2,
     "y"         : 1,
     "cycle"     : 1,
-    "opt"       : "OPT_ADD",
+    "opt"       : "OPT_ADD_CONST",
     "out_0"     : "none",
     "out_1"     : "none",
     "out_2"     : "4",
@@ -111,7 +111,8 @@
     "out_4"     : "none",
     "out_5"     : "none",
     "out_6"     : "none",
-    "out_7"     : "none"
+    "out_7"     : "none",
+    "fu_in_0"   : 1
   },
   {
     "x"         : 1,
@@ -127,21 +128,22 @@
     "out_6"     : "none",
     "out_7"     : "none",
     "fu_in_0"   : 1,
-    "fu_in_1"   : 3
+    "fu_in_1"   : 4
   },
   {
     "x"         : 2,
     "y"         : 2,
     "cycle"     : 1,
-    "opt"       : "OPT_ADD",
+    "opt"       : "OPT_ADD_CONST",
     "out_0"     : "none",
     "out_1"     : "none",
     "out_2"     : "4",
     "out_3"     : "none",
-    "out_4"     : "2",
+    "out_4"     : "none",
     "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
+    "out_6"     : "2",
+    "out_7"     : "none",
+    "fu_in_0"   : 1
   },
   {
     "x"         : 0,
@@ -163,6 +165,107 @@
     "cycle"     : 2,
     "opt"       : "OPT_NAH",
     "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "none",
+    "out_3"     : "none",
+    "out_4"     : "3",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none"
+  },
+  {
+    "x"         : 2,
+    "y"         : 1,
+    "cycle"     : 2,
+    "opt"       : "OPT_ADD_CONST",
+    "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "4",
+    "out_3"     : "none",
+    "out_4"     : "4",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none",
+    "fu_in_0"   : 2
+  },
+  {
+    "x"         : 0,
+    "y"         : 2,
+    "cycle"     : 2,
+    "opt"       : "OPT_NAH",
+    "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "none",
+    "out_3"     : "none",
+    "out_4"     : "3",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none"
+  },
+  {
+    "x"         : 1,
+    "y"         : 2,
+    "cycle"     : 2,
+    "opt"       : "OPT_NAH",
+    "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "none",
+    "out_3"     : "none",
+    "out_4"     : "none",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none"
+  },
+  {
+    "x"         : 2,
+    "y"         : 2,
+    "cycle"     : 2,
+    "opt"       : "OPT_ADD",
+    "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "none",
+    "out_3"     : "4",
+    "out_4"     : "none",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none",
+    "fu_in_0"   : 2,
+    "fu_in_1"   : 3
+  },
+  {
+    "x"         : 3,
+    "y"         : 2,
+    "cycle"     : 2,
+    "opt"       : "OPT_NAH",
+    "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "none",
+    "out_3"     : "none",
+    "out_4"     : "2",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none"
+  },
+  {
+    "x"         : 0,
+    "y"         : 1,
+    "cycle"     : 3,
+    "opt"       : "OPT_LD",
+    "out_0"     : "none",
+    "out_1"     : "none",
+    "out_2"     : "none",
+    "out_3"     : "4",
+    "out_4"     : "none",
+    "out_5"     : "none",
+    "out_6"     : "none",
+    "out_7"     : "none"
+  },
+  {
+    "x"         : 1,
+    "y"         : 1,
+    "cycle"     : 3,
+    "opt"       : "OPT_NAH",
+    "out_0"     : "2",
     "out_1"     : "none",
     "out_2"     : "none",
     "out_3"     : "none",
@@ -174,106 +277,8 @@
   {
     "x"         : 2,
     "y"         : 1,
-    "cycle"     : 2,
-    "opt"       : "OPT_ADD",
-    "out_0"     : "none",
-    "out_1"     : "none",
-    "out_2"     : "4",
-    "out_3"     : "none",
-    "out_4"     : "4",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 0,
-    "y"         : 2,
-    "cycle"     : 2,
-    "opt"       : "OPT_NAH",
-    "out_0"     : "none",
-    "out_1"     : "none",
-    "out_2"     : "none",
-    "out_3"     : "none",
-    "out_4"     : "3",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 1,
-    "y"         : 2,
-    "cycle"     : 2,
-    "opt"       : "OPT_NAH",
-    "out_0"     : "none",
-    "out_1"     : "none",
-    "out_2"     : "none",
-    "out_3"     : "none",
-    "out_4"     : "none",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 2,
-    "y"         : 2,
-    "cycle"     : 2,
-    "opt"       : "OPT_ADD",
-    "out_0"     : "none",
-    "out_1"     : "none",
-    "out_2"     : "none",
-    "out_3"     : "4",
-    "out_4"     : "none",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 3,
-    "y"         : 2,
-    "cycle"     : 2,
-    "opt"       : "OPT_NAH",
-    "out_0"     : "none",
-    "out_1"     : "none",
-    "out_2"     : "none",
-    "out_3"     : "none",
-    "out_4"     : "2",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 0,
-    "y"         : 1,
     "cycle"     : 3,
-    "opt"       : "OPT_LD",
-    "out_0"     : "none",
-    "out_1"     : "none",
-    "out_2"     : "none",
-    "out_3"     : "4",
-    "out_4"     : "none",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 1,
-    "y"         : 1,
-    "cycle"     : 3,
-    "opt"       : "OPT_NAH",
-    "out_0"     : "2",
-    "out_1"     : "none",
-    "out_2"     : "none",
-    "out_3"     : "none",
-    "out_4"     : "3",
-    "out_5"     : "none",
-    "out_6"     : "none",
-    "out_7"     : "none"
-  },
-  {
-    "x"         : 2,
-    "y"         : 1,
-    "cycle"     : 3,
-    "opt"       : "OPT_EQ",
+    "opt"       : "OPT_EQ_CONST",
     "out_0"     : "none",
     "out_1"     : "none",
     "out_2"     : "4",
@@ -281,7 +286,8 @@
     "out_4"     : "none",
     "out_5"     : "none",
     "out_6"     : "none",
-    "out_7"     : "none"
+    "out_7"     : "none",
+    "fu_in_0"   : 1
   },
   {
     "x"         : 3,
@@ -322,8 +328,8 @@
     "out_3"     : "none",
     "out_4"     : "none",
     "out_5"     : "none",
-    "out_6"     : "2",
-    "out_7"     : "none"
+    "out_6"     : "none",
+    "out_7"     : "2"
   },
   {
     "x"         : 2,
@@ -379,7 +385,8 @@
     "out_4"     : "4",
     "out_5"     : "4",
     "out_6"     : "2",
-    "out_7"     : "none"
+    "out_7"     : "none",
+    "fu_in_0"   : 3
   },
   {
     "x"         : 3,
@@ -408,8 +415,7 @@
     "out_5"     : "none",
     "out_6"     : "3",
     "out_7"     : "none",
-    "fu_in_0"   : 1,
-    "fu_in_1"   : 2
+    "fu_in_0"   : 3
   },
   {
     "x"         : 2,

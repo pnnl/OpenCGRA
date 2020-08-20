@@ -32,11 +32,13 @@ class ShifterRTL( Fu ):
       in1 = FuInType( 0 )
       for i in range( num_inports ):
         s.recv_in[i].rdy = b1( 0 )
-      if s.recv_opt.en and s.recv_opt.msg.fu_in[0] != FuInType( 0 ) and s.recv_opt.msg.fu_in[1] != FuInType( 0 ):
-        in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
-        in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
-        s.recv_in[in0].rdy = b1( 1 )
-        s.recv_in[in1].rdy = b1( 1 )
+      if s.recv_opt.en:
+        if s.recv_opt.msg.fu_in[0] != FuInType( 0 ):
+          in0 = s.recv_opt.msg.fu_in[0] - FuInType( 1 )
+          s.recv_in[in0].rdy = b1( 1 )
+        if s.recv_opt.msg.fu_in[1] != FuInType( 0 ):
+          in1 = s.recv_opt.msg.fu_in[1] - FuInType( 1 )
+          s.recv_in[in1].rdy = b1( 1 )
 
       s.send_out[0].msg.predicate = s.recv_in[in0].msg.predicate and\
                                     s.recv_in[in1].msg.predicate
