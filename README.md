@@ -14,6 +14,24 @@
 
 OpenCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable Architecture) generator to generate synthesizable Verilog for different CGRAs based on user-specified configurations (e.g., CGRA size, type of the computing units in each tile, communication connection, etc.). OpenCGRA uses modular design and standardized interfaces between modules. The configurability and extensibility are maximized by its parametrization system to fit in various research and industrial needs.
 
+
+Related publications
+--------------------------------------------------------------------------
+
+- Cheng Tan, Chenhao Xie, Ang Li, Kevin Barker, and Antonino Tumeo. _"OpenCGRA: An Open-Source Framework for Modeling, Testing, Evaluating CGRAs."_ The 38th IEEE International Conference on Computer Design. (ICCD-20), Oct 2020
+
+
+<!---
+License
+--------------------------------------------------------------------------
+
+OpenCGRA is offered under the terms of the Open Source Initiative BSD 3-Clause License. More information about this license can be found here:
+
+  - http://choosealicense.com/licenses/bsd-3-clause
+  - http://opensource.org/licenses/BSD-3-Clause
+-->
+
+
 Installation
 --------------------------------------------------------
 
