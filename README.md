@@ -17,7 +17,7 @@ OpenCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable A
 Related publications
 --------------------------------------------------------------------------
 
-- Cheng Tan, Chenhao Xie, Ang Li, Kevin Barker, and Antonino Tumeo. _"OpenCGRA: An Open-Source Framework for Modeling, Testing, Evaluating CGRAs."_ The 38th IEEE International Conference on Computer Design. (ICCD-20), Oct 2020
+- Cheng Tan, Chenhao Xie, Ang Li, Kevin Barker, and Antonino Tumeo. _"OpenCGRA: An Open-Source Framework for Modeling, Testing, and Evaluating CGRAs."_ The 38th IEEE International Conference on Computer Design. (ICCD-20), Oct 2020
 
 
 License
