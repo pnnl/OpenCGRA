@@ -9,10 +9,9 @@
 
 ==========================================
 </pre>
-[![Build Status](https://travis-ci.com/tancheng/OpenCGRA.svg?token=yazoBFLC1ynpzdD4wAEP&branch=master)](https://travis-ci.com/github/tancheng/OpenCGRA)
-[![codecov](https://codecov.io/gh/tancheng/OpenCGRA/graph/badge.svg?token=9GKOM7EMU6)](https://codecov.io/gh/tancheng/OpenCGRA)
+[![Build Status](https://travis-ci.com/pnnl/OpenCGRA.svg?token=yazoBFLC1ynpzdD4wAEP&branch=master)](https://travis-ci.com/github/pnnl/OpenCGRA)
 
-OpenCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable Architecture) generator to generate synthesizable Verilog for different CGRAs based on user-specified configurations (e.g., CGRA size, type of the computing units in each tile, communication connection, etc.). OpenCGRA uses modular design and standardized interfaces between modules. The configurability and extensibility are maximized by its parametrization system to fit in various research and industrial needs.
+OpenCGRA is a parameterizable and powerful CGRA (Coarse-Grained Reconfigurable Arrays) generator to generate synthesizable Verilog for different CGRAs based on user-specified configurations (e.g., CGRA size, type of the computing units in each tile, communication connection, etc.). OpenCGRA uses modular design and standardized interfaces between modules. The configurability and extensibility are maximized by its parametrization system to fit in various research and industrial needs.
 
 
 Related publications
@@ -119,7 +118,7 @@ We can now use git to clone the OpenCGRA repo.
 ```
  % mkdir -p ${HOME}/cgra
  % cd ${HOME}/cgra
- % git clone https://github.com/tancheng/OpenCGRA.git
+ % git clone https://github.com/pnnl/OpenCGRA.git
 ```
 
 When you're done testing/developing, you can deactivate the virtualenv::
