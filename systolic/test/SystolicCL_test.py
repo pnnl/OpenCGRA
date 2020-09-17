@@ -190,13 +190,14 @@ def test_systolic_2x2():
                    ]
                   ]
   preload_mem   = [DataType(1, 1), DataType(2, 1), DataType(3, 1), DataType(4, 1)]
-  preload_const = [[DataType(0, 1), DataType(1, 1)], [DataType(0, 0), DataType(2, 1), DataType(3, 1)], # offset address used for loading
-                   [DataType(2, 1)], [DataType(4, 1)], # offset address used for MM
-                   [DataType(6, 1)], [DataType(8, 1)]] # offset address used for MM
+  preload_const = [[DataType(0, 1), DataType(1, 1)],
+                   [DataType(0, 0), DataType(2, 1), DataType(3, 1)], # offset address used for loading
+                   [DataType(2, 1)], [DataType(4, 1)], # preloaded data
+                   [DataType(6, 1)], [DataType(8, 1)]] # preloaded data
   """
-  2 4      1 2     14 20
+  1 3      2 6     14 20
        x        =  
-  6 8      3 4     30 44
+  2 4      4 8     30 44
   """
   sink_out = [[DataType(14, 1), DataType(20, 1)], [DataType(30, 1), DataType(44, 1)]]
   th = TestHarness( DUT, FunctionUnit, FuList, DataType, CtrlType,
