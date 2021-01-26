@@ -103,7 +103,7 @@ commands will create and activate the virtual environment:
 ### Install PyMTL3 and Python requirements
 
 ```
- % pip install git+https://github.com/cornell-brg/pymtl3.git@76e1ef87b2d7b6202abebea5b507398505910948#egg=pymtl3
+ % pip install git+https://github.com/tancheng/pymtl3.git
  % pip install --upgrade pip setuptools twine
  % pip install hypothesis
  % pip list
